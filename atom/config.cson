@@ -1,0 +1,43 @@
+"*":
+  "atom-beautify":
+    _analyticsUserId: "bb5560be-ccd3-41ef-a43e-fd01a8bc635e"
+    js_end_with_newline: true
+    js_indent_with_tabs: true
+    js_keep_function_indentation: true
+  "atom-material-ui":
+    colors:
+      abaseColor:
+        red: 33
+        green: 150
+        blue: 243
+        alpha: 1
+      predefinedColor: "Blue"
+    fonts: {}
+    tabs:
+      tintedTabBar: true
+    treeView:
+      blendTabs: true
+      compactList: true
+    ui:
+      panelContrast: true
+  "autohide-tree-view": {}
+  core:
+    themes: [
+      "atom-material-ui"
+      "atom-material-syntax"
+    ]
+  editor:
+    invisibles: {}
+    showIndentGuide: true
+    softWrap: true
+    tabLength: 4
+    zoomFontWhenCtrlScrolling: false
+  "exception-reporting":
+    userId: "7b1e3b5d-11d5-f7db-6701-cc9e3c3af537"
+  linter:
+    errorPanelHeight: 100
+    showErrorTabLine: true
+  "linter-jshint": {}
+  "merge-conflicts": {}
+  welcome:
+    showOnStartup: false
