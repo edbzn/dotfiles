@@ -8,7 +8,7 @@
 
 dir=~/dotfiles                    # dotfiles directory
 olddir=~/dotfiles_old             # old dotfiles backup directory
-files="atom oh-my-zsh"    # list of files/folders to symlink in homedir
+files="atom oh-my-zsh gitconfig"    # list of files/folders to symlink in homedir
 
 ##########
 
