@@ -24,6 +24,7 @@
       compactList: true
     ui:
       panelContrast: true
+  "autocomplete-plus": {}
   "autohide-tree-view": {}
   core:
     themes: [
