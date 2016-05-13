@@ -1,6 +1,10 @@
 "*":
   "atom-beautify":
     _analyticsUserId: "bb5560be-ccd3-41ef-a43e-fd01a8bc635e"
+    css_convert_quotes: "single"
+    css_newline_between_rules: true
+    css_no_lead_zero: true
+    js_end_with_comma: true
     js_end_with_newline: true
     js_indent_with_tabs: true
     js_keep_function_indentation: true
