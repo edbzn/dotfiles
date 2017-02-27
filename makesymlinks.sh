@@ -7,7 +7,7 @@
 ########## Variables
 
 dir=/work/dotfiles # dotfiles directory
-files=".atom .oh-my-zsh .gitconfig .zshrc" # list of files/folders to symlink in homedir
+files=".oh-my-zsh .gitconfig .zshrc" # list of files/folders to symlink in homedir
 
 ##########
 
