@@ -1,63 +1,66 @@
 [user]
-       name = edouardbozon
-       email = bozon.edouard@live.fr
-       signingkey = 850D8C05
-[core]    
-       excludesfile = ~/.gitignore 
-       editor = atom --wait
-	# Don't consider trailing space change as a cause for merge conflicts
-	whitespace = -trailing-space
+    name = edouardbozon
+    email = bozon.edouard@live.fr
+    signingkey = 850D8C05
+[core]
+    excludesfile = ~/.gitignore
+    editor = atom --wait
+    # Don't consider trailing space change as a cause for merge conflicts
+    whitespace = -trailing-space
 [diff]
-	# Use better, descriptive initials (c, i, w) instead of a/b.
-	mnemonicPrefix = true
-	# Show renames/moves as such
-	renames = true
-	# When using --word-diff, assume --word-diff-regex=.
-	wordRegex = .
-	# Display submodule-related information (commit listings)
-	submodule = log
+    # Use better, descriptive initials (c, i, w) instead of a/b.
+    mnemonicPrefix = true
+    # Show renames/moves as such
+    renames = true
+    # When using --word-diff, assume --word-diff-regex=.
+    wordRegex = .
+    # Display submodule-related information (commit listings)
+    submodule = log
 [status]
-	# Display submodule rev change summaries in status
-	submoduleSummary = true
-	# Recursively traverse untracked directories to display all contents
-	showUntrackedFiles = all
+    # Display submodule rev change summaries in status
+    submoduleSummary = true
+    # Recursively traverse untracked directories to display all contents
+    showUntrackedFiles = all
 [merge]
-	# Display common-ancestor blocks in conflict hunks
-	conflictStyle = diff3
+    # Display common-ancestor blocks in conflict hunks
+    conflictStyle = diff3
 [fetch]
-	# Auto-fetch submodule changes (sadly, won't auto-update)
-	recurseSubmodules = on-demand
+    # Auto-fetch submodule changes (sadly, won't auto-update)
+    recurseSubmodules = on-demand
 [grep]
-	# Consider most regexes to be ERE
-	extendedRegexp = true
+    # Consider most regexes to be ERE
+    extendedRegexp = true
 [log]
-	# Use abbrev SHAs whenever possible/relevant instead of full 40 chars
-	abbrevCommit = true
-	# Automatically --follow when given a single path
-	follow = true
+    # Use abbrev SHAs whenever possible/relevant instead of full 40 chars
+    abbrevCommit = true
+    # Automatically --follow when given a single path
+    follow = true
 [color "branch"]
-	# Blue on black is hard to read in git branch -vv: use cyan instead
-	upstream = cyan
+    # Blue on black is hard to read in git branch -vv: use cyan instead
+    upstream = cyan
 [tag]
-	# Sort tags as version numbers whenever applicable, so 1.10.2 is AFTER 1.2.0.
-	sort = version:refname
+    # Sort tags as version numbers whenever applicable, so 1.10.2 is AFTER 1.2.0.
+    sort = version:refname
 [versionsort]
-	prereleaseSuffix = -pre
-	prereleaseSuffix = .pre
-	prereleaseSuffix = -beta
-	prereleaseSuffix = .beta
-	prereleaseSuffix = -rc
-	prereleaseSuffix = .rc
+    prereleaseSuffix = -pre
+    prereleaseSuffix = .pre
+    prereleaseSuffix = -beta
+    prereleaseSuffix = .beta
+    prereleaseSuffix = -rc
+    prereleaseSuffix = .rc
 [color]
-       ui = true
+    ui = true
 [push]
-       default = simple
+    default = simple
 [alias]
-       undo = !git reset --soft HEAD^
-       lg1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
-       lg = !"git lg2"
-       lg2 = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-       lc = !git oneline ORIG_HEAD.. --stat --no-merges
-       oneline = log --pretty=oneline --abbrev-commit --graph --decorate
+    delete = git reset --hard
+    amend = git add -A && git commit --amend --no-edit
+    co = git checkout 
+    lg1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+
+    lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+    lg = !"git lg1"
+    lc = !git oneline ORIG_HEAD.. --stat --no-merges
+    oneline = log --pretty=oneline --abbrev-commit --graph --decorate
 [credential]
-       helper = cache --timeout=3600
+    helper = cache --timeout=3600
