@@ -9,12 +9,52 @@ files=".gitconfig .zshrc"
 
 echo -e "${GREEN}[Start]${NC} installing dependencies..."
 
+# Add Yarn package
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+
+# Common dependencies
 sudo apt update
-sudo apt install git zsh terminator curl htop vim nodejs npm -y
-sudo npm install npm -g
+sudo apt install git zsh terminator curl htop vim nodejs npm yarn -y
+sudo npm install npm n -g
+
+# Take ownership to allow n without sudo
+sudo mkdir -p /usr/local/n
+sudo chown -R $(whoami) /usr/local/n
+sudo chown -R $(whoami) /usr/local/bin /usr/local/lib /usr/local/include /usr/local/share
+
+# Switch to the last LTS Node.js version
+n lts
+
+# Diff tool for Git
+sudo npm install diff-so-fancy -g
 
 # Install oh-my-zsh
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+# Install Docker CE
+sudo apt install \
+  apt-transport-https \
+  ca-certificates \
+  curl \
+  gnupg-agent \
+  software-properties-common
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+sudo add-apt-repository \
+  "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) \
+  stable"
+
+sudo usermod -aG docker $(whoami)
+
+# Install Docker-Compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Configure Terminator
+ln -sf $dir/.terminator ~/.config/terminator/config
 
 # Check if .dotfiles where installed in the right place
 if [ ! -d "$dir" ]; then
@@ -32,4 +72,4 @@ done
 
 source ~/.zshrc
 
-echo -e "${GREEN}[Done]${NC} Installation succeed."
+echo -e "${GREEN}[Done]${NC} Installation succeed. /!\ To deal with Docker reboot your machine."
