@@ -3,7 +3,7 @@
 1. Clone the repository in your home directory.
 
 ```
-git clone git@github.com:Edouardbozon/.dotfiles.git ~/
+git clone git@github.com:Edouardbozon/.dotfiles.git ~/.dotfiles
 ```
 
 2. Make install.sh executable.
@@ -12,7 +12,7 @@ git clone git@github.com:Edouardbozon/.dotfiles.git ~/
 cd ~/.dotfiles && sudo chmod +x ./install.sh
 ```
 
-3. Run install script in `sudo` mode.
+3. Believe in yourself, run the script in `sudo` mode.
 
 ```
 sudo ./install.sh
