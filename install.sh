@@ -1,14 +1,19 @@
 #!/bin/bash
 
+echo "[Start] .dotfiles not found in home directory"
+
 sudo apt update
-sudo apt install git zsh terminator curl htop
+sudo apt install git zsh terminator curl htop vim -y
 
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 dir=~/.dotfiles
-git clone git@github.com:Edouardbozon/.dotfiles.git $dir
+files=".gitconfig .zshrc"
 
-files=".oh-my-zsh .gitconfig .zshrc"
+if [ ! -d "$dir" ]; then
+  echo "[Error] .dotfiles not found in home directory"
+  exit 1
+fi
 
 cd $dir
 
@@ -17,4 +22,6 @@ for file in $files; do
   ln -sf $dir/$file ~/$file
 done
 
-echo "done"
+source ~/.zshrc
+
+echo "[Done] Installation succeed"
