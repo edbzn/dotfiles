@@ -5,7 +5,17 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 dir=~/.dotfiles
+configurations=$dir/configurations
 files=".gitconfig .zshrc"
+
+# Check if .dotfiles where installed in the right place
+if [ ! -d "$dir" ]; then
+  echo -e "${RED}[Error]${NC} .dotfiles not found in home directory."
+  exit 1
+fi
+
+# Add work folder aliased in zsh
+mkdir ~/work
 
 echo -e "${GREEN}[Start]${NC} installing dependencies..."
 
@@ -17,6 +27,10 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 sudo apt update
 sudo apt install git zsh terminator curl htop vim nodejs npm yarn -y
 sudo npm install npm n -g
+
+# Configure zsh 
+sudo chmod -R 755 /usr/local/share/zsh/site-functions
+sudo chown -R root:root /usr/local/share/zsh/site-functions
 
 # Take ownership to allow n without sudo
 sudo mkdir -p /usr/local/n
@@ -49,25 +63,26 @@ sudo add-apt-repository \
 
 sudo usermod -aG docker $(whoami)
 
+sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+
 # Install Docker-Compose
-sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" \
+  -o /usr/local/bin/docker-compose
+
 sudo chmod +x /usr/local/bin/docker-compose
 
 # Configure Terminator
-ln -sf $dir/.terminator ~/.config/terminator/config
+ln -sf $configurations/.terminator ~/.config/terminator/config
 
-# Check if .dotfiles where installed in the right place
-if [ ! -d "$dir" ]; then
-  echo -e "${RED}[Error]${NC} .dotfiles not found in home directory."
-  exit 1
-fi
+# Add ssh key at bootstrap
+ln -sf $configurations/.add-ssh-key.sh ~/.config/autostart-scripts/ssh-add.sh
 
 cd $dir
 
 # Make symlink for configuration files
 for file in $files; do
   echo "Creating symlink to $file in home directory."
-  ln -sf $dir/$file ~/$file
+  ln -sf $configurations/$file ~/$file
 done
 
 source ~/.zshrc
