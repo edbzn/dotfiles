@@ -6,10 +6,10 @@
 git clone git@github.com:Edouardbozon/.dotfiles.git ~/.dotfiles
 ```
 
-2. Believe in yourself, run the script in `sudo` mode.
+2. Run the script in `sudo` mode.
 
 ```
-sudo ./install.sh
+./install.sh
 ```
 
 3. Done, you can work/procrastinate now. 
