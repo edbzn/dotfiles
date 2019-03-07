@@ -19,6 +19,9 @@ mkdir ~/work
 
 echo -e "${GREEN}[Start]${NC} installing dependencies..."
 
+# Remove cmdtest before Yarn install (Ubuntu only)
+sudo apt remove cmdtest
+
 # Add Yarn package
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
@@ -74,7 +77,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 # Configure Terminator
 ln -sf $configurations/.terminator ~/.config/terminator/config
 
-# Add ssh key at bootstrap
+# Add ssh key at bootstrap (KDE only)
 ln -sf $configurations/.add-ssh-key.sh ~/.config/autostart-scripts/ssh-add.sh
 
 cd $dir
