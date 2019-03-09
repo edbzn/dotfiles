@@ -7,6 +7,7 @@ NC='\033[0m' # No Color
 dir=~/.dotfiles
 configurations=$dir/configurations
 files=".gitconfig .zshrc"
+user=$(whoami)
 
 # Check if .dotfiles where installed in the right place
 if [ ! -d "$dir" ]; then
@@ -37,8 +38,8 @@ sudo chown -R root:root /usr/local/share/zsh/site-functions
 
 # Take ownership to allow n without sudo
 sudo mkdir -p /usr/local/n
-sudo chown -R $(whoami) /usr/local/n
-sudo chown -R $(whoami) /usr/local/bin /usr/local/lib /usr/local/include /usr/local/share
+sudo chown -R $(user) /usr/local/n
+sudo chown -R $(user) /usr/local/bin /usr/local/lib /usr/local/include /usr/local/share
 
 # Switch to the last LTS Node.js version
 n lts
@@ -69,7 +70,7 @@ sudo add-apt-repository \
   $(lsb_release -cs) \
   stable"
 
-sudo usermod -aG docker $(whoami)
+sudo usermod -aG docker $(user)
 
 sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 
