@@ -9,6 +9,7 @@
 | curl           | apt           |
 | htop           | apt           |
 | vim            | apt           |
+| Chrome         | N/A           |
 | nodejs         | apt           |
 | npm            | apt           |
 | yarn           | apt           |
