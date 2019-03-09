@@ -47,7 +47,12 @@ n lts
 sudo npm install diff-so-fancy -g
 
 # Install oh-my-zsh
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sed 's:env zsh -l::g' | sed 's:chsh -s .*$::g')"
+
+# Install Chrome stable (x64)
+sudo apt install libxss1 libappindicator1 libindicator7
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo apt install ./google-chrome*.deb -f
 
 # Install Docker CE
 sudo apt install \
@@ -90,4 +95,4 @@ done
 
 source ~/.zshrc
 
-echo -e "${GREEN}[Done]${NC} Installation succeed. /!\ To deal with Docker reboot your machine."
+echo -e "${GREEN}[Done]${NC} Installation succeed."
