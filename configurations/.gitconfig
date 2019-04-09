@@ -48,7 +48,7 @@
         preb = !git fetch upstream && git rebase upstream/master
 
         # Push
-        p = push
+        p = push --force-with-lease
         pom = push origin master
         poh = push origin head
 
