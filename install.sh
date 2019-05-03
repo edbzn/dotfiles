@@ -55,6 +55,13 @@ sudo apt install libxss1 libappindicator1 libindicator7
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo apt install ./google-chrome*.deb -f
 
+# Install Fira Code Font
+sudo add-apt-repository universe
+sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) main universe restricted multiverse"
+sudo add-apt-repository "deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner"     
+sudo apt update 
+sudo apt install fonts-firacode
+
 # Install Docker CE
 sudo apt install \
   apt-transport-https \
@@ -69,7 +76,7 @@ sudo add-apt-repository \
   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) \
   stable"
-
+ 
 sudo usermod -aG docker $(user)
 
 sudo apt-get install docker-ce docker-ce-cli containerd.io -y
