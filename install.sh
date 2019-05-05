@@ -5,7 +5,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 dir=~/.dotfiles
-configurations=$dir/configurations
+configurations=$dir/files
 files=".gitconfig .zshrc"
 user=$(whoami)
 
