@@ -5,7 +5,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 dir=~/.dotfiles
-configurations=$dir/files
+dotfiles=$dir/files
 files=".gitconfig .zshrc"
 user=$(whoami)
 
@@ -88,17 +88,18 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 
 # Configure Terminator
-ln -sf $configurations/.terminator ~/.config/terminator/config
+# Alias are not well supported by Terminator let's copy the file
+cp $dotfiles/.terminator ~/.config/terminator/config
 
 # Add ssh key at bootstrap (KDE only)
-ln -sf $configurations/.add-ssh-key.sh ~/.config/autostart-scripts/ssh-add.sh
+ln -sf $dotfiles/.add-ssh-key.sh ~/.config/autostart-scripts/ssh-add.sh
 
 cd $dir
 
 # Make symlink for configuration files
 for file in $files; do
   echo "Creating symlink to $file in home directory."
-  ln -sf $configurations/$file ~/$file
+  ln -sf $dotfiles/$file ~/$file
 done
 
 source ~/.zshrc
