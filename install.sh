@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
@@ -90,9 +92,6 @@ sudo chmod +x /usr/local/bin/docker-compose
 # Configure Terminator
 # Alias are not well supported by Terminator let's copy the file
 cp $dotfiles/.terminator ~/.config/terminator/config
-
-# Add ssh key at bootstrap (KDE only)
-ln -sf $dotfiles/.add-ssh-key.sh ~/.config/autostart-scripts/ssh-add.sh
 
 cd $dir
 
