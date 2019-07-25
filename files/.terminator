@@ -1,5 +1,5 @@
 [global_config]
-  inactive_color_offset = 0.705128205128
+  inactive_color_offset = 0.801282051282
   title_transmit_bg_color = "#75507b"
 [keybindings]
 [layouts]
@@ -14,7 +14,10 @@
 [profiles]
   [[default]]
     background_color = "#002b36"
-    background_darkness = 0.85
+    background_darkness = 0.86
     background_type = transparent
     cursor_color = "#aaaaaa"
+    font = Fira Code weight=450 10
     foreground_color = "#eeeeec"
+    scrollback_infinite = True
+    use_system_font = False
