@@ -1,6 +1,11 @@
 [user]
   name = Koala
   email = bozonedouard@gmail.com
+  # signingkey =
+
+[commit]
+  gpgsign = true
+
 [alias]
   # Staging
   a = add
