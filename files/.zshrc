@@ -14,8 +14,16 @@ else
   export EDITOR='vim'
 fi
 
-source $ZSH/oh-my-zsh.sh
+# Start ssh-agent automatically and make sure that only one process runs at a time
+if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    ssh-agent > "$XDG_RUNTIME_DIR/ssh-agent.env"
+fi
+if [[ ! "$SSH_AUTH_SOCK" ]]; then
+    eval "$(<"$XDG_RUNTIME_DIR/ssh-agent.env")"
+fi
 
 alias zshconfig="mate ~/.zshrc"
 alias ohmyzsh="mate ~/.oh-my-zsh"
 alias work="cd ~/work"
+
+source $ZSH/oh-my-zsh.sh
