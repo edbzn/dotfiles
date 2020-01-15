@@ -20,19 +20,19 @@ fi
 # Add work folder aliased in zsh
 mkdir ~/work
 
-echo -e "${GREEN}[Start]${NC} installing dependencies..."
+echo -e "${GREEN}[Setup]${NC} dependencies..."
 
-chmod +x ./install/common.sh
-./install/common.sh
+chmod +x install/common.sh
+sh install/common.sh
 
-chmod +x ./install/docker.sh
-./install/docker.sh
+chmod +x install/docker.sh
+sh install/docker.sh
 
-chmod +x ./install/yarn.sh
-./install/yarn.sh
+chmod +x install/yarn.sh
+sh install/yarn.sh
 
 # Configure Terminator
-ln -ls $dotfiles/.terminator ~/.config/terminator/config
+ln -sf $dotfiles/.terminator ~/.config/terminator/config
 
 cd $dir
 
@@ -42,6 +42,16 @@ for file in $files; do
   ln -sf $dotfiles/$file ~/$file
 done
 
+echo -e "${GREEN}[Setup]${NC} KDE scripts..."
+
+cp add_key.sh ~/.kde/Autostart/
+chmod +x ~/.kde/Autostart/add_key.sh
+
+cp keychain.sh ~/.kde/env/
+chmod +x ~/.kde/env/keychain.sh
+
+echo -e "${GREEN}[Setup]${NC} KDE scripts copied."
+
 source ~/.zshrc
 
-echo -e "${GREEN}[Done]${NC} Installation succeed."
+echo -e "${GREEN}[Done]${NC}"

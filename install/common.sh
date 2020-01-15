@@ -2,7 +2,7 @@
 
 user=$(whoami)
 
-sudo apt install git zsh terminator curl htop vim nodejs npm -y
+sudo apt install git zsh terminator curl htop vim nodejs npm keychain ksshaskpass kwalletcli -y
 sudo npm install npm n -g
 
 # Configure zsh 

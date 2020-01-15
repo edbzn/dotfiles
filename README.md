@@ -1,10 +1,10 @@
-# dotfiles
+# 🔵 dotfiles
 
-Setup all my dev environment in seconds.
+Setup all my KDE dev environment in seconds.
 
 ## Install
 
-1. Clone the repository in home directory.
+1. Clone this repository in home directory.
 
 ```sh
 git clone git@github.com:edbzn/dotfiles.git ~/dotfiles
