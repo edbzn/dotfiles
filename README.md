@@ -1,36 +1,17 @@
-# .dotfiles
+# dotfiles
 
-Setup my Linux dev environment in one single command.
+Setup all my dev environment in seconds.
 
 ## Install
 
-1. Clone the repository in your home directory.
+1. Clone the repository in home directory.
 
-```
-git clone git@github.com:Edouardbozon/.dotfiles.git ~/.dotfiles
+```sh
+git clone git@github.com:edbzn/dotfiles.git ~/dotfiles
 ```
 
 2. Run the script.
 
+```sh
+~/dotfiles/install.sh
 ```
-~/.dotfiles/install.sh
-```
-
-## Provide
-
-* git           
-* terminator    
-* zsh           
-* oh-my-zsh     
-* curl          
-* htop          
-* vim           
-* Chrome        
-* nodejs        
-* npm           
-* yarn          
-* n             
-* diff-so-fancy 
-* Docker CE     
-* Docker-Compose
-* Fira Code Font
