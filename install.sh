@@ -20,6 +20,9 @@ fi
 # Add work folder aliased in zsh
 mkdir ~/work
 
+# Yarn completion plugin
+git clone https://github.com/buonomo/yarn-completion ~/.oh-my-zsh/custom/plugins/yarn-completion
+
 echo -e "${GREEN}[Setup]${NC} dependencies..."
 
 chmod +x install/common.sh
