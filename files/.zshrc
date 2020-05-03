@@ -14,8 +14,8 @@ else
   export EDITOR='vim'
 fi
 
-alias zshconfig="mate ~/.zshrc"
-alias ohmyzsh="mate ~/.oh-my-zsh"
+alias zshrc="vim ~/.zshrc"
+alias ohmyzsh="vim ~/.oh-my-zsh"
 alias work="cd ~/work"
 
 source $ZSH/oh-my-zsh.sh
