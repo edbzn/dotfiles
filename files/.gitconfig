@@ -1,5 +1,5 @@
 [user]
-  name = Koala
+  name = Edouard Bozon
   email = bozonedouard@gmail.com
   # signingkey =
 
@@ -26,6 +26,8 @@
   cne = commit --no-edit
   amend = commit --amend
   amend-all = !git add --all && git commit --amend --reuse-message=HEAD
+  rec = "!git commit -m \"$(git log -1 --pretty=%B)\""
+  reca = "!git commit -a -m \"$(git log -1 --pretty=%B)\""
 
   # Clone
   cl = clone
