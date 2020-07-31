@@ -1,7 +1,7 @@
 export ZSH=/home/edouard/.oh-my-zsh
 
 ZSH_THEME="bureau"
-UPDATE_ZSH_DAYS=1
+UPDATE_ZSH_DAYS=7
 
 plugins=(
   git pyenv symfony2 composer docker docker-compose node yarn yarn-completion npm nvm systemd web-search gatsby golang vscode systemd sudo ssh-agent heroku ansible

@@ -18,7 +18,7 @@ sudo add-apt-repository \
 # Give rights to current user
 sudo usermod -aG docker $(whoami)
 
-sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+sudo apt install docker-ce docker-ce-cli containerd.io -y
 
 # Install Docker-Compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" \
