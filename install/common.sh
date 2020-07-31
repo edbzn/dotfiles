@@ -15,7 +15,7 @@ sudo chown -R $(user) /usr/local/n
 sudo chown -R $(user) /usr/local/bin /usr/local/lib /usr/local/include /usr/local/share
 
 # Switch to the last LTS Node.js version
-n lts
+sudo n lts
 
 # Diff tool for Git
 sudo npm install diff-so-fancy -g
