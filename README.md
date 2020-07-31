@@ -1,6 +1,6 @@
 # 🔵 dotfiles
 
-Setup all my KDE dev environment in seconds.
+Setup my Ubuntu dev environment in seconds.
 
 ## Install
 

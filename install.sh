@@ -8,7 +8,7 @@ NC='\033[0m' # No Color
 
 dir=~/dotfiles
 dotfiles=$dir/files
-files=".gitconfig .zshrc"
+files=".gitconfig .gitignore .zshrc"
 user=$(whoami)
 
 # Check if dotfiles where installed in the right place
@@ -18,12 +18,9 @@ if [ ! -d "$dir" ]; then
 fi
 
 # Add work folder aliased in zsh
-mkdir ~/work
+mkdir -p ~/work
 
-# Yarn completion plugin
-git clone https://github.com/buonomo/yarn-completion ~/.oh-my-zsh/custom/plugins/yarn-completion
-
-echo -e "${GREEN}[Setup]${NC} dependencies..."
+echo -e "${GREEN}[START]${NC} configuring"
 
 chmod +x install/common.sh
 sh install/common.sh
@@ -41,20 +38,10 @@ cd $dir
 
 # Make symlink for configuration files
 for file in $files; do
-  echo "Creating symlink to $file in home directory."
+  echo "${GREEN}[CREATED]${NC} symlink for $file"
   ln -sf $dotfiles/$file ~/$file
 done
 
-echo -e "${GREEN}[Setup]${NC} KDE scripts..."
-
-cp add_key.sh ~/.kde/Autostart/
-chmod +x ~/.kde/Autostart/add_key.sh
-
-cp keychain.sh ~/.kde/env/
-chmod +x ~/.kde/env/keychain.sh
-
-echo -e "${GREEN}[Setup]${NC} KDE scripts copied."
-
 source ~/.zshrc
 
-echo -e "${GREEN}[Done]${NC}"
+echo -e "${GREEN}[DONE]${NC}"
