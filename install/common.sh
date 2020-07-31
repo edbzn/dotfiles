@@ -15,13 +15,13 @@ sudo chown -R $(user) /usr/local/n
 sudo chown -R $(user) /usr/local/bin /usr/local/lib /usr/local/include /usr/local/share
 
 # Switch to the last LTS Node.js version
-sudo n lts
+n lts
 
 # Diff tool for Git
 sudo npm install diff-so-fancy -g
 
 # Install oh-my-zsh
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sed 's:env zsh -l::g' | sed 's:chsh -s .*$::g')"
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 # Install Fira Code Font
 sudo add-apt-repository universe
