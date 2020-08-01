@@ -32,7 +32,8 @@ chmod +x install/yarn.sh
 sh install/yarn.sh
 
 # Configure Terminator
-ln -sf $dotfiles/.terminator ~/.config/terminator/config
+mkdir -p ~/.config/terminator/
+mv $dotfiles/.terminator ~/.config/terminator/config
 
 cd $dir
 
