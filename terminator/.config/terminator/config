@@ -1,0 +1,23 @@
+[global_config]
+  title_transmit_bg_color = "#75507b"
+  inactive_color_offset = 0.801282051282
+[keybindings]
+[profiles]
+  [[default]]
+    background_color = "#002b36"
+    background_darkness = 0.86
+    background_type = transparent
+    cursor_color = "#aaaaaa"
+    font = Fira Code weight=450 10
+    foreground_color = "#eeeeec"
+    scrollback_infinite = True
+    use_system_font = False
+[layouts]
+  [[default]]
+    [[[child1]]]
+      parent = window0
+      type = Terminal
+    [[[window0]]]
+      parent = ""
+      type = Window
+[plugins]
