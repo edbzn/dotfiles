@@ -4,7 +4,21 @@ ZSH_THEME="bureau"
 UPDATE_ZSH_DAYS=7
 
 plugins=(
-  git pyenv symfony2 composer docker docker-compose node yarn yarn-completion npm nvm systemd web-search gatsby golang vscode systemd sudo ssh-agent heroku ansible
+  git 
+  pyenv 
+  docker-compose 
+  node 
+  yarn 
+  yarn-completion 
+  npm 
+  nvm 
+  systemd 
+  web-search 
+  gatsby 
+  vscode 
+  sudo 
+  ssh-agent 
+  heroku
 )
 
 # Preferred editor for local and remote sessions
