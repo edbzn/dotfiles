@@ -1,8 +1,8 @@
 # .dotfiles
 
-<img src="./dotfiles-logo.png" width="300">
+<img src="./assets/dotfiles-logo.png" width="300">
 
-This repository provides all my dev tools and configurations.
+This repository provides all my dev tools and configurations using [GNU Stow](https://www.gnu.org/software/stow/) and Zsh scripts.
 
 ## Setup
 
@@ -12,16 +12,10 @@ This repository provides all my dev tools and configurations.
 git clone git@github.com:edbzn/.dotfiles.git ~/.dotfiles
 ```
 
-2. Install the tools. 
+2. Install and configure the tools. 
 
 ```sh
-~/.dotfiles/scripts/install.sh
-```
-
-3. Configure using [GNU Stow](https://www.gnu.org/software/stow/).
-
-```sh
-stow git zsh terminator
+~/.dotfiles/install.sh
 ```
 
 ## My tools 
