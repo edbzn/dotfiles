@@ -25,4 +25,6 @@ git clone git@github.com:edbzn/.dotfiles.git ~/.dotfiles
 - **Runtime** : Node.js + Yarn + NPM + [n](https://github.com/tj/n)
 - **Containers** : Docker CE + Docker Compose
 - **Versioning** : Git + [diff-so-fancy](https://github.com/so-fancy/diff-so-fancy)
+- **Editor** : vscode
+- **Browser** : Google Chrome
 - **Various** : cURL + htop + Vim + Stow + [Fira Code fonts](https://github.com/tonsky/FiraCode)
