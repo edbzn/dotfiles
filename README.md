@@ -2,7 +2,7 @@
 
 <img src="./.assets/dotfiles-logo.png" width="300">
 
-This repository was a suggestion by L. Wiesel who left us in 2016, it provides all my dev tools and configurations using [GNU Stow](https://www.gnu.org/software/stow/) and Zsh scripts.
+This repository provides all my dev tools and configurations using [GNU Stow](https://www.gnu.org/software/stow/) and Zsh scripts.
 
 ## Setup
 
@@ -25,6 +25,8 @@ git clone git@github.com:edbzn/.dotfiles.git ~/.dotfiles
 - **Runtime** : Node.js + Yarn + NPM + [n](https://github.com/tj/n)
 - **Containers** : Docker CE + Docker Compose
 - **Versioning** : Git + [diff-so-fancy](https://github.com/so-fancy/diff-so-fancy)
-- **Editors** : vscode + vim
+- **Editors** : Visual Studio Code + Vim
 - **Browser** : Google Chrome
-- **Various** : cURL + htop + Stow + [Fira Code fonts](https://github.com/tonsky/FiraCode)
+- **Collaboration** : Slack
+- **Fonts** : [Fira Code fonts](https://github.com/tonsky/FiraCode)
+- **Various** : cURL + htop + GNU Stow
