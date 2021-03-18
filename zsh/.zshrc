@@ -11,7 +11,7 @@ plugins=(
   yarn 
   yarn-completion 
   npm 
-  nvm 
+  ng
   systemd 
   web-search 
   gatsby 

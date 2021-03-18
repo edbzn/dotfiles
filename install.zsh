@@ -3,7 +3,7 @@
 # Ensure dotfiles were installed in home directory.
 dir=~/.dotfiles
 if [ ! -d "$dir" ]; then
-  echo -e  "❌ Error: Directory $dir not found."
+  echo -e  "❌ Error: Directory $dir not found, .dotfiles should be cloned in ~/.dotfiles directory."
   exit 1
 fi
 
