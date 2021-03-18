@@ -22,7 +22,7 @@ git clone git@github.com:edbzn/.dotfiles.git ~/.dotfiles
 
 - **Shell** : Zsh + [Oh My Zsh](https://ohmyz.sh/)
 - **Terminal** : Terminator 
-- **Language** : Node.js + Yarn + NPM + [n](https://github.com/tj/n)
-- **Container** : Docker CE + Docker Compose
+- **Runtime** : Node.js + Yarn + NPM + [n](https://github.com/tj/n)
+- **Containers** : Docker CE + Docker Compose
 - **Versioning** : Git + [diff-so-fancy](https://github.com/so-fancy/diff-so-fancy)
-- **Various** : cURL + htop + Vim + Stow
+- **Various** : cURL + htop + Vim + Stow + [Fira Code fonts](https://github.com/tonsky/FiraCode)
