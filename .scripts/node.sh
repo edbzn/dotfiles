@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo apt install nodejs npm -y
-sudo npm install npm n -g
+sudo npm install npm n nx @angular/cli http-server -g
 
 # Take ownership to allow n without sudo
 sudo mkdir -p /usr/local/n
