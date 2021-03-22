@@ -10,3 +10,7 @@ sudo chown -R $(whoami) /usr/local/bin /usr/local/lib /usr/local/include /usr/lo
 
 # Switch to the last LTS Node.js version
 n lts
+
+# Install Nx completion
+sudo apt install jq
+git clone git@github.com:jscutlery/nx-completion.git ~/.oh-my-zsh/custom/plugins/nx-completion

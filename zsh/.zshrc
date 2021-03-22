@@ -4,20 +4,21 @@ ZSH_THEME="bureau"
 UPDATE_ZSH_DAYS=7
 
 plugins=(
-  git 
-  pyenv 
-  docker-compose 
-  node 
-  yarn 
-  yarn-completion 
-  npm 
+  git
+  pyenv
+  docker-compose
+  node
+  yarn
+  yarn-completion
+  npm
   ng
-  systemd 
-  web-search 
-  gatsby 
-  vscode 
-  sudo 
-  ssh-agent 
+  nx-completion
+  systemd
+  web-search
+  gatsby
+  vscode
+  sudo
+  ssh-agent
   heroku
 )
 
