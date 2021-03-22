@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Install Docker-Compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" \
