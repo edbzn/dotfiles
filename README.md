@@ -2,7 +2,7 @@
 
 <img src="./.assets/dotfiles-logo.png" width="300">
 
-This repository provides all my dev tools and configurations using [GNU Stow](https://www.gnu.org/software/stow/) and Zsh scripts.
+This repository provides all my dev tools and configurations using [GNU Stow](https://www.gnu.org/software/stow/) and Shell scripts.
 
 ## Setup
 
@@ -15,7 +15,7 @@ git clone git@github.com:edbzn/.dotfiles.git ~/.dotfiles
 2. Install and configure the tools. 
 
 ```sh
-~/.dotfiles/install.zsh
+~/.dotfiles/install.sh
 ```
 
 ## My tools 
