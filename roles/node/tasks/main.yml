@@ -1,0 +1,34 @@
+- name: Install Node.js
+  apt: 
+    name: nodejs
+
+- name: Install npm
+  apt:
+    name: npm
+
+- name: Ensure Node.js and npm are installed.
+  apt:
+    name: nodejs
+    state: present
+
+- name: Ensure npm global packages are installed.
+  become: true
+  npm:
+    name: "{{ item.name | default(item) }}"
+    version: "{{ item.version | default('latest') }}"
+    global: true
+    state: latest
+  with_items: "{{ npm_global_packages }}"
+
+- name: Switch to latest Node.js LTS version
+  become: true
+  command: n lts
+
+- name: Install jq
+  apt:
+    name: jq
+
+- name: Install Nx completion
+  ansible.builtin.git:
+    repo: "git@github.com:jscutlery/nx-completion.git"
+    dest: "~/.oh-my-zsh/custom/plugins/nx-completion"
