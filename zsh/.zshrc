@@ -11,7 +11,6 @@ plugins=(
   yarn
   yarn-completion
   npm
-  ng
   nx-completion
   systemd
   web-search
@@ -32,5 +31,6 @@ fi
 alias zshrc="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias work="cd ~/work"
+alias nx-check="nx affected --target=lint,test,build --parallel=8"
 
 source $ZSH/oh-my-zsh.sh
