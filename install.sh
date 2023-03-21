@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Ensure dotfiles were installed in home directory.
-dir=~/.dotfiles
+dir=~/dotfiles
 if [ ! -d "$dir" ]; then
   echo -e  "❌ Directory $dir not found, .dotfiles should be cloned in home directory."
   exit 1
