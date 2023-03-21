@@ -30,4 +30,4 @@ git clone git@github.com:edbzn/.dotfiles.git ~/.dotfiles
 - **Browser** : Google Chrome
 - **Collaboration** : Slack
 - **Fonts** : [Fira Code fonts](https://github.com/tonsky/FiraCode)
-- **Various** : cURL + htop + [GNU Stow](https://www.gnu.org/software/stow/)
+- **Various** : cURL + htop + [GNU Stow](https://www.gnu.org/software/stow/) + [Flameshot](https://flameshot.org/)
