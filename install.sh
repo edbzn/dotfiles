@@ -5,9 +5,8 @@ if ! [ -x "$(command -v ansible)" ]; then
   sudo apt install ansible
 fi
 
-ansible-playbook -i ./hosts ./dotfiles.yml --ask-become-pass
+ansible-playbook -i ./hosts ./bootstrap.yml --ask-become-pass
 
-# If terminal-notifier is installed, use it to display a notification.
-if command -v terminal-notifier 1>/dev/null 2>&1; then
-  terminal-notifier -title "dotfiles: install complete" -message "Successfully set up dev environment."
+if command -v notify-send 1>/dev/null 2>&1; then
+  notify-send "dotfiles: install complete" "Successfully set up dev environment."
 fi
