@@ -5,6 +5,11 @@
 
 [commit]
   gpgsign = true
+  
+[push]
+  # No more git push --set-upstream origin test && git push
+  autoSetupRemote = true
+  default = current
 
 [alias]
   # Staging
@@ -134,12 +139,6 @@
 [help]
   # Correct typos
   autocorrect = 1
-
-[push]
-  # Make `git push` automatically push relevant
-  # annotated tags when pushing branches out
-  followTags = true
-  default = current
 
 [filter "lfs"]
   clean = git lfs clean %f
