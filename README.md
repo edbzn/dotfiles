@@ -1,4 +1,4 @@
-# .dotfiles
+# dotfiles
 
 <img src="./.assets/dotfiles-logo.png" width="300">
 
@@ -9,16 +9,16 @@ This repository provides all my dev tools and configurations using [GNU Stow](ht
 1. Clone this repository in home directory.
 
 ```sh
-git clone git@github.com:edbzn/.dotfiles.git ~/.dotfiles
+git clone git@github.com:edbzn/dotfiles.git ~/dotfiles
 ```
 
 2. Install and configure the tools. 
 
 ```sh
-~/.dotfiles/install.sh
+~/dotfiles/install.sh
 ```
 
-## My tools 
+## Tools 
 
 - **Shell** : Zsh + [Oh My Zsh](https://ohmyz.sh/)
 - **Terminal** : Terminator 
@@ -30,4 +30,4 @@ git clone git@github.com:edbzn/.dotfiles.git ~/.dotfiles
 - **Browser** : Google Chrome
 - **Collaboration** : Slack
 - **Fonts** : [Fira Code fonts](https://github.com/tonsky/FiraCode)
-- **Various** : cURL + htop + [GNU Stow](https://www.gnu.org/software/stow/)
+- **Various** : cURL + htop + [GNU Stow](https://www.gnu.org/software/stow/) + [Flameshot](https://flameshot.org/)
