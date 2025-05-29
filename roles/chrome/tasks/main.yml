@@ -1,4 +1,14 @@
----
+- name: Check if Google Chrome is installed
+  shell: command -v google-chrome
+  register: chrome_exists
+  failed_when: false
+  changed_when: false
+
+- name: Check if Chrome GPG key exists
+  stat:
+    path: /etc/apt/trusted.gpg.d/chrome.asc
+  register: chrome_key_exists
+
 - name: Add repository key
   get_url:
     url: https://dl-ssl.google.com/linux/linux_signing_key.pub
@@ -6,12 +16,20 @@
     mode: '0644'
     force: true
   become: yes
-  
+  when: not chrome_key_exists.stat.exists
+
+- name: Check if Chrome repository exists
+  shell: grep -q "dl.google.com/linux/chrome/deb" /etc/apt/sources.list.d/*.list || true
+  register: chrome_repo_exists
+  failed_when: false
+  changed_when: false
+
 - name: Add repository Google Chrome repository
   apt_repository:
     repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
     state: present
   become: yes
+  when: chrome_repo_exists.rc != 0
 
 - name: Install Google Chrome
   apt:
@@ -19,3 +37,4 @@
     update_cache: yes
     state: latest
   become: yes
+  when: chrome_exists.rc != 0
