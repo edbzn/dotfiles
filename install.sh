@@ -3,7 +3,7 @@
 # Regular install script (with idempotency - only installs what's missing)
 # Usage: ./install.sh [role_tags]
 # Example: ./install.sh --tags zsh,docker
-# For force reinstall: use ./force-install.sh
+# For complete reinstall: use ./update.sh
 
 set -e
 
@@ -38,4 +38,4 @@ fi
 echo ""
 echo -e "${GREEN}✅ Installation completed successfully!${NC}"
 echo -e "${BLUE}💡 Tip: You may need to restart your shell or run 'source ~/.bashrc' to use new tools${NC}"
-echo -e "${YELLOW}🔄 To force reinstall everything, use: ./force-install.sh${NC}"
+echo -e "${YELLOW}🔄 To completely reinstall everything, use: ./update.sh${NC}"
