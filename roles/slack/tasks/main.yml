@@ -1,10 +1,51 @@
-- name: Check if Slack is already installed
+- name: Check if Slack is already installed (snap)
   shell: snap list {{ slack.package_name }}
-  register: slack_installed
+  register: slack_snap_installed
   failed_when: false
   changed_when: false
 
-- name: Install Slack via snap
-  shell: snap install {{ slack.package_name }} --classic
+- name: Check if Slack is already installed (deb)
+  shell: dpkg -l | grep -q slack-desktop
+  register: slack_deb_installed
+  failed_when: false
+  changed_when: false
+
+- name: Install Slack via snap with timeout
+  shell: timeout {{ slack.timeout }} snap install {{ slack.package_name }} --classic
   become: yes
-  when: slack_installed.rc != 0
+  register: snap_install_result
+  failed_when: false
+  when: slack_snap_installed.rc != 0 and slack_deb_installed.rc != 0
+
+- name: Check snap installation success
+  debug:
+    msg: "Snap installation {{ 'succeeded' if snap_install_result.rc == 0 else 'failed or timed out' }}"
+  when: slack_snap_installed.rc != 0 and slack_deb_installed.rc != 0
+
+- name: Download Slack .deb package (fallback)
+  get_url:
+    url: "{{ slack_deb.url }}"
+    dest: "{{ slack_deb.dest }}"
+    mode: '0644'
+  when:
+    - slack_snap_installed.rc != 0
+    - slack_deb_installed.rc != 0
+    - snap_install_result.rc != 0
+
+- name: Install Slack via .deb package (fallback)
+  apt:
+    deb: "{{ slack_deb.dest }}"
+  become: yes
+  when:
+    - slack_snap_installed.rc != 0
+    - slack_deb_installed.rc != 0
+    - snap_install_result.rc != 0
+
+- name: Clean up downloaded .deb file
+  file:
+    path: "{{ slack_deb.dest }}"
+    state: absent
+  when:
+    - slack_snap_installed.rc != 0
+    - slack_deb_installed.rc != 0
+    - snap_install_result.rc != 0

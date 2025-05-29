@@ -6,3 +6,9 @@ slack:
   package_name: "slack"
   state: "present"
   classic: true
+  timeout: 300  # 5 minutes timeout
+
+# Alternative installation method (if snap fails)
+slack_deb:
+  url: "https://downloads.slack-edge.com/releases/linux/4.39.95/prod/x64/slack-desktop-4.39.95-amd64.deb"
+  dest: "/tmp/slack-desktop.deb"
