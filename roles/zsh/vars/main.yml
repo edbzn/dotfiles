@@ -11,8 +11,11 @@ oh_my_zsh_directory: "~/.oh-my-zsh"
 
 # Oh My Zsh configuration
 oh_my_zsh:
-  install_url: "https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
+  install_url: "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
   custom_dir: "~/.oh-my-zsh/custom"
+  install_options:
+    RUNZSH: "no"
+    CHSH: "no"
 
 # Themes configuration
 themes:
