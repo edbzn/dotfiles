@@ -15,7 +15,7 @@
     dest: "{{ chrome.gpg_dest }}"
     mode: "{{ chrome.gpg_mode }}"
     force: true
-  become: yes
+  become: true
   when: not chrome_key_exists.stat.exists
 
 - name: Check if Chrome repository exists
@@ -28,7 +28,7 @@
   apt_repository:
     repo: "{{ chrome.repo_url }}"
     state: present
-  become: yes
+  become: true
   when: chrome_repo_exists.rc != 0
 
 - name: Install Google Chrome
@@ -36,5 +36,5 @@
     name: "{{ chrome.package_name }}"
     update_cache: "{{ update_cache }}"
     state: "{{ package_state }}"
-  become: yes
+  become: true
   when: chrome_exists.rc != 0

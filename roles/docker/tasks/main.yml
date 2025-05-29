@@ -9,7 +9,7 @@
     pkg: "{{ docker_required_packages }}"
     state: "{{ package_state }}"
     update_cache: "{{ update_cache }}"
-  become: yes
+  become: true
   when: docker_exists.rc != 0
 
 - name: Check if Docker GPG key exists
@@ -23,7 +23,7 @@
     dest: "{{ docker_repository.gpg_dest }}"
     mode: "{{ docker_repository.gpg_mode }}"
     force: true
-  become: yes
+  become: true
   when: not docker_key_exists.stat.exists
 
 - name: Check if Docker repository exists
@@ -36,7 +36,7 @@
   apt_repository:
     repo: "{{ docker_repository.repo_url }}"
     state: present
-  become: yes
+  become: true
   when: docker_repo_exists.rc != 0
 
 - name: Install docker-ce and docker-compose-plugin
@@ -44,7 +44,7 @@
     name: "{{ docker_packages }}"
     state: "{{ package_state }}"
     update_cache: "{{ update_cache }}"
-  become: yes
+  become: true
   when: docker_exists.rc != 0
 
 - name: Check if user is in docker group
@@ -58,5 +58,5 @@
     name: "{{ ansible_user_id }}"
     groups: "{{ docker_group }}"
     append: true
-  become: yes
+  become: true
   when: user_in_docker_group.rc != 0

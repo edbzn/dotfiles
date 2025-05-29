@@ -3,7 +3,7 @@
     name: "{{ bootstrap_packages }}"
     update_cache: "{{ update_cache }}"
     state: "{{ package_state }}"
-  become: yes
+  become: true
 
 - name: Create work directory
   file:
