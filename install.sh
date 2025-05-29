@@ -29,7 +29,12 @@ echo -e "${BLUE}📋 Installing Ansible Galaxy requirements...${NC}"
 ansible-galaxy install -r ./meta/requirements.yml
 
 echo -e "${BLUE}🎭 Running Ansible playbook...${NC}"
-ansible-playbook -i ./hosts ./playbook.yml --ask-become-pass "$@"
+# If tags are provided, run with tags, otherwise run the full playbook
+if [[ "$*" == *"--tags"* ]]; then
+  ansible-playbook -i ./hosts ./playbook.yml --ask-become-pass "$@"
+else
+  ansible-playbook -i ./hosts ./playbook.yml --ask-become-pass
+fi
 
 if command -v notify-send 1>/dev/null 2>&1; then
   notify-send -i face-smile "Dotfiles install complete" "Successfully set up dev environment."

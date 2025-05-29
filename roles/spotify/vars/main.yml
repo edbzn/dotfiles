@@ -1,17 +1,8 @@
 ---
 # Spotify configuration variables
 
-# Spotify snap configuration
+# Direct download URLs
 spotify:
-  package_name: "spotify"
-  state: "present"
-  classic: false
-  timeout: 300  # 5 minutes timeout
-
-# Alternative installation method (if snap fails)
-spotify_deb:
-  key_url: "https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg"
-  key_dest: "/etc/apt/trusted.gpg.d/spotify.gpg"
-  key_mode: "0644"
-  repo_url: "deb http://repository.spotify.com stable non-free"
+  deb_url: "https://repository-origin.spotify.com/pool/non-free/s/spotify-client/spotify-client_1.2.31.1205.g878c7b33_amd64.deb"
   package_name: "spotify-client"
+  timeout: 300  # 5 minutes timeout for any operations
