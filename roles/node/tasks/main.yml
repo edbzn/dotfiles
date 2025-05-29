@@ -1,3 +1,15 @@
+- name: Check if Node.js is installed
+  shell: command -v node
+  register: node_exists
+  failed_when: false
+  changed_when: false
+
+- name: Check if npm is installed
+  shell: command -v npm
+  register: npm_exists
+  failed_when: false
+  changed_when: false
+
 - name: Install Node.js
   apt:
     name:
@@ -5,14 +17,15 @@
       - npm
     state: present
   become: yes
+  when: node_exists.rc != 0 or npm_exists.rc != 0
 
 - name: Install npm global packages
-  become: true
   npm:
     name: "{{ item.name | default(item) }}"
     version: "{{ item.version | default('latest') }}"
     global: true
     state: latest
+  become: true
   with_items:
     - nx
     - '@angular/cli'
@@ -22,13 +35,13 @@
   tags: [npm-global]
 
 - name: Switch to latest Node.js LTS version
-  become: true
   command: n lts
+  become: true
   tags: [switch-to-node-lts]
 
 - name: Enable Corepack
-  become: true
   command: corepack enable
+  become: true
 
 - name: Check Bun installed
   shell: command -v bun
@@ -37,15 +50,15 @@
   tags: [bun]
 
 - name: Install Bun
-  when: bun_exists is failed
   get_url:
     url: https://bun.sh/install
     dest: /tmp/bun-install.sh
     mode: '0755'
     force: 'yes'
+  when: bun_exists.rc != 0
   tags: [bun]
 
 - name: Install Bun
-  when: bun_exists is failed
   shell: /tmp/bun-install.sh
+  when: bun_exists.rc != 0
   tags: [bun]
