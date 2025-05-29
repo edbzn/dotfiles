@@ -1,19 +1,10 @@
 ---
 # OBS Studio configuration variables
 
-# OBS packages configuration
+# OBS Studio configuration
 obs:
-  required_packages:
+  package_name: "obs-studio"
+  snap_package: "obs-studio"
+  dependencies:
     - ffmpeg
     - v4l2loopback-dkms
-  package_name: "obs-studio"
-  state: "present"
-
-# OBS PPA configuration (for latest version)
-obs_ppa:
-  repo: "ppa:obsproject/obs-studio"
-  state: "present"
-
-# Package configuration
-package_state: "latest"
-update_cache: true

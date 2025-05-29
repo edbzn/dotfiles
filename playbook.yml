@@ -37,7 +37,7 @@
       tags: [spotify, media]
 
     - role: obs
-      tags: [obs, media, streaming]
+      tags: [obs, media, streaming, standalone]
 
     - role: steam
       tags: [steam, gaming]
