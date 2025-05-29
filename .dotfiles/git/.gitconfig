@@ -4,7 +4,7 @@
   #signingkey =
 
 [commit]
-  gpgsign = true
+  # gpgsign = true
 
 [push]
   # No more git push --set-upstream origin test && git push
