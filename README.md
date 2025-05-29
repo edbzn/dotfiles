@@ -84,7 +84,7 @@ The following tools are automatically installed and configured:
 | **Network** | [cURL](https://curl.se/) | <img src="https://curl.se/logo/curl-logo.svg" width="24" alt="cURL"> | Command line tool for transferring data | [curl.se](https://curl.se/) |
 | **System** | [htop](https://htop.dev/) | 📊 | Interactive process viewer | [htop.dev](https://htop.dev/) |
 | **Files** | [GNU Stow](https://www.gnu.org/software/stow/) | 📁 | Symlink farm manager for dotfiles | [gnu.org](https://www.gnu.org/software/stow/) |
-| **Screenshots** | [Flameshot](https://flameshot.org/) | <img src="https://flameshot.org/img/flameshot-icon.png" width="24" alt="Flameshot"> | Powerful screenshot tool | [flameshot.org](https://flameshot.org/) |
+| **Screenshots** | [Flameshot](https://flameshot.org/) | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Flameshot_logo.svg/96px-Flameshot_logo.svg.png?20210313192516" width="24" alt="Flameshot"> | Powerful screenshot tool | [flameshot.org](https://flameshot.org/) |
 | **JSON** | [jq](https://stedolan.github.io/jq/) | 🔧 | Lightweight command-line JSON processor | [stedolan.github.io](https://stedolan.github.io/jq/) |
 | **System** | [gnome-tweaks](https://wiki.gnome.org/Apps/Tweaks) | ⚙️ | Advanced GNOME configuration tool | [GNOME Wiki](https://wiki.gnome.org/Apps/Tweaks) |
 | **Files** | [lsd](https://github.com/Peltoche/lsd) | 📂 | Modern `ls` command with colors and icons | [GitHub](https://github.com/Peltoche/lsd) |
@@ -93,11 +93,11 @@ The following tools are automatically installed and configured:
 
 ## Key Features
 
-🔧 **Idempotent Setup** - Safe to run multiple times without side effects
-🚀 **Zero-Config** - Everything works out of the box with sensible defaults
-🎨 **Beautiful UI** - Modern themes and fonts for enhanced productivity
-🔄 **Smart Updates** - Intelligent updates with dry-run and selective installation
-🐳 **Container Ready** - Full Docker environment for modern development
-⚡ **Performance Optimized** - Fast shell, modern tools, and optimized configurations
-🛠️ **Developer Focused** - Curated selection of essential development tools
-📦 **Modular Design** - Install only what you need with tag-based selection
+- 🔧 **Idempotent Setup** - Safe to run multiple times without side effects
+- 🚀 **Zero-Config** - Everything works out of the box with sensible defaults
+- 🎨 **Beautiful UI** - Modern themes and fonts for enhanced productivity
+- 🔄 **Smart Updates** - Intelligent updates with dry-run and selective installation
+- 🐳 **Container Ready** - Full Docker environment for modern development
+- ⚡ **Performance Optimized** - Fast shell, modern tools, and optimized configurations
+- 🛠️ **Developer Focused** - Curated selection of essential development tools
+- 📦 **Modular Design** - Install only what you need with tag-based selection
