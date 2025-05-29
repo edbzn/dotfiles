@@ -1,3 +1,9 @@
+- name: Check if Docker is installed
+  shell: command -v docker
+  register: docker_exists
+  failed_when: false
+  changed_when: false
+
 - name: Install Docker required packages
   apt:
     pkg:
@@ -11,6 +17,12 @@
     state: latest
     update_cache: true
   become: yes
+  when: docker_exists.rc != 0
+
+- name: Check if Docker GPG key exists
+  stat:
+    path: /etc/apt/trusted.gpg.d/docker.asc
+  register: docker_key_exists
 
 - name: Add Docker GPG apt Key
   get_url:
@@ -19,12 +31,20 @@
     mode: '0644'
     force: true
   become: yes
+  when: not docker_key_exists.stat.exists
+
+- name: Check if Docker repository exists
+  shell: grep -q "download.docker.com/linux/ubuntu" /etc/apt/sources.list.d/*.list || true
+  register: docker_repo_exists
+  failed_when: false
+  changed_when: false
 
 - name: Add Docker Repository
   apt_repository:
     repo: deb https://download.docker.com/linux/ubuntu focal stable
     state: present
   become: yes
+  when: docker_repo_exists.rc != 0
 
 - name: Install docker-ce and docker-compose-plugin
   apt:
@@ -34,10 +54,18 @@
     state: latest
     update_cache: true
   become: yes
+  when: docker_exists.rc != 0
+
+- name: Check if user is in docker group
+  shell: groups {{ ansible_user_id }} | grep -q docker
+  register: user_in_docker_group
+  failed_when: false
+  changed_when: false
 
 - name: Add user to docker group
   ansible.builtin.user:
-    name: USERNAME
+    name: "{{ ansible_user_id }}"
     groups: docker
     append: true
   become: yes
+  when: user_in_docker_group.rc != 0
