@@ -1,15 +1,15 @@
 - name: Install GNU Stow
   apt:
     name:
-      - stow
-    state: present
+      - "{{ stow.package_name }}"
+    state: "{{ stow.package_state }}"
   become: yes
 
 - name: Build .dotfiles list
   vars:
     user_home: "{{ lookup('env', 'HOME') }}"
   ansible.builtin.find:
-    paths: ["{{ user_home }}/dotfiles/.dotfiles"]
+    paths: ["{{ user_home }}/{{ dotfiles.base_path }}/{{ dotfiles.source_dir }}"]
     recurse: no
     file_type: directory
   register: files
@@ -20,8 +20,8 @@
   vars:
     user_home: "{{ lookup('env', 'HOME') }}"
   environment:
-    STOW_DIR: "{{ user_home }}/dotfiles/.dotfiles"
+    STOW_DIR: "{{ user_home }}/{{ dotfiles.base_path }}/{{ dotfiles.source_dir }}"
   shell: |
-    stow --target {{ user_home }} --stow {{ item.path | basename }}
+    stow {{ stow_command.target_option }} {{ user_home }} {{ stow_command.stow_option }} {{ item.path | basename }}
   changed_when: false
   become: false

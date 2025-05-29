@@ -6,14 +6,14 @@
 
 - name: Check if Chrome GPG key exists
   stat:
-    path: /etc/apt/trusted.gpg.d/chrome.asc
+    path: "{{ chrome.gpg_dest }}"
   register: chrome_key_exists
 
 - name: Add repository key
   get_url:
-    url: https://dl-ssl.google.com/linux/linux_signing_key.pub
-    dest: /etc/apt/trusted.gpg.d/chrome.asc
-    mode: '0644'
+    url: "{{ chrome.gpg_url }}"
+    dest: "{{ chrome.gpg_dest }}"
+    mode: "{{ chrome.gpg_mode }}"
     force: true
   become: yes
   when: not chrome_key_exists.stat.exists
@@ -26,15 +26,15 @@
 
 - name: Add repository Google Chrome repository
   apt_repository:
-    repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+    repo: "{{ chrome.repo_url }}"
     state: present
   become: yes
   when: chrome_repo_exists.rc != 0
 
 - name: Install Google Chrome
   apt:
-    name: google-chrome-stable
-    update_cache: yes
-    state: latest
+    name: "{{ chrome.package_name }}"
+    update_cache: "{{ update_cache }}"
+    state: "{{ package_state }}"
   become: yes
   when: chrome_exists.rc != 0

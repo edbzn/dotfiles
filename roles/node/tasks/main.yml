@@ -12,35 +12,28 @@
 
 - name: Install Node.js
   apt:
-    name:
-      - nodejs
-      - npm
-    state: present
+    name: "{{ nodejs_packages }}"
+    state: "{{ package_state }}"
   become: yes
   when: node_exists.rc != 0 or npm_exists.rc != 0
 
 - name: Install npm global packages
   npm:
     name: "{{ item.name | default(item) }}"
-    version: "{{ item.version | default('latest') }}"
+    version: "{{ item.version | default(npm_package_version) }}"
     global: true
     state: latest
   become: true
-  with_items:
-    - nx
-    - '@angular/cli'
-    - http-server
-    - n
-    - diff-so-fancy
+  with_items: "{{ npm_global_packages }}"
   tags: [npm-global]
 
 - name: Switch to latest Node.js LTS version
-  command: n lts
+  command: "{{ node_lts_command }}"
   become: true
   tags: [switch-to-node-lts]
 
 - name: Enable Corepack
-  command: corepack enable
+  command: "{{ corepack_command }}"
   become: true
 
 - name: Check Bun installed
@@ -51,14 +44,14 @@
 
 - name: Install Bun
   get_url:
-    url: https://bun.sh/install
-    dest: /tmp/bun-install.sh
-    mode: '0755'
+    url: "{{ bun.install_url }}"
+    dest: "{{ bun.install_script }}"
+    mode: "{{ bun.script_mode }}"
     force: 'yes'
   when: bun_exists.rc != 0
   tags: [bun]
 
 - name: Install Bun
-  shell: /tmp/bun-install.sh
+  shell: "{{ bun.install_script }}"
   when: bun_exists.rc != 0
   tags: [bun]

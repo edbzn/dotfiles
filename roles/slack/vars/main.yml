@@ -1,0 +1,8 @@
+---
+# Slack configuration variables
+
+# Slack snap configuration
+slack:
+  package_name: "slack"
+  state: "present"
+  classic: true

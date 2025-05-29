@@ -1,0 +1,29 @@
+---
+# Node.js configuration variables
+
+# Node.js packages
+nodejs_packages:
+  - nodejs
+  - npm
+
+# NPM global packages to install
+npm_global_packages:
+  - nx
+  - '@angular/cli'
+  - http-server
+  - n
+  - diff-so-fancy
+
+# Package version configuration
+npm_package_version: "latest"
+package_state: "present"
+
+# Bun configuration
+bun:
+  install_url: "https://bun.sh/install"
+  install_script: "/tmp/bun-install.sh"
+  script_mode: "0755"
+
+# Node.js version management
+node_lts_command: "n lts"
+corepack_command: "corepack enable"

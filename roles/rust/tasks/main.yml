@@ -6,11 +6,11 @@
 - name: Download Rustup Installer
   when: cargo_exists is failed
   get_url:
-    url: https://sh.rustup.rs
-    dest: /tmp/sh.rustup.rs
-    mode: '0755'
-    force: 'yes'
+    url: "{{ rust.installer_url }}"
+    dest: "{{ rust.installer_dest }}"
+    mode: "{{ rust.installer_mode }}"
+    force: "{{ force_download }}"
 
 - name: Install Rust & Cargo
   when: cargo_exists is failed
-  shell: /tmp/sh.rustup.rs -y
+  shell: "{{ rust.installer_dest }} {{ rust.installer_args }}"

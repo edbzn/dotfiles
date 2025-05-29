@@ -1,0 +1,25 @@
+---
+# Bootstrap packages configuration
+
+# System packages to install
+bootstrap_packages:
+  - git
+  - terminator
+  - curl
+  - htop
+  - btop
+  - vim
+  - flameshot
+  - jq
+  - gnome-tweaks
+  - gh
+  - lsd
+
+# Package configuration
+package_state: "present"
+update_cache: yes
+
+# Directory configuration
+work_directory:
+  path: "~/work"
+  mode: "0755"

@@ -1,0 +1,52 @@
+---
+# ZSH configuration variables
+
+# Package configuration
+zsh_packages:
+  - zsh
+
+# Directory configuration
+zsh_directory: "~/.zsh"
+oh_my_zsh_directory: "~/.oh-my-zsh"
+
+# Oh My Zsh configuration
+oh_my_zsh:
+  install_url: "https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
+  custom_dir: "~/.oh-my-zsh/custom"
+
+# Themes configuration
+themes:
+  powerlevel10k:
+    repo: "https://github.com/romkatv/powerlevel10k.git"
+    dest: "~/.oh-my-zsh/custom/themes/powerlevel10k"
+    version: "master"
+
+# Plugins configuration
+plugins:
+  zsh_syntax_highlighting:
+    repo: "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+    dest: "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+    version: "master"
+
+  zsh_autosuggestions:
+    repo: "https://github.com/zsh-users/zsh-autosuggestions.git"
+    dest: "~/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+    version: "master"
+
+  nx_completion:
+    repo: "https://github.com/jscutlery/nx-completion.git"
+    dest: "~/.oh-my-zsh/custom/plugins/nx-completion"
+    version: "main"
+
+  you_should_use:
+    repo: "https://github.com/MichaelAquilina/zsh-you-should-use.git"
+    dest: "~/.oh-my-zsh/custom/plugins/you-should-use"
+    version: "master"
+
+  zsh_completions:
+    repo: "https://github.com/zsh-users/zsh-completions"
+    dest: "~/.oh-my-zsh/custom/plugins/zsh-completions"
+    version: "master"
+
+# Git configuration
+git_force: yes

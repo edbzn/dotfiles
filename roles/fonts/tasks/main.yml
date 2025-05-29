@@ -1,21 +1,21 @@
 - name: Create fonts directory
   become: no
   file:
-    path: "~/.local/share/fonts"
+    path: "{{ fonts.local_dir }}"
     state: directory
-    mode: 0755
+    mode: "{{ fonts.dir_mode }}"
 
 - name: Check existing fonts
   become: no
   find:
-    paths: "~/.local/share/fonts"
+    paths: "{{ fonts.local_dir }}"
     patterns: "*"
   register: existing_fonts
 
 - name: Get source fonts
   become: no
   find:
-    paths: "~/dotfiles/.assets/fonts"
+    paths: "{{ fonts.source_dir }}"
     patterns: "*"
   register: source_fonts
 
@@ -24,7 +24,7 @@
   copy:
     remote_src: yes
     src: "{{ item.path }}"
-    dest: "~/.local/share/fonts/{{ item.path | basename }}"
+    dest: "{{ fonts.local_dir }}/{{ item.path | basename }}"
   with_items: "{{ source_fonts.files }}"
   when:
     - source_fonts.files | length > 0
@@ -34,6 +34,6 @@
 - name: Clear fonts cache
   become: no
   shell: |
-    fc-cache -f -v
+    {{ font_cache.command }}
   when: fonts_installed is changed
 
