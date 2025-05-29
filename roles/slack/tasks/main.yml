@@ -1,4 +1,10 @@
+- name: Check if Slack is already installed
+  shell: snap list slack
+  register: slack_installed
+  failed_when: false
+  changed_when: false
+
 - name: Install Slack via snap
-  snap:
-    name: slack
-    state: present
+  shell: snap install slack --classic
+  become: yes
+  when: slack_installed.rc != 0
