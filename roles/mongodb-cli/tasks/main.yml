@@ -1,0 +1,106 @@
+---
+# MongoDB CLI Installation Tasks
+
+- name: Check if MongoDB CLI (mongosh) is installed
+  shell: which mongosh
+  register: mongodb_cli_installed
+  failed_when: false
+  changed_when: false
+
+- name: Check if MongoDB CLI package is installed
+  shell: dpkg -l | grep -q mongodb-mongosh
+  register: mongodb_cli_package_installed
+  failed_when: false
+  changed_when: false
+
+- name: Remove existing MongoDB CLI installation for force install
+  apt:
+    name: "{{ mongodb_cli.package_name }}"
+    state: absent
+  become: true
+  when: force_install | default(false) and mongodb_cli_package_installed.rc == 0
+  ignore_errors: true
+
+- name: Install MongoDB CLI required packages
+  apt:
+    name: "{{ mongodb_cli.required_packages }}"
+    state: present
+    update_cache: true
+  become: true
+  when: force_install | default(false) or mongodb_cli_installed.rc != 0
+
+- name: Check if MongoDB GPG key exists
+  stat:
+    path: /usr/share/keyrings/mongodb-server-7.0.gpg
+  register: mongodb_gpg_key_exists
+
+- name: Add MongoDB GPG key
+  shell: |
+    wget -qO - https://www.mongodb.org/static/pgp/server-7.0.asc | gpg --dearmor | sudo tee /usr/share/keyrings/mongodb-server-7.0.gpg > /dev/null
+  become: true
+  when: (force_install | default(false) or mongodb_cli_installed.rc != 0) and not mongodb_gpg_key_exists.stat.exists
+
+- name: Check if MongoDB repository exists
+  shell: grep -q "repo.mongodb.org" /etc/apt/sources.list.d/mongodb-org-7.0.list
+  register: mongodb_repo_exists
+  failed_when: false
+  changed_when: false
+
+- name: Add MongoDB repository
+  shell: |
+    echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+  become: true
+  when: (force_install | default(false) or mongodb_cli_installed.rc != 0) and mongodb_repo_exists.rc != 0
+
+- name: Update apt cache after adding MongoDB repository
+  apt:
+    update_cache: true
+  become: true
+  when: (force_install | default(false) or mongodb_cli_installed.rc != 0) and mongodb_repo_exists.rc != 0
+
+- name: Install MongoDB CLI from repository
+  apt:
+    name: "{{ mongodb_cli.package_name }}"
+    state: present
+  become: true
+  register: mongodb_cli_repo_install
+  failed_when: false
+  when: force_install | default(false) or mongodb_cli_installed.rc != 0
+
+- name: Download MongoDB CLI .deb package (fallback)
+  get_url:
+    url: "{{ mongodb_deb.url }}"
+    dest: "{{ mongodb_deb.dest }}"
+    mode: '0644'
+  when:
+    - (force_install | default(false)) or mongodb_cli_installed.rc != 0
+    - mongodb_cli_repo_install.failed | default(false)
+  register: mongodb_cli_download_result
+
+- name: Install MongoDB CLI via .deb package (fallback)
+  apt:
+    deb: "{{ mongodb_deb.dest }}"
+  become: true
+  when:
+    - (force_install | default(false)) or mongodb_cli_installed.rc != 0
+    - mongodb_cli_repo_install.failed | default(false)
+    - mongodb_cli_download_result is succeeded
+
+- name: Clean up downloaded .deb file
+  file:
+    path: "{{ mongodb_deb.dest }}"
+    state: absent
+  when:
+    - (force_install | default(false)) or mongodb_cli_installed.rc != 0
+    - mongodb_cli_repo_install.failed | default(false)
+    - mongodb_cli_download_result is succeeded
+
+- name: Verify MongoDB CLI installation
+  shell: mongosh --version
+  register: mongodb_cli_version
+  failed_when: false
+  changed_when: false
+
+- name: Display MongoDB CLI installation status
+  debug:
+    msg: "MongoDB CLI installation {{ 'successful' if mongodb_cli_version.rc == 0 else 'failed' }}{{ ': ' + mongodb_cli_version.stdout if mongodb_cli_version.rc == 0 else '' }}"

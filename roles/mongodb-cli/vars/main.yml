@@ -1,0 +1,14 @@
+---
+# MongoDB CLI Variables
+
+mongodb_cli:
+  package_name: "mongodb-mongosh"
+  timeout: 300
+  required_packages:
+    - "wget"
+    - "gnupg"
+    - "software-properties-common"
+
+mongodb_deb:
+  url: "https://downloads.mongodb.com/compass/mongodb-mongosh_2.3.1_amd64.deb"
+  dest: "/tmp/mongodb-mongosh.deb"

@@ -1,0 +1,22 @@
+---
+# Steam configuration variables
+
+# Steam packages configuration
+steam:
+  package_name: "steam-installer"
+  state: "present"
+  required_packages:
+    - wget
+    - gdebi-core
+  multiverse_repos:
+    - "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) multiverse"
+    - "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc)-updates multiverse"
+
+# Steam .deb package (fallback)
+steam_deb:
+  url: "https://steamcdn-a.akamaihd.net/client/installer/steam.deb"
+  dest: "/tmp/steam.deb"
+
+# Package configuration
+package_state: "present"
+update_cache: true

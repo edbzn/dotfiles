@@ -1,0 +1,10 @@
+---
+# UV (Python Version Management) Variables
+
+uv:
+  install_script_url: "https://astral.sh/uv/install.sh"
+  install_dir: "{{ ansible_env.HOME }}/.cargo/bin"
+  timeout: 300
+  required_packages:
+    - "curl"
+    - "build-essential"

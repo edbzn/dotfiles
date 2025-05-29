@@ -1,0 +1,47 @@
+---
+# OBS Studio Installation Tasks
+
+- name: Check if OBS Studio is installed
+  shell: command -v obs
+  register: obs_exists
+  failed_when: false
+  changed_when: false
+
+- name: Remove existing OBS installation for force install
+  apt:
+    name: "{{ obs.package_name }}"
+    state: absent
+  become: true
+  when: (force_install | default(false)) and obs_exists.rc == 0
+  ignore_errors: true
+
+- name: Remove OBS PPA for force install
+  apt_repository:
+    repo: "{{ obs_ppa.repo }}"
+    state: absent
+  become: true
+  when: (force_install | default(false))
+  ignore_errors: true
+
+- name: Add OBS Studio PPA
+  apt_repository:
+    repo: "{{ obs_ppa.repo }}"
+    state: "{{ obs_ppa.state }}"
+  become: true
+  when: (force_install | default(false)) or obs_exists.rc != 0
+
+- name: Install OBS Studio required packages
+  apt:
+    name: "{{ obs.required_packages }}"
+    state: "{{ package_state }}"
+    update_cache: "{{ update_cache }}"
+  become: true
+  when: (force_install | default(false)) or obs_exists.rc != 0
+
+- name: Install OBS Studio
+  apt:
+    name: "{{ obs.package_name }}"
+    state: "{{ package_state }}"
+    update_cache: "{{ update_cache }}"
+  become: true
+  when: (force_install | default(false)) or obs_exists.rc != 0

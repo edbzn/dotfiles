@@ -1,0 +1,18 @@
+---
+# Discord configuration variables
+
+# Discord snap configuration
+discord:
+  package_name: "discord"
+  state: "present"
+  classic: false
+  timeout: 300  # 5 minutes timeout
+
+# Alternative installation method (if snap fails)
+discord_deb:
+  url: "https://discord.com/api/download?platform=linux&format=deb"
+  dest: "/tmp/discord.deb"
+
+# Package configuration
+package_state: "present"
+update_cache: true

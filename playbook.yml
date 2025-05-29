@@ -1,9 +1,7 @@
 - name: Bootstrap local development environment
   hosts: local
-  vars:
-    # Set force_install=true to reinstall everything regardless of current state
-    # Usage: ansible-playbook -i hosts playbook.yml -e force_install=true
-    force_install: "{{ force_install | default(false) }}"
+  # Set force_install=true to reinstall everything regardless of current state
+  # Usage: ansible-playbook -i hosts playbook.yml -e force_install=true
   roles:
     - role: bootstrap
       tags: [bootstrap]
@@ -34,3 +32,36 @@
 
     - role: rust
       tags: [rust, bootstrap]
+
+    - role: spotify
+      tags: [spotify, media]
+
+    - role: obs
+      tags: [obs, media, streaming]
+
+    - role: steam
+      tags: [steam, gaming]
+
+    - role: discord
+      tags: [discord, communication]
+
+    - role: terraform
+      tags: [terraform, devops, infrastructure]
+
+    - role: awscli
+      tags: [awscli, aws, cloud, devops]
+
+    - role: gimp
+      tags: [gimp, graphics, design]
+
+    - role: mongodb-compass
+      tags: [mongodb-compass, database, development]
+
+    - role: zoom
+      tags: [zoom, communication, video]
+
+    - role: mongodb-cli
+      tags: [mongodb-cli, database, development, cli]
+
+    - role: uv
+      tags: [uv, python, development, version-management]

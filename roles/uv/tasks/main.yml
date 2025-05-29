@@ -1,0 +1,74 @@
+---
+# UV (Python Version Management) Installation Tasks
+
+- name: Check if UV is installed
+  shell: which uv
+  register: uv_installed
+  failed_when: false
+  changed_when: false
+
+- name: Check UV version if installed
+  shell: uv --version
+  register: uv_version_check
+  failed_when: false
+  changed_when: false
+  when: uv_installed.rc == 0
+
+- name: Install UV required packages
+  apt:
+    name: "{{ uv.required_packages }}"
+    state: present
+    update_cache: true
+  become: true
+  when: force_install | default(false) or uv_installed.rc != 0
+
+- name: Create install directory if it doesn't exist
+  file:
+    path: "{{ uv.install_dir }}"
+    state: directory
+    mode: '0755'
+  when: force_install | default(false) or uv_installed.rc != 0
+
+- name: Download and install UV using official installer
+  shell: |
+    curl -LsSf {{ uv.install_script_url }} | sh
+  environment:
+    CARGO_HOME: "{{ ansible_env.HOME }}/.cargo"
+  register: uv_install_result
+  when: force_install | default(false) or uv_installed.rc != 0
+  timeout: "{{ uv.timeout }}"
+
+- name: Add UV to PATH in bashrc if not present
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: 'export PATH="$HOME/.cargo/bin:$PATH"'
+    state: present
+    create: yes
+  when: force_install | default(false) or uv_installed.rc != 0
+
+- name: Add UV to PATH in zshrc if zsh is installed and zshrc exists
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    line: 'export PATH="$HOME/.cargo/bin:$PATH"'
+    state: present
+  when:
+    - force_install | default(false) or uv_installed.rc != 0
+    - ansible_env.SHELL is defined and 'zsh' in ansible_env.SHELL
+  ignore_errors: yes
+
+- name: Source bashrc to update PATH
+  shell: source {{ ansible_env.HOME }}/.bashrc
+  args:
+    executable: /bin/bash
+  when: force_install | default(false) or uv_installed.rc != 0
+  ignore_errors: yes
+
+- name: Verify UV installation
+  shell: "{{ uv.install_dir }}/uv --version"
+  register: uv_version
+  failed_when: false
+  changed_when: false
+
+- name: Display UV installation status
+  debug:
+    msg: "UV installation {{ 'successful' if uv_version.rc == 0 else 'failed' }}{{ ': ' + uv_version.stdout if uv_version.rc == 0 else '' }}"

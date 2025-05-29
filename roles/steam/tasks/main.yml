@@ -1,0 +1,64 @@
+---
+# Steam Installation Tasks
+
+- name: Check if Steam is installed
+  shell: command -v steam
+  register: steam_exists
+  failed_when: false
+  changed_when: false
+
+- name: Remove existing Steam installation for force install
+  apt:
+    name: "{{ steam.package_name }}"
+    state: absent
+  become: true
+  when: (force_install | default(false)) and steam_exists.rc == 0
+  ignore_errors: true
+
+- name: Enable multiverse repository
+  shell: add-apt-repository multiverse -y
+  become: true
+  when: (force_install | default(false)) or steam_exists.rc != 0
+
+- name: Install Steam required packages
+  apt:
+    name: "{{ steam.required_packages }}"
+    state: "{{ package_state }}"
+    update_cache: "{{ update_cache }}"
+  become: true
+  when: (force_install | default(false)) or steam_exists.rc != 0
+
+- name: Install Steam from repository
+  apt:
+    name: "{{ steam.package_name }}"
+    state: "{{ package_state }}"
+    update_cache: "{{ update_cache }}"
+  become: true
+  register: steam_apt_install
+  failed_when: false
+  when: (force_install | default(false)) or steam_exists.rc != 0
+
+- name: Download Steam .deb package (fallback)
+  get_url:
+    url: "{{ steam_deb.url }}"
+    dest: "{{ steam_deb.dest }}"
+    mode: '0644'
+  when:
+    - (force_install | default(false)) or steam_exists.rc != 0
+    - steam_apt_install.failed | default(false)
+
+- name: Install Steam via .deb package (fallback)
+  apt:
+    deb: "{{ steam_deb.dest }}"
+  become: true
+  when:
+    - (force_install | default(false)) or steam_exists.rc != 0
+    - steam_apt_install.failed | default(false)
+
+- name: Clean up downloaded .deb file
+  file:
+    path: "{{ steam_deb.dest }}"
+    state: absent
+  when:
+    - (force_install | default(false)) or steam_exists.rc != 0
+    - steam_apt_install.failed | default(false)

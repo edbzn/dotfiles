@@ -1,0 +1,15 @@
+---
+# GIMP configuration variables
+
+# GIMP packages configuration
+gimp:
+  package_name: "gimp"
+  plugins_packages:
+    - gimp-plugin-registry
+    - gimp-data-extras
+    - gimp-gmic
+  state: "present"
+
+# Package configuration
+package_state: "latest"
+update_cache: true

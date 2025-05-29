@@ -1,0 +1,75 @@
+---
+# Terraform Installation Tasks
+
+- name: Check if Terraform is installed
+  shell: command -v terraform
+  register: terraform_exists
+  failed_when: false
+  changed_when: false
+
+- name: Remove existing Terraform installation for force install
+  apt:
+    name: "{{ terraform.package_name }}"
+    state: absent
+  become: true
+  when: (force_install | default(false)) and terraform_exists.rc == 0
+  ignore_errors: true
+
+- name: Remove Terraform repository for force install
+  apt_repository:
+    repo: "{{ terraform.repo_url }}"
+    state: absent
+  become: true
+  when: (force_install | default(false))
+  ignore_errors: true
+
+- name: Remove Terraform GPG key for force install
+  file:
+    path: "{{ terraform.gpg_dest }}"
+    state: absent
+  become: true
+  when: (force_install | default(false))
+  ignore_errors: true
+
+- name: Install Terraform required packages
+  apt:
+    name: "{{ terraform.required_packages }}"
+    state: "{{ package_state }}"
+    update_cache: "{{ update_cache }}"
+  become: true
+  when: (force_install | default(false)) or terraform_exists.rc != 0
+
+- name: Check if Terraform GPG key exists
+  stat:
+    path: "{{ terraform.gpg_dest }}"
+  register: terraform_key_exists
+
+- name: Add HashiCorp GPG key
+  get_url:
+    url: "{{ terraform.gpg_url }}"
+    dest: "{{ terraform.gpg_dest }}"
+    mode: "{{ terraform.gpg_mode }}"
+    force: true
+  become: true
+  when: (force_install | default(false)) or not terraform_key_exists.stat.exists
+
+- name: Check if Terraform repository exists
+  shell: grep -q "apt.releases.hashicorp.com" /etc/apt/sources.list.d/*.list || true
+  register: terraform_repo_exists
+  failed_when: false
+  changed_when: false
+
+- name: Add HashiCorp repository
+  apt_repository:
+    repo: "{{ terraform.repo_url }}"
+    state: present
+  become: true
+  when: (force_install | default(false)) or terraform_repo_exists.rc != 0
+
+- name: Install Terraform
+  apt:
+    name: "{{ terraform.package_name }}"
+    state: "{{ package_state }}"
+    update_cache: "{{ update_cache }}"
+  become: true
+  when: (force_install | default(false)) or terraform_exists.rc != 0
