@@ -13,42 +13,63 @@
   failed_when: false
   changed_when: false
 
+- name: Remove existing Slack snap installation for force install
+  shell: snap remove {{ slack.package_name }}
+  become: true
+  when: force_install and slack_snap_installed.rc == 0
+  ignore_errors: true
+
+- name: Remove existing Slack deb installation for force install
+  apt:
+    name: slack-desktop
+    state: absent
+  become: true
+  when: force_install and slack_deb_installed.rc == 0
+  ignore_errors: true
+
 - name: Install Slack via snap with timeout
   shell: timeout {{ slack.timeout }} snap install {{ slack.package_name }} --classic
   become: true
   register: snap_install_result
   failed_when: false
-  when: slack_snap_installed.rc != 0 and slack_deb_installed.rc != 0
+  when: force_install or (slack_snap_installed.rc != 0 and slack_deb_installed.rc != 0)
 
 - name: Check snap installation success
   debug:
     msg: "Snap installation {{ 'succeeded' if snap_install_result.rc == 0 else 'failed or timed out' }}"
-  when: slack_snap_installed.rc != 0 and slack_deb_installed.rc != 0
+  when: force_install or (slack_snap_installed.rc != 0 and slack_deb_installed.rc != 0)
+
+- name: Check if .deb file exists
+  stat:
+    path: "{{ slack_deb.dest }}"
+  register: slack_deb_file_exists
 
 - name: Download Slack .deb package (fallback)
   get_url:
     url: "{{ slack_deb.url }}"
     dest: "{{ slack_deb.dest }}"
     mode: '0644'
+  register: slack_download_result
   when:
-    - slack_snap_installed.rc != 0
-    - slack_deb_installed.rc != 0
-    - snap_install_result.rc != 0
+    - force_install or slack_snap_installed.rc != 0
+    - force_install or slack_deb_installed.rc != 0
+    - force_install or snap_install_result.rc != 0
 
 - name: Install Slack via .deb package (fallback)
   apt:
     deb: "{{ slack_deb.dest }}"
   become: true
   when:
-    - slack_snap_installed.rc != 0
-    - slack_deb_installed.rc != 0
-    - snap_install_result.rc != 0
+    - force_install or slack_snap_installed.rc != 0
+    - force_install or slack_deb_installed.rc != 0
+    - force_install or snap_install_result.rc != 0
+    - slack_deb_file_exists.stat.exists or not ansible_check_mode
 
 - name: Clean up downloaded .deb file
   file:
     path: "{{ slack_deb.dest }}"
     state: absent
   when:
-    - slack_snap_installed.rc != 0
-    - slack_deb_installed.rc != 0
-    - snap_install_result.rc != 0
+    - force_install or slack_snap_installed.rc != 0
+    - force_install or slack_deb_installed.rc != 0
+    - force_install or snap_install_result.rc != 0

@@ -1,5 +1,9 @@
 - name: Bootstrap local development environment
   hosts: local
+  vars:
+    # Set force_install=true to reinstall everything regardless of current state
+    # Usage: ansible-playbook -i hosts playbook.yml -e force_install=true
+    force_install: "{{ force_install | default(false) }}"
   roles:
     - role: bootstrap
       tags: [bootstrap]

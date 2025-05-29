@@ -1,0 +1,169 @@
+---
+# ZSH Installation and Configuration Tasks
+
+- name: Check if Zsh is installed
+  shell: command -v zsh
+  register: zsh_exists
+  failed_when: false
+  changed_when: false
+
+- name: Install Zsh
+  apt:
+    name: "{{ zsh_packages }}"
+    update_cache: true
+  become: true
+  when: force_install or zsh_exists.rc != 0
+
+- name: Create ~/.zsh directory
+  file:
+    path: "{{ zsh_directory }}"
+    state: directory
+    mode: '0755'
+  become: false
+
+- name: Check if oh-my-zsh is installed
+  stat:
+    path: "{{ oh_my_zsh_directory }}"
+  register: ohmyzsh_stat
+
+- name: Remove existing oh-my-zsh directory for force install
+  file:
+    path: "{{ oh_my_zsh_directory }}"
+    state: absent
+  when: force_install and ohmyzsh_stat.stat.exists
+  become: false
+
+- name: Install oh-my-zsh
+  shell: |
+    export RUNZSH="{{ oh_my_zsh.install_options.RUNZSH }}"
+    export CHSH="{{ oh_my_zsh.install_options.CHSH }}"
+    sh -c "$(curl -fsSL {{ oh_my_zsh.install_url }})"
+  when: force_install or not ohmyzsh_stat.stat.exists
+  register: ohmyzsh_install
+  become: false
+
+- name: Ensure oh-my-zsh custom directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ oh_my_zsh.custom_dir }}/plugins"
+    - "{{ oh_my_zsh.custom_dir }}/themes"
+  when: force_install or (ohmyzsh_install is defined and ohmyzsh_install is changed)
+  become: false
+
+- name: Check if zsh-syntax-highlighting exists
+  stat:
+    path: "{{ plugins.zsh_syntax_highlighting.dest }}"
+  register: zsh_highlighting_exists
+
+- name: Install zsh-highlighting
+  git:
+    repo: "{{ plugins.zsh_syntax_highlighting.repo }}"
+    dest: "{{ plugins.zsh_syntax_highlighting.dest }}"
+    force: "{{ git_force }}"
+    version: "{{ plugins.zsh_syntax_highlighting.version }}"
+  when: force_install or (not zsh_highlighting_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
+  become: false
+
+- name: Check if zsh-autosuggestions exists
+  stat:
+    path: "{{ plugins.zsh_autosuggestions.dest }}"
+  register: zsh_autosuggestions_exists
+
+- name: Install zsh-autosuggestions
+  git:
+    repo: "{{ plugins.zsh_autosuggestions.repo }}"
+    dest: "{{ plugins.zsh_autosuggestions.dest }}"
+    force: "{{ git_force }}"
+    version: "{{ plugins.zsh_autosuggestions.version }}"
+  when: force_install or (not zsh_autosuggestions_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
+  become: false
+
+- name: Check if powerlevel10k theme exists
+  stat:
+    path: "{{ themes.powerlevel10k.dest }}"
+  register: powerlevel10k_exists
+
+- name: Install zsh powerlevel10k theme
+  git:
+    repo: "{{ themes.powerlevel10k.repo }}"
+    dest: "{{ themes.powerlevel10k.dest }}"
+    force: "{{ git_force }}"
+    version: "{{ themes.powerlevel10k.version }}"
+  when: force_install or (not powerlevel10k_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
+  become: false
+
+- name: Check if nx-completion exists
+  stat:
+    path: "{{ plugins.nx_completion.dest }}"
+  register: nx_completion_exists
+
+- name: Install nx-completion
+  git:
+    repo: "{{ plugins.nx_completion.repo }}"
+    dest: "{{ plugins.nx_completion.dest }}"
+    force: "{{ git_force }}"
+    version: "{{ plugins.nx_completion.version }}"
+  when: force_install or (not nx_completion_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
+  become: false
+  tags: [nx-completion]
+
+- name: Check if you-should-use plugin exists
+  stat:
+    path: "{{ plugins.you_should_use.dest }}"
+  register: you_should_use_exists
+
+- name: Install you-should-use plugin
+  git:
+    repo: "{{ plugins.you_should_use.repo }}"
+    dest: "{{ plugins.you_should_use.dest }}"
+    force: "{{ git_force }}"
+    version: "{{ plugins.you_should_use.version }}"
+  when: force_install or (not you_should_use_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
+  become: false
+
+- name: Check if zsh-completions exists
+  stat:
+    path: "{{ plugins.zsh_completions.dest }}"
+  register: zsh_completions_exists
+
+- name: Install zsh-completions
+  git:
+    repo: "{{ plugins.zsh_completions.repo }}"
+    dest: "{{ plugins.zsh_completions.dest }}"
+    force: "{{ git_force }}"
+    version: "{{ plugins.zsh_completions.version }}"
+  when: force_install or (not zsh_completions_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
+  become: false
+
+- name: Get ZSH path
+  shell: which zsh
+  register: zsh_path
+  changed_when: false
+  when: zsh_exists.rc == 0
+
+- name: Check current shell
+  shell: echo $SHELL
+  register: current_shell
+  changed_when: false
+
+- name: Set ZSH as default shell
+  user:
+    name: "{{ ansible_user_id }}"
+    shell: "{{ zsh_path.stdout }}"
+  become: true
+  when:
+    - zsh_exists.rc == 0 or zsh_packages is defined
+    - zsh_path.stdout is defined
+    - current_shell.stdout != zsh_path.stdout
+
+- name: Display installation status
+  debug:
+    msg: |
+      ZSH Installation Summary:
+      - ZSH installed: {{ 'Yes' if zsh_exists.rc == 0 else 'No' }}
+      - Oh-My-ZSH installed: {{ 'Yes' if ohmyzsh_stat.stat.exists else 'No' }}
+      - Default shell: {{ current_shell.stdout }}
+      - ZSH path: {{ zsh_path.stdout if zsh_path.stdout is defined else 'Not found' }}

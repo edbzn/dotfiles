@@ -31,6 +31,36 @@ git clone git@github.com:edbzn/dotfiles.git ~/dotfiles
 ~/dotfiles/update.sh docker node dotfiles chrome
 ```
 
+## Force Reinstall
+
+Sometimes you may want to force reinstall everything regardless of current state (e.g., to fix corrupted installations or reset configurations). The force install feature provides robust reinstallation capabilities with dry-run support and granular control.
+
+### Quick Start
+```sh
+# Force install everything
+~/dotfiles/force-install.sh
+
+# Force install specific roles
+~/dotfiles/force-install.sh --tags zsh,docker,node
+
+# Test what would be changed (dry-run)
+~/dotfiles/force-install.sh --check
+```
+
+### Advanced Usage
+```sh
+# Force install with confirmation prompt
+~/dotfiles/force-install.sh --ask-become-pass
+
+# Force install with detailed diff output
+~/dotfiles/force-install.sh --check --diff --tags docker
+
+# Verbose output for debugging
+~/dotfiles/force-install.sh --verbose --tags slack
+```
+
+For comprehensive documentation, see [FORCE_INSTALL.md](./FORCE_INSTALL.md).
+
 ## Tools
 
 - **Shell** : Zsh + [Oh My Zsh](https://ohmyz.sh/) + Powerlevel10k

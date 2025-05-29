@@ -4,6 +4,30 @@
   failed_when: false
   changed_when: false
 
+- name: Remove existing VSCode installation for force install
+  apt:
+    name: "{{ vscode.package_name }}"
+    state: absent
+  become: true
+  when: force_install and vscode_exists.rc == 0
+  ignore_errors: true
+
+- name: Remove VSCode repository for force install
+  apt_repository:
+    repo: "{{ vscode.repo_url }}"
+    state: absent
+  become: true
+  when: force_install
+  ignore_errors: true
+
+- name: Remove VSCode GPG key for force install
+  file:
+    path: "{{ vscode.gpg_dest }}"
+    state: absent
+  become: true
+  when: force_install
+  ignore_errors: true
+
 - name: Check if VSCode GPG key exists
   stat:
     path: "{{ vscode.gpg_dest }}"
@@ -16,7 +40,7 @@
     mode: "{{ vscode.gpg_mode }}"
     force: true
   become: true
-  when: not vscode_key_exists.stat.exists
+  when: force_install or not vscode_key_exists.stat.exists
 
 - name: Check if VSCode repository exists
   shell: grep -q "packages.microsoft.com/repos/vscode" /etc/apt/sources.list.d/*.list || true
@@ -29,7 +53,7 @@
     repo: "{{ vscode.repo_url }}"
     state: present
   become: true
-  when: vscode_repo_exists.rc != 0
+  when: force_install or vscode_repo_exists.rc != 0
 
 - name: Install VSCode
   apt:
@@ -38,7 +62,7 @@
     state: "{{ package_state }}"
     update_cache: "{{ update_cache }}"
   become: true
-  when: vscode_exists.rc != 0
+  when: force_install or vscode_exists.rc != 0
 
 - name: Set default editor
   shell: |

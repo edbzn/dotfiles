@@ -10,12 +10,20 @@
   failed_when: false
   changed_when: false
 
+- name: Remove existing Node.js installation for force install
+  apt:
+    name: "{{ nodejs_packages }}"
+    state: absent
+  become: true
+  when: force_install and (node_exists.rc == 0 or npm_exists.rc == 0)
+  ignore_errors: true
+
 - name: Install Node.js
   apt:
     name: "{{ nodejs_packages }}"
     state: "{{ package_state }}"
   become: true
-  when: node_exists.rc != 0 or npm_exists.rc != 0
+  when: force_install or node_exists.rc != 0 or npm_exists.rc != 0
 
 - name: Install npm global packages
   npm:
@@ -42,16 +50,23 @@
   ignore_errors: true
   tags: [bun]
 
-- name: Install Bun
+- name: Remove existing Bun installation for force install
+  file:
+    path: "{{ ansible_env.HOME }}/.bun"
+    state: absent
+  when: force_install and bun_exists.rc == 0
+  tags: [bun]
+
+- name: Download Bun installer
   get_url:
     url: "{{ bun.install_url }}"
     dest: "{{ bun.install_script }}"
     mode: "{{ bun.script_mode }}"
     force: 'yes'
-  when: bun_exists.rc != 0
+  when: force_install or bun_exists.rc != 0
   tags: [bun]
 
 - name: Install Bun
   shell: "{{ bun.install_script }}"
-  when: bun_exists.rc != 0
+  when: force_install or bun_exists.rc != 0
   tags: [bun]

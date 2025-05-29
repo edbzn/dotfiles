@@ -28,7 +28,7 @@
   with_items: "{{ source_fonts.files }}"
   when:
     - source_fonts.files | length > 0
-    - item.path | basename not in (existing_fonts.files | map(attribute='path') | map('basename') | list)
+    - force_install or (item.path | basename not in (existing_fonts.files | map(attribute='path') | map('basename') | list))
   register: fonts_installed
 
 - name: Clear fonts cache
