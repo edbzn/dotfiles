@@ -5,17 +5,35 @@
     state: directory
     mode: 0755
 
+- name: Check existing fonts
+  become: no
+  find:
+    paths: "~/.local/share/fonts"
+    patterns: "*"
+  register: existing_fonts
+
+- name: Get source fonts
+  become: no
+  find:
+    paths: "~/dotfiles/.assets/fonts"
+    patterns: "*"
+  register: source_fonts
+
 - name: Install fonts
   become: no
   copy:
     remote_src: yes
-    src: "{{ item }}"
-    dest: "~/.local/share/fonts"
-  with_fileglob:
-    - "~/dotfiles/.assets/fonts/*"
+    src: "{{ item.path }}"
+    dest: "~/.local/share/fonts/{{ item.path | basename }}"
+  with_items: "{{ source_fonts.files }}"
+  when:
+    - source_fonts.files | length > 0
+    - item.path | basename not in (existing_fonts.files | map(attribute='path') | map('basename') | list)
+  register: fonts_installed
 
 - name: Clear fonts cache
   become: no
   shell: |
     fc-cache -f -v
+  when: fonts_installed is changed
 
