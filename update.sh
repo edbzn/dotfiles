@@ -95,7 +95,7 @@ if eval "$ANSIBLE_CMD"; then
     echo ""
     echo -e "${GREEN}✅ Update completed successfully!${NC}"
     echo -e "${BLUE}💡 Tip: You may need to restart your shell or run 'source ~/.bashrc' to use new tools${NC}"
-    
+
     # Optional desktop notification if available
     if command -v notify-send 1>/dev/null 2>&1; then
         notify-send -i face-smile "Dotfiles update complete" "Successfully updated dev environment."
