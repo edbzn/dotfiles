@@ -1,0 +1,17 @@
+---
+# AWS CLI configuration variables
+
+# AWS CLI installation configuration
+awscli:
+  installer_url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+  installer_dest: "/tmp/awscliv2.zip"
+  extract_dir: "/tmp/aws"
+  install_dir: "/usr/local/aws-cli"
+  bin_dir: "/usr/local/bin"
+  required_packages:
+    - unzip
+    - curl
+
+# Package configuration
+package_state: "present"
+update_cache: true

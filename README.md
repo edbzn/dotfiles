@@ -88,6 +88,17 @@ The following tools are automatically installed and configured:
 | **JSON** | [jq](https://stedolan.github.io/jq/) | 🔧 | Lightweight command-line JSON processor | [stedolan.github.io](https://stedolan.github.io/jq/) |
 | **System** | [gnome-tweaks](https://wiki.gnome.org/Apps/Tweaks) | ⚙️ | Advanced GNOME configuration tool | [GNOME Wiki](https://wiki.gnome.org/Apps/Tweaks) |
 | **Files** | [lsd](https://github.com/Peltoche/lsd) | 📂 | Modern `ls` command with colors and icons | [GitHub](https://github.com/Peltoche/lsd) |
+| **Music** | [Spotify](https://www.spotify.com/) | <img src="https://open.spotifycdn.com/cdn/images/favicon32.b64ecc03.png" width="24" alt="Spotify"> | Music streaming platform | [spotify.com](https://www.spotify.com/) |
+| **Streaming** | [OBS Studio](https://obsproject.com/) | <img src="https://obsproject.com/assets/images/new_icon_small-r.png" width="24" alt="OBS"> | Live streaming and screen recording | [obsproject.com](https://obsproject.com/) |
+| **Gaming** | [Steam](https://store.steampowered.com/) | <img src="https://store.steampowered.com/favicon.ico" width="24" alt="Steam"> | Gaming platform and digital distribution | [steampowered.com](https://store.steampowered.com/) |
+| **Communication** | [Discord](https://discord.com/) | <img src="https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg" width="24" alt="Discord"> | Voice, video and text communication | [discord.com](https://discord.com/) |
+| **Infrastructure** | [Terraform](https://www.terraform.io/) | <img src="https://www.terraform.io/favicon.ico" width="24" alt="Terraform"> | Infrastructure as Code tool | [terraform.io](https://www.terraform.io/) |
+| **Cloud** | [AWS CLI](https://aws.amazon.com/cli/) | <img src="https://aws.amazon.com/favicon.ico" width="24" alt="AWS"> | Amazon Web Services command line interface | [aws.amazon.com](https://aws.amazon.com/cli/) |
+| **Graphics** | [GIMP](https://www.gimp.org/) | <img src="https://www.gimp.org/images/wilber-big.png" width="24" alt="GIMP"> | GNU Image Manipulation Program | [gimp.org](https://www.gimp.org/) |
+| **Database** | [MongoDB Compass](https://www.mongodb.com/products/compass) | <img src="https://www.mongodb.com/assets/images/global/favicon.ico" width="24" alt="MongoDB"> | GUI for MongoDB database | [mongodb.com](https://www.mongodb.com/products/compass) |
+| **Database** | [MongoDB CLI (mongosh)](https://www.mongodb.com/docs/mongodb-shell/) | <img src="https://www.mongodb.com/assets/images/global/favicon.ico" width="24" alt="MongoDB"> | MongoDB command line interface | [mongodb.com](https://www.mongodb.com/docs/mongodb-shell/) |
+| **Python** | [UV](https://github.com/astral-sh/uv) | <img src="https://raw.githubusercontent.com/astral-sh/uv/main/assets/logo-letter.svg" width="24" alt="UV"> | Ultra-fast Python package and project manager | [github.com](https://github.com/astral-sh/uv) |
+| **Video** | [Zoom](https://zoom.us/) | <img src="https://zoom.us/favicon.ico" width="24" alt="Zoom"> | Video conferencing platform | [zoom.us](https://zoom.us/) |
 
 > 🎯 **Smart Installation**: Each tool is configured with sensible defaults and optimizations for development productivity. The installation is completely automated and idempotent.
 

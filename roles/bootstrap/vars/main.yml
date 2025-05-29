@@ -23,3 +23,14 @@ update_cache: yes
 work_directory:
   path: "~/work"
   mode: "0755"
+
+# Flameshot configuration for Wayland
+flameshot:
+  wayland_env: "QT_QPA_PLATFORM=wayland"
+  shortcuts:
+    - name: "Flameshot GUI"
+      command: "env QT_QPA_PLATFORM=wayland flameshot gui"
+      key: "Print"
+    - name: "Flameshot Full Screen"
+      command: "env QT_QPA_PLATFORM=wayland flameshot full"
+      key: "<Shift>Print"

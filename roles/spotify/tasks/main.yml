@@ -1,0 +1,70 @@
+---
+# Spotify Installation Tasks
+
+- name: Check if Spotify is already installed (snap)
+  shell: snap list {{ spotify.package_name }}
+  register: spotify_snap_installed
+  failed_when: false
+  changed_when: false
+
+- name: Check if Spotify is already installed (deb)
+  shell: dpkg -l | grep -q spotify-client
+  register: spotify_deb_installed
+  failed_when: false
+  changed_when: false
+
+- name: Remove existing Spotify snap installation for force install
+  shell: snap remove {{ spotify.package_name }}
+  become: true
+  when: (force_install | default(false)) and spotify_snap_installed.rc == 0
+  ignore_errors: true
+
+- name: Remove existing Spotify deb installation for force install
+  apt:
+    name: "{{ spotify_deb.package_name }}"
+    state: absent
+  become: true
+  when: (force_install | default(false)) and spotify_deb_installed.rc == 0
+  ignore_errors: true
+
+- name: Install Spotify via snap with timeout
+  shell: timeout {{ spotify.timeout }} snap install {{ spotify.package_name }}
+  become: true
+  register: snap_install_result
+  failed_when: false
+  when: (force_install | default(false)) or (spotify_snap_installed.rc != 0 and spotify_deb_installed.rc != 0)
+
+- name: Check snap installation success
+  debug:
+    msg: "Snap installation {{ 'succeeded' if snap_install_result.rc == 0 else 'failed or timed out' }}"
+  when: (force_install | default(false)) or (spotify_snap_installed.rc != 0 and spotify_deb_installed.rc != 0)
+
+- name: Add Spotify repository key (fallback)
+  get_url:
+    url: "{{ spotify_deb.key_url }}"
+    dest: "{{ spotify_deb.key_dest }}"
+    mode: "{{ spotify_deb.key_mode }}"
+    force: true
+  become: true
+  when:
+    - (force_install | default(false)) or spotify_snap_installed.rc != 0
+    - (force_install | default(false)) or snap_install_result.rc != 0
+
+- name: Add Spotify repository (fallback)
+  apt_repository:
+    repo: "{{ spotify_deb.repo_url }}"
+    state: present
+  become: true
+  when:
+    - (force_install | default(false)) or spotify_snap_installed.rc != 0
+    - (force_install | default(false)) or snap_install_result.rc != 0
+
+- name: Install Spotify via .deb package (fallback)
+  apt:
+    name: "{{ spotify_deb.package_name }}"
+    state: present
+    update_cache: true
+  become: true
+  when:
+    - (force_install | default(false)) or spotify_snap_installed.rc != 0
+    - (force_install | default(false)) or snap_install_result.rc != 0

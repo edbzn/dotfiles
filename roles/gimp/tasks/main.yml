@@ -1,0 +1,41 @@
+---
+# GIMP Installation Tasks
+
+- name: Check if GIMP is installed
+  shell: command -v gimp
+  register: gimp_exists
+  failed_when: false
+  changed_when: false
+
+- name: Remove existing GIMP installation for force install
+  apt:
+    name: "{{ gimp.package_name }}"
+    state: absent
+  become: true
+  when: (force_install | default(false)) and gimp_exists.rc == 0
+  ignore_errors: true
+
+- name: Remove GIMP plugins for force install
+  apt:
+    name: "{{ gimp.plugins_packages }}"
+    state: absent
+  become: true
+  when: (force_install | default(false)) and gimp_exists.rc == 0
+  ignore_errors: true
+
+- name: Install GIMP
+  apt:
+    name: "{{ gimp.package_name }}"
+    state: "{{ package_state }}"
+    update_cache: "{{ update_cache }}"
+  become: true
+  when: (force_install | default(false)) or gimp_exists.rc != 0
+
+- name: Install GIMP plugins and extras
+  apt:
+    name: "{{ gimp.plugins_packages }}"
+    state: "{{ package_state }}"
+    update_cache: "{{ update_cache }}"
+  become: true
+  ignore_errors: true  # Some plugins might not be available in all Ubuntu versions
+  when: (force_install | default(false)) or gimp_exists.rc != 0

@@ -1,0 +1,69 @@
+---
+# Discord Installation Tasks
+
+- name: Check if Discord is already installed (snap)
+  shell: snap list {{ discord.package_name }}
+  register: discord_snap_installed
+  failed_when: false
+  changed_when: false
+
+- name: Check if Discord is already installed (deb)
+  shell: dpkg -l | grep -q discord
+  register: discord_deb_installed
+  failed_when: false
+  changed_when: false
+
+- name: Remove existing Discord snap installation for force install
+  shell: snap remove {{ discord.package_name }}
+  become: true
+  when: (force_install | default(false)) and discord_snap_installed.rc == 0
+  ignore_errors: true
+
+- name: Remove existing Discord deb installation for force install
+  apt:
+    name: discord
+    state: absent
+  become: true
+  when: (force_install | default(false)) and discord_deb_installed.rc == 0
+  ignore_errors: true
+
+- name: Install Discord via snap with timeout
+  shell: timeout {{ discord.timeout }} snap install {{ discord.package_name }}
+  become: true
+  register: snap_install_result
+  failed_when: false
+  when: (force_install | default(false)) or (discord_snap_installed.rc != 0 and discord_deb_installed.rc != 0)
+
+- name: Check snap installation success
+  debug:
+    msg: "Snap installation {{ 'succeeded' if snap_install_result.rc == 0 else 'failed or timed out' }}"
+  when: (force_install | default(false)) or (discord_snap_installed.rc != 0 and discord_deb_installed.rc != 0)
+
+- name: Download Discord .deb package (fallback)
+  get_url:
+    url: "{{ discord_deb.url }}"
+    dest: "{{ discord_deb.dest }}"
+    mode: '0644'
+  register: discord_download_result
+  when:
+    - (force_install | default(false)) or discord_snap_installed.rc != 0
+    - (force_install | default(false)) or discord_deb_installed.rc != 0
+    - (force_install | default(false)) or snap_install_result.rc != 0
+
+- name: Install Discord via .deb package (fallback)
+  apt:
+    deb: "{{ discord_deb.dest }}"
+  become: true
+  when:
+    - (force_install | default(false)) or discord_snap_installed.rc != 0
+    - (force_install | default(false)) or discord_deb_installed.rc != 0
+    - (force_install | default(false)) or snap_install_result.rc != 0
+
+- name: Clean up downloaded .deb file
+  file:
+    path: "{{ discord_deb.dest }}"
+    state: absent
+  when:
+    - (force_install | default(false)) or discord_snap_installed.rc != 0
+    - (force_install | default(false)) or discord_deb_installed.rc != 0
+    - (force_install | default(false)) or snap_install_result.rc != 0

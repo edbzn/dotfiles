@@ -9,7 +9,7 @@
     name: "{{ chrome.package_name }}"
     state: absent
   become: true
-  when: force_install and chrome_exists.rc == 0
+  when: force_install | default(false) and chrome_exists.rc == 0
   ignore_errors: true
 
 - name: Remove Chrome repository for force install
@@ -17,7 +17,7 @@
     repo: "{{ chrome.repo_url }}"
     state: absent
   become: true
-  when: force_install
+  when: force_install | default(false)
   ignore_errors: true
 
 - name: Remove Chrome GPG key for force install
@@ -25,7 +25,7 @@
     path: "{{ chrome.gpg_dest }}"
     state: absent
   become: true
-  when: force_install
+  when: force_install | default(false)
   ignore_errors: true
 
 - name: Check if Chrome GPG key exists
@@ -40,7 +40,7 @@
     mode: "{{ chrome.gpg_mode }}"
     force: true
   become: true
-  when: force_install or not chrome_key_exists.stat.exists
+  when: force_install | default(false) or not chrome_key_exists.stat.exists
 
 - name: Check if Chrome repository exists
   shell: grep -q "dl.google.com/linux/chrome/deb" /etc/apt/sources.list.d/*.list || true
@@ -53,7 +53,7 @@
     repo: "{{ chrome.repo_url }}"
     state: present
   become: true
-  when: force_install or chrome_repo_exists.rc != 0
+  when: force_install | default(false) or chrome_repo_exists.rc != 0
 
 - name: Install Google Chrome
   apt:
@@ -61,4 +61,4 @@
     update_cache: "{{ update_cache }}"
     state: "{{ package_state }}"
   become: true
-  when: force_install or chrome_exists.rc != 0
+  when: force_install | default(false) or chrome_exists.rc != 0

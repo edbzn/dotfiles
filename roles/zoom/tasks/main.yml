@@ -1,0 +1,50 @@
+---
+# Zoom Installation Tasks
+
+- name: Check if Zoom is installed
+  shell: command -v zoom
+  register: zoom_exists
+  failed_when: false
+  changed_when: false
+
+- name: Check if Zoom package is installed
+  shell: dpkg -l | grep -q zoom
+  register: zoom_package_exists
+  failed_when: false
+  changed_when: false
+
+- name: Remove existing Zoom installation for force install
+  apt:
+    name: "{{ zoom.package_name }}"
+    state: absent
+  become: true
+  when: (force_install | default(false)) and zoom_package_exists.rc == 0
+  ignore_errors: true
+
+- name: Install Zoom required packages
+  apt:
+    name: "{{ zoom.required_packages }}"
+    state: "{{ package_state }}"
+    update_cache: "{{ update_cache }}"
+  become: true
+  when: (force_install | default(false)) or zoom_exists.rc != 0
+
+- name: Download Zoom .deb package
+  get_url:
+    url: "{{ zoom.url }}"
+    dest: "{{ zoom.dest }}"
+    mode: '0644'
+    force: true
+  when: (force_install | default(false)) or zoom_exists.rc != 0
+
+- name: Install Zoom via .deb package
+  apt:
+    deb: "{{ zoom.dest }}"
+  become: true
+  when: (force_install | default(false)) or zoom_exists.rc != 0
+
+- name: Clean up downloaded .deb file
+  file:
+    path: "{{ zoom.dest }}"
+    state: absent
+  when: (force_install | default(false)) or zoom_exists.rc != 0

@@ -1,0 +1,15 @@
+---
+# Zoom configuration variables
+
+# Zoom .deb package configuration
+zoom:
+  url: "https://zoom.us/client/latest/zoom_amd64.deb"
+  dest: "/tmp/zoom_amd64.deb"
+  package_name: "zoom"
+  required_packages:
+    - wget
+    - gdebi-core
+
+# Package configuration
+package_state: "present"
+update_cache: true

@@ -1,0 +1,50 @@
+---
+# MongoDB Compass Installation Tasks
+
+- name: Check if MongoDB Compass is installed
+  shell: command -v mongodb-compass
+  register: mongodb_compass_exists
+  failed_when: false
+  changed_when: false
+
+- name: Check if MongoDB Compass package is installed
+  shell: dpkg -l | grep -q mongodb-compass
+  register: mongodb_compass_package_exists
+  failed_when: false
+  changed_when: false
+
+- name: Remove existing MongoDB Compass installation for force install
+  apt:
+    name: "{{ mongodb_compass.package_name }}"
+    state: absent
+  become: true
+  when: (force_install | default(false)) and mongodb_compass_package_exists.rc == 0
+  ignore_errors: true
+
+- name: Install MongoDB Compass required packages
+  apt:
+    name: "{{ mongodb_compass.required_packages }}"
+    state: "{{ package_state }}"
+    update_cache: "{{ update_cache }}"
+  become: true
+  when: (force_install | default(false)) or mongodb_compass_exists.rc != 0
+
+- name: Download MongoDB Compass .deb package
+  get_url:
+    url: "{{ mongodb_compass.url }}"
+    dest: "{{ mongodb_compass.dest }}"
+    mode: '0644'
+    force: true
+  when: (force_install | default(false)) or mongodb_compass_exists.rc != 0
+
+- name: Install MongoDB Compass via .deb package
+  apt:
+    deb: "{{ mongodb_compass.dest }}"
+  become: true
+  when: (force_install | default(false)) or mongodb_compass_exists.rc != 0
+
+- name: Clean up downloaded .deb file
+  file:
+    path: "{{ mongodb_compass.dest }}"
+    state: absent
+  when: (force_install | default(false)) or mongodb_compass_exists.rc != 0

@@ -1,0 +1,15 @@
+---
+# MongoDB Compass configuration variables
+
+# MongoDB Compass .deb package configuration
+mongodb_compass:
+  url: "https://downloads.mongodb.com/compass/mongodb-compass_1.42.4_amd64.deb"
+  dest: "/tmp/mongodb-compass.deb"
+  package_name: "mongodb-compass"
+  required_packages:
+    - wget
+    - gdebi-core
+
+# Package configuration
+package_state: "present"
+update_cache: true

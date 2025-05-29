@@ -1,0 +1,65 @@
+---
+# AWS CLI Installation Tasks
+
+- name: Check if AWS CLI is installed
+  shell: command -v aws
+  register: awscli_exists
+  failed_when: false
+  changed_when: false
+
+- name: Remove existing AWS CLI installation for force install
+  file:
+    path: "{{ awscli.install_dir }}"
+    state: absent
+  become: true
+  when: (force_install | default(false)) and awscli_exists.rc == 0
+  ignore_errors: true
+
+- name: Remove AWS CLI binary symlinks for force install
+  file:
+    path: "{{ awscli.bin_dir }}/{{ item }}"
+    state: absent
+  become: true
+  loop:
+    - aws
+    - aws_completer
+  when: (force_install | default(false)) and awscli_exists.rc == 0
+  ignore_errors: true
+
+- name: Install AWS CLI required packages
+  apt:
+    name: "{{ awscli.required_packages }}"
+    state: "{{ package_state }}"
+    update_cache: "{{ update_cache }}"
+  become: true
+  when: (force_install | default(false)) or awscli_exists.rc != 0
+
+- name: Download AWS CLI installer
+  get_url:
+    url: "{{ awscli.installer_url }}"
+    dest: "{{ awscli.installer_dest }}"
+    mode: '0644'
+    force: true
+  when: (force_install | default(false)) or awscli_exists.rc != 0
+
+- name: Extract AWS CLI installer
+  unarchive:
+    src: "{{ awscli.installer_dest }}"
+    dest: "/tmp"
+    remote_src: true
+    creates: "{{ awscli.extract_dir }}"
+  when: (force_install | default(false)) or awscli_exists.rc != 0
+
+- name: Install AWS CLI
+  shell: "{{ awscli.extract_dir }}/install --install-dir {{ awscli.install_dir }} --bin-dir {{ awscli.bin_dir }}"
+  become: true
+  when: (force_install | default(false)) or awscli_exists.rc != 0
+
+- name: Clean up AWS CLI installer files
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ awscli.installer_dest }}"
+    - "{{ awscli.extract_dir }}"
+  when: (force_install | default(false)) or awscli_exists.rc != 0
