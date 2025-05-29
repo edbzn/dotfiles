@@ -1,10 +1,10 @@
-# Force Installation Feature
+# Update Script Features
 
-The force installation feature allows you to reinstall your dotfiles environment completely, regardless of the current state of installed packages and configurations.
+The update script provides a robust way to update your dotfiles environment completely, regardless of the current state of installed packages and configurations.
 
 ## Overview
 
-The `force-install.sh` script provides a robust way to:
+The `update.sh` script provides a robust way to:
 - Force reinstallation of all packages and configurations
 - Override existing installations without manual cleanup
 - Support dry-run mode for testing changes
@@ -13,52 +13,52 @@ The `force-install.sh` script provides a robust way to:
 
 ## Usage
 
-### Basic Force Installation
+### Basic Update
 
 ```bash
-# Force install everything
-./force-install.sh
+# Update everything
+./update.sh
 
-# Force install with confirmation prompt
-./force-install.sh --ask-become-pass
+# Update with confirmation prompt
+./update.sh --ask-become-pass
 ```
 
-### Selective Installation with Tags
+### Selective Update with Tags
 
 ```bash
-# Force install specific roles
-./force-install.sh --tags zsh,docker,node
+# Update specific roles
+./update.sh --tags zsh,docker,node
 
-# Force install excluding specific roles
-./force-install.sh --skip-tags slack,chrome
+# Update excluding specific roles
+./update.sh --skip-tags slack,chrome
 ```
 
 ### Dry Run Mode
 
 ```bash
 # Test what would be changed without making actual changes
-./force-install.sh --check
+./update.sh --check
 
 # Test with detailed diff output
-./force-install.sh --check --diff
+./update.sh --check --diff
 
 # Test specific roles
-./force-install.sh --check --tags docker,chrome
+./update.sh --check --tags docker,chrome
 ```
 
 ### Verbose Output
 
 ```bash
 # Enable verbose output for debugging
-./force-install.sh --verbose
+./update.sh --verbose
 
 # Enable extra verbose output
-./force-install.sh -vv
+./update.sh -vv
 ```
 
 ## Available Roles
 
-| Role | Description | Force Install Behavior |
+| Role | Description | Update Behavior |
 |------|-------------|------------------------|
 | `bootstrap` | Basic system packages and tools | Reinstalls packages via apt |
 | `zsh` | Zsh shell and Oh My Zsh configuration | Removes existing oh-my-zsh directory and reinstalls |
@@ -68,7 +68,7 @@ The `force-install.sh` script provides a robust way to:
 | `vscode` | Visual Studio Code editor | Removes package, repository, and GPG key before reinstalling |
 | `slack` | Slack desktop application | Removes both snap and deb installations before reinstalling |
 
-## Force Install Behavior
+## Update Behavior
 
 When `force_install=true` is set, each role performs the following actions:
 
@@ -91,11 +91,11 @@ When `force_install=true` is set, each role performs the following actions:
 
 ## Ansible Integration
 
-The force install feature integrates seamlessly with the existing Ansible playbook:
+The update feature integrates seamlessly with the existing Ansible playbook:
 
 ```yaml
 # In playbook.yml
-- name: Force Install Example
+- name: Update Example
   hosts: localhost
   vars:
     force_install: true  # This variable triggers force behavior
@@ -124,14 +124,14 @@ All Ansible command-line options are supported and passed through:
 
 ### Complete Environment Rebuild
 ```bash
-# Full force installation with confirmation
-./force-install.sh --ask-become-pass
+# Full update with confirmation
+./update.sh --ask-become-pass
 
 # Expected output:
-# 🔄 Force Installing Dotfiles Environment
+# 🔄 Updating Dotfiles Environment
 # ⚠️  This will reinstall everything regardless of current state
 #
-# 🏷️  Installing all roles
+# 🏷️  Updating all roles
 #
 # Do you want to continue? (y/N): y
 # Running command: ansible-playbook -i hosts playbook.yml --ask-become-pass -e force_install=true
@@ -139,20 +139,21 @@ All Ansible command-line options are supported and passed through:
 
 ### Development Environment Setup
 ```bash
-# Force install just development tools
-./force-install.sh --tags zsh,node,docker,vscode
+# Update just development tools
+./update.sh --tags zsh,node,docker,vscode
 
 # Test changes before applying
-./force-install.sh --check --tags node,docker
+./update.sh --check --tags node,docker
 ```
 
 ### Troubleshooting Installation
 ```bash
+```bash
 # Debug installation issues with verbose output
-./force-install.sh --verbose --tags slack
+./update.sh --verbose --tags slack
 
 # Check what files would be modified
-./force-install.sh --check --diff --tags zsh
+./update.sh --check --diff --tags zsh
 ```
 
 ## Safety Features
@@ -170,24 +171,24 @@ All Ansible command-line options are supported and passed through:
 1. **Permission Errors**: Use `--ask-become-pass` for sudo access
 2. **Network Issues**: Check internet connectivity for package downloads
 3. **Partial Failures**: Review output and rerun with specific tags
-4. **Repository Conflicts**: Force install cleans up repositories automatically
+4. **Repository Conflicts**: Update script cleans up repositories automatically
 
 ### Recovery
 
-If force installation fails:
+If update fails:
 
 1. Check the error output for specific issues
 2. Run with `--check` to identify problems
-3. Use `--tags` to reinstall specific components
+3. Use `--tags` to update specific components
 4. Manual cleanup may be needed for corrupted states
 
 ## Implementation Details
 
-The force install feature works by:
+The update feature works by:
 
 1. **Variable Injection**: Sets `force_install=true` in Ansible variables
 2. **Conditional Logic**: Each role checks `force_install` variable
-3. **Cleanup Tasks**: Removes existing installations when force install is enabled
+3. **Cleanup Tasks**: Removes existing installations when update is run
 4. **Fresh Installation**: Proceeds with installation regardless of current state
 
 ### Role Structure Example
