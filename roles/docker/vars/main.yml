@@ -1,0 +1,31 @@
+---
+# Docker configuration variables
+
+# Docker required packages
+docker_required_packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+  - python3-pip
+  - virtualenv
+  - python3-setuptools
+
+# Docker packages to install
+docker_packages:
+  - docker-ce
+  - docker-compose-plugin
+
+# Docker repository configuration
+docker_repository:
+  gpg_url: "https://download.docker.com/linux/ubuntu/gpg"
+  gpg_dest: "/etc/apt/trusted.gpg.d/docker.asc"
+  gpg_mode: "0644"
+  repo_url: "deb https://download.docker.com/linux/ubuntu focal stable"
+
+# Package state configuration
+package_state: "latest"
+update_cache: true
+
+# User configuration
+docker_group: "docker"

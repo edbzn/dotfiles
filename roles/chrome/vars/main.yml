@@ -1,0 +1,14 @@
+---
+# Chrome configuration variables
+
+# Chrome repository configuration
+chrome:
+  gpg_url: "https://dl-ssl.google.com/linux/linux_signing_key.pub"
+  gpg_dest: "/etc/apt/trusted.gpg.d/chrome.asc"
+  gpg_mode: "0644"
+  repo_url: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
+  package_name: "google-chrome-stable"
+
+# Package configuration
+package_state: "latest"
+update_cache: yes

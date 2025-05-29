@@ -1,22 +1,12 @@
 - name: Install various tools using apt
   apt:
-    name:
-      - git
-      - terminator
-      - curl
-      - htop
-      - vim
-      - flameshot
-      - jq
-      - gnome-tweaks
-      - gh
-      - lsd
-    update_cache: yes
-    state: present
+    name: "{{ bootstrap_packages }}"
+    update_cache: "{{ update_cache }}"
+    state: "{{ package_state }}"
   become: yes
 
 - name: Create work directory
   file:
-    path: ~/work
+    path: "{{ work_directory.path }}"
     state: directory
-    mode: '0755'
+    mode: "{{ work_directory.mode }}"

@@ -1,0 +1,12 @@
+---
+# Rust configuration variables
+
+# Rust installation configuration
+rust:
+  installer_url: "https://sh.rustup.rs"
+  installer_dest: "/tmp/sh.rustup.rs"
+  installer_mode: "0755"
+  installer_args: "-y"
+
+# Force download configuration
+force_download: yes

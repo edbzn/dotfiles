@@ -1,0 +1,17 @@
+---
+# Dotfiles configuration variables
+
+# Stow configuration
+stow:
+  package_name: "stow"
+  package_state: "present"
+
+# Dotfiles paths
+dotfiles:
+  source_dir: ".dotfiles"
+  base_path: "~/dotfiles"
+
+# Stow command configuration
+stow_command:
+  target_option: "--target"
+  stow_option: "--stow"

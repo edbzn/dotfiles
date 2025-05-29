@@ -1,0 +1,12 @@
+---
+# Fonts configuration variables
+
+# Font directory configuration
+fonts:
+  local_dir: "~/.local/share/fonts"
+  source_dir: "~/dotfiles/.assets/fonts"
+  dir_mode: "0755"
+
+# Font cache configuration
+font_cache:
+  command: "fc-cache -f -v"
