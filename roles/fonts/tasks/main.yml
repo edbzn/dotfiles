@@ -1,26 +1,26 @@
 - name: Create fonts directory
-  become: no
+  become: false
   file:
     path: "{{ fonts.local_dir }}"
     state: directory
     mode: "{{ fonts.dir_mode }}"
 
 - name: Check existing fonts
-  become: no
+  become: false
   find:
     paths: "{{ fonts.local_dir }}"
     patterns: "*"
   register: existing_fonts
 
 - name: Get source fonts
-  become: no
+  become: false
   find:
     paths: "{{ fonts.source_dir }}"
     patterns: "*"
   register: source_fonts
 
 - name: Install fonts
-  become: no
+  become: false
   copy:
     remote_src: yes
     src: "{{ item.path }}"
@@ -32,7 +32,7 @@
   register: fonts_installed
 
 - name: Clear fonts cache
-  become: no
+  become: false
   shell: |
     {{ font_cache.command }}
   when: fonts_installed is changed

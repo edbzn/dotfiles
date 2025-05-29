@@ -1,3 +1,6 @@
+---
+# Slack Installation Tasks
+
 - name: Check if Slack is already installed (snap)
   shell: snap list {{ slack.package_name }}
   register: slack_snap_installed
@@ -12,7 +15,7 @@
 
 - name: Install Slack via snap with timeout
   shell: timeout {{ slack.timeout }} snap install {{ slack.package_name }} --classic
-  become: yes
+  become: true
   register: snap_install_result
   failed_when: false
   when: slack_snap_installed.rc != 0 and slack_deb_installed.rc != 0
@@ -35,7 +38,7 @@
 - name: Install Slack via .deb package (fallback)
   apt:
     deb: "{{ slack_deb.dest }}"
-  become: yes
+  become: true
   when:
     - slack_snap_installed.rc != 0
     - slack_deb_installed.rc != 0

@@ -14,7 +14,7 @@
   apt:
     name: "{{ nodejs_packages }}"
     state: "{{ package_state }}"
-  become: yes
+  become: true
   when: node_exists.rc != 0 or npm_exists.rc != 0
 
 - name: Install npm global packages
@@ -39,7 +39,7 @@
 - name: Check Bun installed
   shell: command -v bun
   register: bun_exists
-  ignore_errors: yes
+  ignore_errors: true
   tags: [bun]
 
 - name: Install Bun

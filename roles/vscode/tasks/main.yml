@@ -15,7 +15,7 @@
     dest: "{{ vscode.gpg_dest }}"
     mode: "{{ vscode.gpg_mode }}"
     force: true
-  become: yes
+  become: true
   when: not vscode_key_exists.stat.exists
 
 - name: Check if VSCode repository exists
@@ -28,7 +28,7 @@
   apt_repository:
     repo: "{{ vscode.repo_url }}"
     state: present
-  become: yes
+  become: true
   when: vscode_repo_exists.rc != 0
 
 - name: Install VSCode
@@ -37,7 +37,7 @@
       - "{{ vscode.package_name }}"
     state: "{{ package_state }}"
     update_cache: "{{ update_cache }}"
-  become: yes
+  become: true
   when: vscode_exists.rc != 0
 
 - name: Set default editor

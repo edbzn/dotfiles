@@ -3,7 +3,7 @@
     name:
       - "{{ stow.package_name }}"
     state: "{{ stow.package_state }}"
-  become: yes
+  become: true
 
 - name: Build .dotfiles list
   vars:
