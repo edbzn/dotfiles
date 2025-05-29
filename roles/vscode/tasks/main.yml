@@ -1,3 +1,14 @@
+- name: Check if VSCode is installed
+  shell: command -v code
+  register: vscode_exists
+  failed_when: false
+  changed_when: false
+
+- name: Check if VSCode GPG key exists
+  stat:
+    path: /etc/apt/trusted.gpg.d/vscode.asc
+  register: vscode_key_exists
+
 - name: Add VSCode GPG apt key
   get_url:
     url: https://packages.microsoft.com/keys/microsoft.asc
@@ -5,12 +16,20 @@
     mode: '0644'
     force: true
   become: yes
+  when: not vscode_key_exists.stat.exists
+
+- name: Check if VSCode repository exists
+  shell: grep -q "packages.microsoft.com/repos/vscode" /etc/apt/sources.list.d/*.list || true
+  register: vscode_repo_exists
+  failed_when: false
+  changed_when: false
 
 - name: Add VSCode repository
   apt_repository:
     repo: deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main
     state: present
   become: yes
+  when: vscode_repo_exists.rc != 0
 
 - name: Install VSCode
   apt:
@@ -19,6 +38,7 @@
     state: latest
     update_cache: true
   become: yes
+  when: vscode_exists.rc != 0
 
 - name: Set default editor
   shell: |
