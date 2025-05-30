@@ -7,36 +7,55 @@
   failed_when: false
   changed_when: false
 
+# Check for both steam binary and steam-launcher
+- name: Check if Steam launcher is installed
+  shell: command -v steam-launcher
+  register: steam_launcher_exists
+  failed_when: false
+  changed_when: false
+
 - name: Remove existing Steam installation for force install
   apt:
-    name: "{{ steam.package_name }}"
+    name: 
+      - "{{ steam.package_name }}"
+      - steam
+      - steam-launcher
     state: absent
   become: true
-  when: (force_install | default(false)) and steam_exists.rc == 0
+  when: (force_install | default(false)) and (steam_exists.rc == 0 or steam_launcher_exists.rc == 0)
   ignore_errors: true
 
 - name: Enable multiverse repository
   shell: add-apt-repository multiverse -y
   become: true
-  when: (force_install | default(false)) or steam_exists.rc != 0
+  when: (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
+
+- name: Enable i386 architecture (required for Steam)
+  shell: dpkg --add-architecture i386
+  become: true
+  when: (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
+
+- name: Update package cache after enabling multiverse and i386
+  apt:
+    update_cache: yes
+  become: true
+  when: (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
 
 - name: Install Steam required packages
   apt:
     name: "{{ steam.required_packages }}"
     state: "{{ package_state }}"
-    update_cache: "{{ update_cache }}"
   become: true
-  when: (force_install | default(false)) or steam_exists.rc != 0
+  when: (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
 
 - name: Install Steam from repository
   apt:
     name: "{{ steam.package_name }}"
     state: "{{ package_state }}"
-    update_cache: "{{ update_cache }}"
   become: true
   register: steam_apt_install
   failed_when: false
-  when: (force_install | default(false)) or steam_exists.rc != 0
+  when: (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
 
 - name: Download Steam .deb package (fallback)
   get_url:
@@ -44,21 +63,55 @@
     dest: "{{ steam_deb.dest }}"
     mode: '0644'
   when:
-    - (force_install | default(false)) or steam_exists.rc != 0
+    - (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
     - steam_apt_install.failed | default(false)
+
+- name: Install Steam dependencies for .deb package
+  apt:
+    name:
+      - python3-apt
+      - python3-aptdaemon.gtk3widgets
+      - gdebi
+      - libgl1-mesa-dri:i386
+      - libgl1-mesa-glx:i386
+      - libc6:i386
+    state: present
+  become: true
+  when:
+    - (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
+    - steam_apt_install.failed | default(false)
+  ignore_errors: true
 
 - name: Install Steam via .deb package (fallback)
   apt:
     deb: "{{ steam_deb.dest }}"
   become: true
   when:
-    - (force_install | default(false)) or steam_exists.rc != 0
+    - (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
     - steam_apt_install.failed | default(false)
+  register: steam_deb_install
+  ignore_errors: true
 
 - name: Clean up downloaded .deb file
   file:
     path: "{{ steam_deb.dest }}"
     state: absent
   when:
-    - (force_install | default(false)) or steam_exists.rc != 0
+    - (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
     - steam_apt_install.failed | default(false)
+
+# Verify installation
+- name: Verify Steam installation
+  shell: command -v steam || command -v steam-launcher
+  register: steam_final_check
+  failed_when: false
+  changed_when: false
+
+- name: Display Steam installation result
+  debug:
+    msg: >-
+      {% if steam_final_check.rc == 0 %}
+      Steam successfully installed
+      {% else %}
+      Steam installation failed - please check manually
+      {% endif %}
