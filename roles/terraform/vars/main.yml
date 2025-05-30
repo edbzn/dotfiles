@@ -1,16 +1,17 @@
 ---
 # Terraform configuration variables
 
-# Terraform repository configuration
+# Terraform configuration for the new HashiCorp installation method
 terraform:
   gpg_url: "https://apt.releases.hashicorp.com/gpg"
-  gpg_dest: "/etc/apt/trusted.gpg.d/hashicorp.asc"
+  gpg_dest: "/usr/share/keyrings/hashicorp-archive-keyring.gpg"
   gpg_mode: "0644"
-  repo_url: "deb [arch=amd64] https://apt.releases.hashicorp.com focal main"
   package_name: "terraform"
   required_packages:
     - gnupg
     - software-properties-common
+    - wget
+    - curl
 
 # Package configuration
 package_state: "latest"

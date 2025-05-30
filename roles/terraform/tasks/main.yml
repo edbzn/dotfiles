@@ -1,5 +1,5 @@
 ---
-# Terraform Installation Tasks
+# Terraform Installation Tasks - Using HashiCorp's current recommended method
 
 - name: Check if Terraform is installed
   shell: command -v terraform
@@ -7,69 +7,129 @@
   failed_when: false
   changed_when: false
 
+# Clean up old installation if force install is enabled
 - name: Remove existing Terraform installation for force install
   apt:
-    name: "{{ terraform.package_name }}"
+    name: terraform
     state: absent
   become: true
   when: (force_install | default(false)) and terraform_exists.rc == 0
   ignore_errors: true
 
-- name: Remove Terraform repository for force install
-  apt_repository:
-    repo: "{{ terraform.repo_url }}"
-    state: absent
-  become: true
-  when: (force_install | default(false))
-  ignore_errors: true
-
-- name: Remove Terraform GPG key for force install
+# Clean up old files
+- name: Remove HashiCorp old repository files
   file:
-    path: "{{ terraform.gpg_dest }}"
+    path: "/etc/apt/sources.list.d/{{ item }}"
     state: absent
-  become: true
-  when: (force_install | default(false))
-  ignore_errors: true
-
-- name: Install Terraform required packages
-  apt:
-    name: "{{ terraform.required_packages }}"
-    state: "{{ package_state }}"
-    update_cache: "{{ update_cache }}"
+  with_items:
+    - "hashicorp.list"
+    - "hashicorp-ubuntu-stable-*.list"
+    - "terraform.list"
   become: true
   when: (force_install | default(false)) or terraform_exists.rc != 0
 
-- name: Check if Terraform GPG key exists
-  stat:
-    path: "{{ terraform.gpg_dest }}"
-  register: terraform_key_exists
-
-- name: Add HashiCorp GPG key
-  get_url:
-    url: "{{ terraform.gpg_url }}"
-    dest: "{{ terraform.gpg_dest }}"
-    mode: "{{ terraform.gpg_mode }}"
-    force: true
+- name: Remove old GPG keys
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/etc/apt/trusted.gpg.d/hashicorp.asc"
+    - "/etc/apt/trusted.gpg.d/hashicorp.gpg"
+    - "/usr/share/keyrings/hashicorp-archive-keyring.gpg"
   become: true
-  when: (force_install | default(false)) or not terraform_key_exists.stat.exists
+  when: (force_install | default(false)) or terraform_exists.rc != 0
 
-- name: Check if Terraform repository exists
-  shell: grep -q "apt.releases.hashicorp.com" /etc/apt/sources.list.d/*.list || true
-  register: terraform_repo_exists
-  failed_when: false
+# Install required packages
+- name: Install required packages
+  apt:
+    name:
+      - gnupg
+      - software-properties-common
+    state: present
+    update_cache: true
+  become: true
+  when: (force_install | default(false)) or terraform_exists.rc != 0
+
+# Step 1: Download HashiCorp GPG key
+- name: Download HashiCorp GPG key
+  get_url:
+    url: https://apt.releases.hashicorp.com/gpg
+    dest: /tmp/hashicorp.asc
+    mode: '0644'
+  when: (force_install | default(false)) or terraform_exists.rc != 0
+
+# Step 2: Convert and install GPG key
+- name: Convert and install HashiCorp GPG key
+  shell: gpg --dearmor < /tmp/hashicorp.asc > /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  become: true
+  when: (force_install | default(false)) or terraform_exists.rc != 0
+
+# Step 3: Set proper permissions on GPG key
+- name: Set permissions on HashiCorp GPG key
+  file:
+    path: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+    mode: '0644'
+  become: true
+  when: (force_install | default(false)) or terraform_exists.rc != 0
+
+# Step 4: Get system architecture and codename
+- name: Get system architecture
+  shell: dpkg --print-architecture
+  register: system_arch
   changed_when: false
 
-- name: Add HashiCorp repository
-  apt_repository:
-    repo: "{{ terraform.repo_url }}"
-    state: present
-  become: true
-  when: (force_install | default(false)) or terraform_repo_exists.rc != 0
+- name: Get Ubuntu codename
+  shell: lsb_release -cs
+  register: ubuntu_codename_raw
+  changed_when: false
 
-- name: Install Terraform
-  apt:
-    name: "{{ terraform.package_name }}"
-    state: "{{ package_state }}"
-    update_cache: "{{ update_cache }}"
+- name: Map Ubuntu codename to supported version
+  set_fact:
+    ubuntu_codename: >-
+      {% if ubuntu_codename_raw.stdout in ['plucky', 'oracular'] %}noble{% 
+      elif ubuntu_codename_raw.stdout == 'mantic' %}jammy{% 
+      else %}{{ ubuntu_codename_raw.stdout }}{% endif %}
+
+# Step 5: Add HashiCorp repository
+- name: Add HashiCorp apt repository
+  lineinfile:
+    path: /etc/apt/sources.list.d/hashicorp.list
+    line: "deb [arch={{ system_arch.stdout }} signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{ ubuntu_codename }} main"
+    create: true
+    mode: '0644'
   become: true
   when: (force_install | default(false)) or terraform_exists.rc != 0
+
+# Step 4: Update apt package lists
+- name: Update apt package lists
+  apt:
+    update_cache: yes
+  become: true
+  when: (force_install | default(false)) or terraform_exists.rc != 0
+
+# Step 5: Clean up temporary GPG file
+- name: Remove temporary GPG file
+  file:
+    path: /tmp/hashicorp.asc
+    state: absent
+  when: (force_install | default(false)) or terraform_exists.rc != 0
+
+# Step 6: Install Terraform
+- name: Install Terraform
+  apt:
+    name: terraform
+    state: present
+  become: true
+  when: (force_install | default(false)) or terraform_exists.rc != 0
+
+# Verify installation
+- name: Verify Terraform installation
+  shell: terraform --version
+  register: terraform_version
+  changed_when: false
+  ignore_errors: true
+
+- name: Display Terraform version
+  debug:
+    var: terraform_version.stdout
+  when: terraform_version is defined and terraform_version.rc == 0

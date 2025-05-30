@@ -1,0 +1,102 @@
+---
+# OBS Studio Installation Tasks - Multi-method approach
+
+- name: Check if OBS Studio is already installed
+  shell: command -v obs
+  register: obs_exists
+  failed_when: false
+  changed_when: false
+
+# Method 1: Try snap installation first (most reliable)
+- name: Check if snap is available
+  shell: command -v snap
+  register: snap_available
+  failed_when: false
+  changed_when: false
+
+- name: Install OBS Studio via snap
+  snap:
+    name: "{{ obs.snap_package }}"
+    state: present
+  become: true
+  when: 
+    - snap_available.rc == 0
+    - (force_install | default(false)) or obs_exists.rc != 0
+  register: snap_install_result
+  ignore_errors: true
+
+# Method 2: Try Ubuntu repository first (more reliable than PPA)
+- name: Install OBS Studio from Ubuntu repository
+  apt:
+    name: "{{ obs.package_name }}"
+    state: present
+    update_cache: true
+  become: true
+  when: 
+    - (snap_available.rc != 0 or snap_install_result is failed)
+    - ((force_install | default(false)) or obs_exists.rc != 0)
+  register: ubuntu_install_result
+  ignore_errors: true
+
+# Method 3: Fallback to PPA if Ubuntu repo doesn't have it
+- name: Add OBS Studio PPA (fallback)
+  apt_repository:
+    repo: ppa:obsproject/obs-studio
+    state: present
+    update_cache: true
+  become: true
+  when: 
+    - ubuntu_install_result is failed
+    - ((force_install | default(false)) or obs_exists.rc != 0)
+  register: ppa_add_result
+  ignore_errors: true
+
+- name: Install OBS Studio dependencies (for PPA method)
+  apt:
+    name: "{{ obs.dependencies }}"
+    state: present
+    update_cache: true
+  become: true
+  when: 
+    - ubuntu_install_result is failed
+    - ppa_add_result is not failed
+    - ((force_install | default(false)) or obs_exists.rc != 0)
+  ignore_errors: true
+
+- name: Install OBS Studio via apt (PPA method)
+  apt:
+    name: "{{ obs.package_name }}"
+    state: present
+  become: true
+  when: 
+    - ubuntu_install_result is failed
+    - ppa_add_result is not failed
+    - ((force_install | default(false)) or obs_exists.rc != 0)
+  register: ppa_install_result
+  ignore_errors: true
+
+# Method 4: Install dependencies if any method succeeded
+- name: Install OBS Studio dependencies (post-install)
+  apt:
+    name: "{{ obs.dependencies }}"
+    state: present
+  become: true
+  when: 
+    - snap_install_result is not failed or ubuntu_install_result is not failed or ppa_install_result is not failed
+  ignore_errors: true
+
+# Verify installation
+- name: Verify OBS Studio installation
+  shell: command -v obs
+  register: obs_final_check
+  failed_when: false
+  changed_when: false
+
+- name: Display installation result
+  debug:
+    msg: >-
+      {% if obs_final_check.rc == 0 %}
+      OBS Studio successfully installed
+      {% else %}
+      OBS Studio installation failed - please check manually
+      {% endif %}
