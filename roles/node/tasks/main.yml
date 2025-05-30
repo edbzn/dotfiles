@@ -25,7 +25,28 @@
   become: true
   when: force_install | default(false) or node_exists.rc != 0 or npm_exists.rc != 0
 
-- name: Install npm global packages
+- name: Check if npm global packages are installed
+  shell: npm list -g {{ item.name | default(item) }} --depth=0
+  register: npm_package_check
+  failed_when: false
+  changed_when: false
+  with_items: "{{ npm_global_packages }}"
+  when: not (force_install | default(false))
+
+- name: Install npm global packages (force install or missing packages)
+  npm:
+    name: "{{ item.item.name | default(item.item) }}"
+    version: "{{ item.item.version | default(npm_package_version) }}"
+    global: true
+    state: "{{ 'latest' if (force_install | default(false)) else 'present' }}"
+  become: true
+  with_items: "{{ npm_package_check.results | default([]) }}"
+  when: >
+    (force_install | default(false)) or
+    (item.rc is defined and item.rc != 0)
+  tags: [npm-global]
+
+- name: Install npm global packages (when force_install is true)
   npm:
     name: "{{ item.name | default(item) }}"
     version: "{{ item.version | default(npm_package_version) }}"
@@ -33,6 +54,7 @@
     state: latest
   become: true
   with_items: "{{ npm_global_packages }}"
+  when: force_install | default(false)
   tags: [npm-global]
 
 - name: Switch to latest Node.js LTS version
@@ -69,4 +91,24 @@
 - name: Install Bun
   shell: "{{ bun.install_script }}"
   when: force_install | default(false) or bun_exists.rc != 0
+  tags: [bun]
+
+# Verify Bun installation
+- name: Verify Bun installation
+  shell: bun --version
+  register: bun_version
+  changed_when: false
+  ignore_errors: true
+  tags: [bun]
+
+- name: Display Bun version
+  debug:
+    msg: "Bun {{ bun_version.stdout }} is installed"
+  when: bun_version is defined and bun_version.rc == 0
+  tags: [bun]
+
+- name: Display Bun installation failure
+  debug:
+    msg: "Bun installation failed - please check manually"
+  when: bun_version is defined and bun_version.rc != 0
   tags: [bun]
