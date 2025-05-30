@@ -3,12 +3,20 @@
 
 # MongoDB Compass .deb package configuration
 mongodb_compass:
-  url: "https://downloads.mongodb.com/compass/mongodb-compass_1.42.4_amd64.deb"
+  version: "1.46.2"
+  url: "https://downloads.mongodb.com/compass/mongodb-compass_1.46.2_amd64.deb"
   dest: "/tmp/mongodb-compass.deb"
   package_name: "mongodb-compass"
   required_packages:
     - wget
     - gdebi-core
+    - gnupg
+    - curl
+  # MongoDB repository configuration
+  repo:
+    key_url: "https://pgp.mongodb.com/server-8.0.asc"
+    key_dest: "/usr/share/keyrings/mongodb-server-8.0.gpg"
+    source: "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/8.0 multiverse"
 
 # Package configuration
 package_state: "present"
