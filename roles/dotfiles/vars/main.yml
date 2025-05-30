@@ -9,7 +9,7 @@ stow:
 # Dotfiles paths
 dotfiles:
   source_dir: ".dotfiles"
-  base_path: "~/dotfiles"
+  base_path: "dotfiles"
 
 # Stow command configuration
 stow_command:
