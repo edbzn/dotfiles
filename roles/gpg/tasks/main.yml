@@ -1,0 +1,109 @@
+---
+- name: Install GPG packages
+  apt:
+    name:
+      - gnupg
+      - gpg-agent
+      - pinentry-gtk2
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Create GPG directory
+  file:
+    path: "{{ gpg_home }}"
+    state: directory
+    mode: '0700'
+    owner: "{{ ansible_user_id }}"
+
+- name: Check if GPG key already exists
+  shell: gpg --list-secret-keys --with-colons | grep -q "{{ gpg_email }}"
+  register: gpg_key_exists
+  failed_when: false
+  changed_when: false
+
+- name: Generate GPG key configuration
+  template:
+    src: gpg-key-config.j2
+    dest: "{{ gpg_home }}/gpg-key-config"
+    mode: '0600'
+  when: gpg_key_exists.rc != 0 or force_install | default(false)
+
+- name: Generate GPG key pair
+  shell: gpg --batch --generate-key "{{ gpg_home }}/gpg-key-config"
+  when: gpg_key_exists.rc != 0 or force_install | default(false)
+  register: gpg_key_generation
+
+- name: Get GPG key ID
+  shell: "gpg --list-secret-keys --with-colons \"{{ gpg_email }}\" | awk -F: '/^sec:/ {print $5}'"
+  register: gpg_key_id
+  changed_when: false
+
+- name: Display GPG key information
+  debug:
+    msg: |
+      GPG Key generated successfully!
+      Key ID: {{ gpg_key_id.stdout }}
+      Email: {{ gpg_email }}
+
+      To export your public key for sharing:
+      gpg --armor --export {{ gpg_key_id.stdout }}
+
+- name: Configure Git with GPG signing
+  git_config:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    scope: global
+  loop:
+    - { name: "user.name", value: "{{ git_user_name }}" }
+    - { name: "user.email", value: "{{ git_user_email }}" }
+    - { name: "user.signingkey", value: "{{ gpg_key_id.stdout }}" }
+    - { name: "commit.gpgsign", value: "true" }
+    - { name: "tag.gpgsign", value: "true" }
+
+- name: Configure GPG agent
+  blockinfile:
+    path: "{{ gpg_home }}/gpg-agent.conf"
+    create: yes
+    mode: '0600'
+    block: |
+      default-cache-ttl 28800
+      max-cache-ttl 86400
+      pinentry-program /usr/bin/pinentry-gtk-2
+
+- name: Restart GPG agent
+  shell: |
+    gpgconf --kill gpg-agent || true
+    sleep 1
+    gpgconf --launch gpg-agent
+  changed_when: false
+  failed_when: false
+
+- name: Add GPG environment to shell
+  blockinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    create: yes
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - GPG"
+    block: |
+      export GPG_TTY=$(tty)
+      if [ -f ~/.gnupg/gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
+          source ~/.gnupg/gpg-agent-info
+          export GPG_AGENT_INFO
+      fi
+
+- name: Add GPG environment to zsh
+  blockinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    create: yes
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - GPG"
+    block: |
+      export GPG_TTY=$(tty)
+      if [ -f ~/.gnupg/gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
+          source ~/.gnupg/gpg-agent-info
+          export GPG_AGENT_INFO
+      fi
+
+- name: Clean up temporary files
+  file:
+    path: "{{ gpg_home }}/gpg-key-config"
+    state: absent

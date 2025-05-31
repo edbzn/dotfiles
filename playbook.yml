@@ -9,6 +9,9 @@
     - role: zsh
       tags: [zsh, bootstrap]
 
+    - role: gpg
+      tags: [gpg, security, git]
+
     - role: docker
       tags: [docker]
 
