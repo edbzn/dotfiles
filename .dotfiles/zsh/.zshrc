@@ -54,3 +54,9 @@ alias zshrc="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias work="cd ~/work"
 alias nx-check="nx affected --target=lint,test,build --parallel=8"
+
+# Rosa
+export AWS_REGION=eu-central-1
+export AWS_PROFILE=rosa-dev
+
+. "$HOME/.local/bin/env"
