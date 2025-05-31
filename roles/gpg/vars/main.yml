@@ -1,0 +1,15 @@
+---
+# GPG Configuration Variables
+gpg_real_name: "Edouard Bozon"
+gpg_email: "bozonedouard@gmail.com"
+gpg_key_type: "RSA"
+gpg_key_length: "4096"
+gpg_expire_date: "0"  # 0 means no expiration
+gpg_passphrase: ""    # Empty for no passphrase, or set via prompt/vault
+
+# Git configuration
+git_user_name: "{{ gpg_real_name }}"
+git_user_email: "{{ gpg_email }}"
+
+# GPG directories
+gpg_home: "{{ ansible_env.HOME }}/.gnupg"
