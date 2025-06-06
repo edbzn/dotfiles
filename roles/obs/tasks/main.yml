@@ -19,7 +19,7 @@
     name: "{{ obs.snap_package }}"
     state: present
   become: true
-  when: 
+  when:
     - snap_available.rc == 0
     - (force_install | default(false)) or obs_exists.rc != 0
   register: snap_install_result
@@ -32,7 +32,7 @@
     state: present
     update_cache: true
   become: true
-  when: 
+  when:
     - (snap_available.rc != 0 or snap_install_result is failed)
     - ((force_install | default(false)) or obs_exists.rc != 0)
   register: ubuntu_install_result
@@ -45,7 +45,7 @@
     state: present
     update_cache: true
   become: true
-  when: 
+  when:
     - ubuntu_install_result is failed
     - ((force_install | default(false)) or obs_exists.rc != 0)
   register: ppa_add_result
@@ -57,7 +57,7 @@
     state: present
     update_cache: true
   become: true
-  when: 
+  when:
     - ubuntu_install_result is failed
     - ppa_add_result is not failed
     - ((force_install | default(false)) or obs_exists.rc != 0)
@@ -68,7 +68,7 @@
     name: "{{ obs.package_name }}"
     state: present
   become: true
-  when: 
+  when:
     - ubuntu_install_result is failed
     - ppa_add_result is not failed
     - ((force_install | default(false)) or obs_exists.rc != 0)
@@ -81,7 +81,7 @@
     name: "{{ obs.dependencies }}"
     state: present
   become: true
-  when: 
+  when:
     - snap_install_result is not failed or ubuntu_install_result is not failed or ppa_install_result is not failed
   ignore_errors: true
 

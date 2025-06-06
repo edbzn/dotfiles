@@ -16,7 +16,7 @@
 
 - name: Remove existing Steam installation for force install
   apt:
-    name: 
+    name:
       - "{{ steam.package_name }}"
       - steam
       - steam-launcher
