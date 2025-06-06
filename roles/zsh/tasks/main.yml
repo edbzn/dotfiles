@@ -57,6 +57,7 @@
   stat:
     path: "{{ plugins.zsh_syntax_highlighting.dest }}"
   register: zsh_highlighting_exists
+  tags: [zsh-plugins]
 
 - name: Install zsh-highlighting
   git:
@@ -66,11 +67,13 @@
     version: "{{ plugins.zsh_syntax_highlighting.version }}"
   when: force_install | default(false) or (not zsh_highlighting_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
   become: false
+  tags: [zsh-plugins]
 
 - name: Check if zsh-autosuggestions exists
   stat:
     path: "{{ plugins.zsh_autosuggestions.dest }}"
   register: zsh_autosuggestions_exists
+  tags: [zsh-plugins]
 
 - name: Install zsh-autosuggestions
   git:
@@ -80,11 +83,13 @@
     version: "{{ plugins.zsh_autosuggestions.version }}"
   when: force_install | default(false) or (not zsh_autosuggestions_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
   become: false
+  tags: [zsh-plugins]
 
 - name: Check if powerlevel10k theme exists
   stat:
     path: "{{ themes.powerlevel10k.dest }}"
   register: powerlevel10k_exists
+  tags: [zsh-plugins]
 
 - name: Install zsh powerlevel10k theme
   git:
@@ -94,11 +99,13 @@
     version: "{{ themes.powerlevel10k.version }}"
   when: force_install | default(false) or (not powerlevel10k_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
   become: false
+  tags: [zsh-plugins]
 
 - name: Check if nx-completion exists
   stat:
     path: "{{ plugins.nx_completion.dest }}"
   register: nx_completion_exists
+  tags: [zsh-plugins]
 
 - name: Install nx-completion
   git:
@@ -108,12 +115,13 @@
     version: "{{ plugins.nx_completion.version }}"
   when: force_install | default(false) or (not nx_completion_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
   become: false
-  tags: [nx-completion]
+  tags: [nx-completion, zsh-plugins]
 
 - name: Check if you-should-use plugin exists
   stat:
     path: "{{ plugins.you_should_use.dest }}"
   register: you_should_use_exists
+  tags: [zsh-plugins]
 
 - name: Install you-should-use plugin
   git:
@@ -123,11 +131,13 @@
     version: "{{ plugins.you_should_use.version }}"
   when: force_install | default(false) or (not you_should_use_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
   become: false
+  tags: [zsh-plugins]
 
 - name: Check if zsh-completions exists
   stat:
     path: "{{ plugins.zsh_completions.dest }}"
   register: zsh_completions_exists
+  tags: [zsh-plugins]
 
 - name: Install zsh-completions
   git:
@@ -137,6 +147,7 @@
     version: "{{ plugins.zsh_completions.version }}"
   when: force_install | default(false) or (not zsh_completions_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
   become: false
+  tags: [zsh-plugins]
 
 - name: Get ZSH path
   shell: which zsh
