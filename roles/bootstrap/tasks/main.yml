@@ -19,13 +19,17 @@
 
 - name: Configure Flameshot for Wayland
   shell: |
+    # Disable default GNOME Shell screenshot keybindings to prevent conflicts
+    gsettings set org.gnome.shell.keybindings screenshot '[]'
+    gsettings set org.gnome.shell.keybindings screenshot-window '[]'
+    gsettings set org.gnome.shell.keybindings show-screenshot-ui '[]'
+
     # Set up Flameshot keyboard shortcuts for Wayland
-    gsettings set org.gnome.settings-daemon.plugins.media-keys screenshot '[]'
     gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/flameshot-gui/ name 'Flameshot GUI'
-    gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/flameshot-gui/ command 'env QT_QPA_PLATFORM=wayland flameshot gui'
+    gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/flameshot-gui/ command 'flameshot gui'
     gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/flameshot-gui/ binding 'Print'
     gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/flameshot-full/ name 'Flameshot Full Screen'
-    gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/flameshot-full/ command 'env QT_QPA_PLATFORM=wayland flameshot full'
+    gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/flameshot-full/ command 'flameshot full'
     gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/flameshot-full/ binding '<Shift>Print'
     gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/flameshot-gui/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/flameshot-full/']"
   when: session_type.stdout == "wayland"
