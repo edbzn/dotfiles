@@ -116,6 +116,17 @@
   when: force_install | default(false) or (not nx_completion_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
   become: false
   tags: [nx-completion, zsh-plugins]
+  register: nx_completion_install
+
+- name: Clear nx-completion cache after force update
+  shell: ./clear-cache.zsh
+  args:
+    chdir: "{{ plugins.nx_completion.dest }}"
+  when:
+    - force_install | default(false)
+    - nx_completion_install is changed
+  become: false
+  tags: [nx-completion, zsh-plugins]
 
 - name: Check if you-should-use plugin exists
   stat:
