@@ -59,4 +59,3 @@ alias nx-check="nx affected --target=lint,test,build --parallel=8"
 export AWS_REGION=eu-central-1
 export AWS_PROFILE=rosa-dev
 
-. "$HOME/.local/bin/env"
