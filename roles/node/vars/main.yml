@@ -12,6 +12,7 @@ npm_global_packages:
   - '@angular/cli'
   - http-server
   - n
+  - '@anthropic-ai/claude-code'
 
 # Package version configuration
 npm_package_version: "latest"
