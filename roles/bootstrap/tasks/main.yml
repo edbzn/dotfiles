@@ -36,3 +36,54 @@
     gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${KEYBINDING_PATH} binding '<Shift><Super>S'
   when: session_type.stdout == "wayland"
   become: false
+
+- name: Get latest Delta release info
+  uri:
+    url: https://api.github.com/repos/dandavison/delta/releases/latest
+    return_content: yes
+  register: delta_release
+  tags:
+    - delta
+
+- name: Set Delta download URL for amd64 Debian package
+  set_fact:
+    delta_deb_url: "{{ delta_release.json.assets | selectattr('name', 'match', '.*amd64.deb$') | map(attribute='browser_download_url') | first }}"
+    delta_version: "{{ delta_release.json.tag_name }}"
+  tags:
+    - delta
+
+- name: Check if Delta is already installed
+  command: delta --version
+  register: delta_installed
+  failed_when: false
+  changed_when: false
+  tags:
+    - delta
+
+- name: Download and install Delta
+  block:
+    - name: Create temporary directory for Delta download
+      tempfile:
+        state: directory
+        suffix: delta
+      register: delta_temp_dir
+
+    - name: Download Delta Debian package
+      get_url:
+        url: "{{ delta_deb_url }}"
+        dest: "{{ delta_temp_dir.path }}/delta.deb"
+        mode: '0644'
+
+    - name: Install Delta Debian package
+      apt:
+        deb: "{{ delta_temp_dir.path }}/delta.deb"
+        state: present
+      become: true
+
+    - name: Remove temporary directory
+      file:
+        path: "{{ delta_temp_dir.path }}"
+        state: absent
+  when: delta_installed.rc != 0 or (delta_installed.stdout is defined and delta_version not in delta_installed.stdout)
+  tags:
+    - delta
