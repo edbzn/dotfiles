@@ -12,7 +12,6 @@ npm_global_packages:
   - '@angular/cli'
   - http-server
   - n
-  - diff-so-fancy
 
 # Package version configuration
 npm_package_version: "latest"
