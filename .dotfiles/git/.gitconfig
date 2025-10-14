@@ -112,6 +112,7 @@
 
 [merge]
   tool = opendiff
+	conflictStyle = zdiff3
 
 [core]
   editor = vim
@@ -121,6 +122,7 @@
   autocrlf = input
   mergeoptions = --no-edit
   ignorecase = false
+	pager = delta
 
 [pager]
   # Insanely beautiful diffs ==> npm install -g diff-so-fancy
@@ -128,7 +130,8 @@
   show = diff-so-fancy | less --tabs=2 -RF
 
 [interactive]
-	diffFilter = diff-so-fancy --patch
+	diffFilter = delta --color-only
+#	diffFilter = diff-so-fancy --patch
 
 [diff "bin"]
   # Use `hexdump` to diff binary files
@@ -151,3 +154,13 @@
   smudge = git lfs smudge %f
   required = true
 
+[tag]
+	gpgsign = true
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[delta]
+	navigate = true
