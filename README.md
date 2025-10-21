@@ -67,27 +67,26 @@ The update script provides **idempotent updates** - it only installs missing too
 
 ## Shell History Backup
 
-Preserve your command history across machines! Your shell history is automatically backed up and restored, **with automatic filtering of sensitive information**.
+Preserve your command history across machines with **automatic secret filtering and encryption**!
 
-### Backup Your History
+Your shell history is automatically backed up using the secrets management system:
 
 ```sh
-~/dotfiles/backup-history.sh
+# Run the backup script and choose option 3 or 4
+~/dotfiles/backup-secrets.sh
+
+# Commit encrypted history
+git add secrets/
+git commit -m "Add encrypted shell history"
 ```
 
-This will:
-- Copy your `~/.zsh_history` to `.dotfiles/zsh/.zsh_history.backup`
-- Show you how many commands are in your current and backup history
-- Provide instructions to commit and push the backup
+**Features:**
+- 🔒 Encrypted with ansible-vault
+- 🧹 Automatically filters out secrets and tokens (20+ patterns)
+- 🔄 Auto-restores on new machines
+- ✅ Safe to commit to public repos
 
-### Automatic Restore
-
-When you run the install script on a new machine, your shell history will be automatically restored if a backup exists in the repository.
-
-**Privacy Note:** The history backup file is commented out in `.gitignore`. To track your history in git:
-1. Edit `.gitignore` and remove the comment from `.dotfiles/zsh/.zsh_history.backup`
-2. Commit and push your history backup
-3. Be aware that command history may contain sensitive information
+See [Secrets Management](#-secrets-management) section below for full details.
 
 ## 🔐 Secrets Management
 
@@ -105,7 +104,7 @@ chmod 600 ~/dotfiles/.vault_password
 
 # 3. Commit encrypted keys
 git add secrets/
-git commit -m "Add encrypted SSH and GPG keys"
+git commit -m "Add encrypted SSH, GPG keys, and shell history"
 git push
 ```
 
@@ -125,6 +124,7 @@ chmod 600 ~/dotfiles/.vault_password
 **What's Encrypted:**
 - SSH private and public keys
 - GPG private keys
+- Shell history (with automatic secret filtering)
 - Safe to commit - only you have the password! 🔒
 
 ## Tools

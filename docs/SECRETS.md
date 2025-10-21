@@ -35,7 +35,8 @@ Use the backup script to encrypt and store your keys:
 ```
 
 The script will:
-- Prompt you to select SSH keys, GPG keys, or both
+- Prompt you to select SSH keys, GPG keys, shell history, or all
+- Automatically filter secrets from shell history
 - Encrypt them with your vault password
 - Save encrypted versions to `secrets/` directory
 
@@ -75,16 +76,20 @@ The installation will automatically:
 - Detect encrypted keys in `secrets/` directory
 - Decrypt and restore your SSH keys to `~/.ssh/`
 - Import your GPG keys
+- Restore your shell history (with secrets already filtered)
 - Set correct permissions
 
 ## 📋 What Gets Encrypted
 
 ### SSH Keys
-- `~/.ssh/id_ed25519` → `secrets/id_ed25519.vault`
+- `~/.ssh/id_ed25519` → `secrets/id_ed25519.vault` (or your key name)
 - `~/.ssh/id_ed25519.pub` → `secrets/id_ed25519.pub.vault`
 
 ### GPG Keys
 - Your GPG private key → `secrets/gpg-private-key.asc.vault`
+
+### Shell History
+- `~/.zsh_history` → `secrets/zsh_history.vault` (secrets automatically filtered)
 
 ## 🔧 Manual Operations
 

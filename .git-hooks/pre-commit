@@ -29,12 +29,8 @@ fi
 
 # Check for potential secrets in staged files
 echo "✓ Checking for potential secrets..."
-if git diff --cached --name-only | grep -q ".zsh_history.backup"; then
-    if git diff --cached .dotfiles/zsh/.zsh_history.backup | grep -iE "^\+.*(api[_-]?key|token|password|secret)"; then
-        echo "❌ ERROR: Potential secrets detected in history backup!"
-        echo "Run ./backup-history.sh to create a filtered backup."
-        exit 1
-    fi
+if git diff --cached --name-only | grep -qE "(\.vault|secrets/)"; then
+    echo "✓ Encrypted secrets detected - assuming they are properly encrypted with ansible-vault"
 fi
 
 echo "✅ All pre-commit checks passed!"

@@ -28,9 +28,10 @@ mkdir -p "$SECRETS_DIR"
 echo "📋 Select what to backup:"
 echo "  1) SSH keys"
 echo "  2) GPG keys"
-echo "  3) Both"
+echo "  3) Shell history"
+echo "  4) All"
 echo ""
-read -p "Enter your choice (1-3): " choice
+read -p "Enter your choice (1-4): " choice
 
 encrypt_ssh_keys() {
     echo ""
@@ -129,6 +130,74 @@ encrypt_gpg_keys() {
     echo "✅ GPG key encrypted and saved to $SECRETS_DIR/"
 }
 
+encrypt_shell_history() {
+    echo ""
+    echo "🔑 Encrypting shell history..."
+
+    if [ ! -f "$HOME/.zsh_history" ]; then
+        echo "⚠️  Shell history not found at ~/.zsh_history"
+        return 1
+    fi
+
+    # Create temporary directory
+    TEMP_DIR=$(mktemp -d)
+
+    echo "🧹 Filtering secrets from history..."
+
+    # Patterns to filter out (case-insensitive)
+    FILTER_PATTERNS=(
+        "export.*API.*KEY"
+        "export.*TOKEN"
+        "export.*SECRET"
+        "export.*PASSWORD"
+        "AWS_.*KEY"
+        "GITHUB_TOKEN"
+        "NPM_TOKEN"
+        "api[_-]?key"
+        "api[_-]?secret"
+        "access[_-]?token"
+        "auth[_-]?token"
+        "bearer.*token"
+        "password"
+        "passwd"
+        "[0-9a-fA-F]{32,}"              # Long hex strings (API keys)
+        "NRAK-[A-Z0-9]+"                # New Relic keys
+        "xox[baprs]-[0-9a-zA-Z-]+"      # Slack tokens
+        "ghp_[0-9a-zA-Z]{36}"           # GitHub Personal Access Tokens
+        "gho_[0-9a-zA-Z]{36}"           # GitHub OAuth tokens
+        "sk-[0-9a-zA-Z]{20,}"           # OpenAI API keys
+        "AIza[0-9A-Za-z\\-_]{35}"       # Google API keys
+    )
+
+    # Build grep pattern
+    GREP_PATTERN=$(IFS="|"; echo "${FILTER_PATTERNS[*]}")
+
+    # Get original size
+    ORIGINAL_SIZE=$(wc -l < "$HOME/.zsh_history")
+
+    # Filter out sensitive commands
+    grep -viE "$GREP_PATTERN" "$HOME/.zsh_history" > "$TEMP_DIR/zsh_history_filtered" || true
+
+    FILTERED_SIZE=$(wc -l < "$TEMP_DIR/zsh_history_filtered")
+    REMOVED=$((ORIGINAL_SIZE - FILTERED_SIZE))
+
+    if [[ $REMOVED -gt 0 ]]; then
+        echo "⚠️  Removed $REMOVED potentially sensitive commands"
+    fi
+    echo "✅ Filtered history: $FILTERED_SIZE commands"
+
+    # Encrypt with ansible-vault
+    ansible-vault encrypt "$TEMP_DIR/zsh_history_filtered" \
+        --vault-id default@"$VAULT_PASSWORD_FILE" \
+        --encrypt-vault-id default \
+        --output="$SECRETS_DIR/zsh_history.vault"
+
+    # Clean up temporary directory
+    rm -rf "$TEMP_DIR"
+
+    echo "✅ Shell history encrypted and saved to $SECRETS_DIR/"
+}
+
 case $choice in
     1)
         encrypt_ssh_keys
@@ -137,8 +206,12 @@ case $choice in
         encrypt_gpg_keys
         ;;
     3)
+        encrypt_shell_history
+        ;;
+    4)
         encrypt_ssh_keys
         encrypt_gpg_keys
+        encrypt_shell_history
         ;;
     *)
         echo "❌ Invalid choice"
