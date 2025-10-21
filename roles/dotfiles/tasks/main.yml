@@ -19,9 +19,14 @@
   with_items: '{{ files.files }}'
   vars:
     user_home: "{{ lookup('env', 'HOME') }}"
+    package_name: "{{ item.path | basename }}"
+    is_force: "{{ force_install | default(false) }}"
   environment:
     STOW_DIR: "{{ user_home }}/{{ dotfiles.base_path }}/{{ dotfiles.source_dir }}"
-  shell: |
-    stow {{ stow_command.target_option }} {{ user_home }} {{ stow_command.stow_option }} {{ item.path | basename }}
+  shell: >
+    stow {{ stow_command.target_option }} {{ user_home }}
+    {% if is_force %}--restow{% endif %}
+    {{ stow_command.stow_option }} {{ package_name }}
+    || true
   changed_when: false
   become: false
