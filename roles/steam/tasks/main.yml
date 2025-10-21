@@ -25,6 +25,14 @@
   when: (force_install | default(false)) and (steam_exists.rc == 0 or steam_launcher_exists.rc == 0)
   ignore_errors: true
 
+- name: Ensure software-properties-common is installed
+  apt:
+    name: software-properties-common
+    state: present
+    update_cache: yes
+  become: true
+  when: (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
+
 - name: Enable multiverse repository
   shell: add-apt-repository multiverse -y
   become: true
