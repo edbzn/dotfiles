@@ -2,7 +2,7 @@
 # GIMP Installation Tasks
 
 - name: Check if GIMP is installed
-  shell: command -v gimp
+  command: command -v gimp
   register: gimp_exists
   failed_when: false
   changed_when: false

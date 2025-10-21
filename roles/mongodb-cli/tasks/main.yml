@@ -8,7 +8,9 @@
   changed_when: false
 
 - name: Check if MongoDB CLI package is installed
-  shell: dpkg -l | grep -q mongodb-mongosh
+  shell: set -o pipefail && dpkg -l | grep -q mongodb-mongosh
+  args:
+    executable: /bin/bash
   register: mongodb_cli_package_installed
   failed_when: false
   changed_when: false
@@ -36,7 +38,10 @@
 
 - name: Add MongoDB GPG key
   shell: |
+    set -o pipefail
     wget -qO - https://www.mongodb.org/static/pgp/server-7.0.asc | gpg --dearmor | sudo tee /usr/share/keyrings/mongodb-server-7.0.gpg > /dev/null
+  args:
+    executable: /bin/bash
   become: true
   when: (force_install | default(false) or mongodb_cli_installed.rc != 0) and not mongodb_gpg_key_exists.stat.exists
 
@@ -48,9 +53,12 @@
 
 - name: Add MongoDB repository
   shell: |
+    set -o pipefail
     echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg] \
     https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/7.0 multiverse" | \
     sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+  args:
+    executable: /bin/bash
   become: true
   when: (force_install | default(false) or mongodb_cli_installed.rc != 0) and mongodb_repo_exists.rc != 0
 

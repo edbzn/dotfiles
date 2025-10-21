@@ -18,7 +18,13 @@ fi
 # Check if yamllint is installed
 if command -v yamllint &> /dev/null; then
     echo "✓ Running YAML lint..."
-    yamllint -c .yamllint.yml . || echo "⚠️  YAML lint found issues (not blocking)"
+    yamllint -c .yamllint.yml .
+fi
+
+# Check if ansible-lint is installed
+if command -v ansible-lint &> /dev/null; then
+    echo "✓ Running Ansible lint..."
+    ansible-lint || echo "⚠️  Ansible lint found issues (not blocking)"
 fi
 
 # Check if shellcheck is installed

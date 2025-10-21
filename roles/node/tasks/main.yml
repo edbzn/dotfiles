@@ -1,11 +1,11 @@
 - name: Check if Node.js is installed
-  shell: command -v node
+  command: command -v node
   register: node_exists
   failed_when: false
   changed_when: false
 
 - name: Check if npm is installed
-  shell: command -v npm
+  command: command -v npm
   register: npm_exists
   failed_when: false
   changed_when: false
@@ -67,7 +67,7 @@
   become: true
 
 - name: Check Bun installed
-  shell: command -v bun
+  command: command -v bun
   register: bun_exists
   ignore_errors: true
   tags: [bun]

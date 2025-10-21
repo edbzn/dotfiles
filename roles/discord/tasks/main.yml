@@ -8,7 +8,9 @@
   changed_when: false
 
 - name: Check if Discord is already installed (deb)
-  shell: dpkg -l | grep -q discord
+  shell: set -o pipefail && dpkg -l | grep -q discord
+  args:
+    executable: /bin/bash
   register: discord_deb_installed
   failed_when: false
   changed_when: false

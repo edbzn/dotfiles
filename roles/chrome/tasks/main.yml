@@ -1,5 +1,5 @@
 - name: Check if Google Chrome is installed
-  shell: command -v google-chrome
+  command: command -v google-chrome
   register: chrome_exists
   failed_when: false
   changed_when: false

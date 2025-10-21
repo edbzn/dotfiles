@@ -17,7 +17,9 @@
     owner: "{{ ansible_user_id }}"
 
 - name: Check if GPG key already exists
-  shell: gpg --list-secret-keys --with-colons | grep -q "{{ gpg_email }}"
+  shell: set -o pipefail && gpg --list-secret-keys --with-colons | grep -q "{{ gpg_email }}"
+  args:
+    executable: /bin/bash
   register: gpg_key_exists
   failed_when: false
   changed_when: false
@@ -35,7 +37,11 @@
   register: gpg_key_generation
 
 - name: Get GPG key ID
-  shell: "gpg --list-secret-keys --with-colons \"{{ gpg_email }}\" | awk -F: '/^sec:/ {print $5}' | head -n 1"
+  shell: |
+    set -o pipefail
+    gpg --list-secret-keys --with-colons "{{ gpg_email }}" | awk -F: '/^sec:/ {print $5}' | head -n 1
+  args:
+    executable: /bin/bash
   register: gpg_key_id
   changed_when: false
 

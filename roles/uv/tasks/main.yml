@@ -31,7 +31,10 @@
 
 - name: Download and install UV using official installer
   shell: |
+    set -o pipefail
     curl -LsSf {{ uv.install_script_url }} | sh
+  args:
+    executable: /bin/bash
   environment:
     CARGO_HOME: "{{ ansible_env.HOME }}/.cargo"
   register: uv_install_result
@@ -54,14 +57,14 @@
   when:
     - force_install | default(false) or uv_installed.rc != 0
     - ansible_env.SHELL is defined and 'zsh' in ansible_env.SHELL
-  ignore_errors: yes
+  ignore_errors: true
 
 - name: Source bashrc to update PATH
   shell: source {{ ansible_env.HOME }}/.bashrc
   args:
     executable: /bin/bash
   when: force_install | default(false) or uv_installed.rc != 0
-  ignore_errors: yes
+  ignore_errors: true
 
 - name: Verify UV installation
   shell: "{{ uv.install_dir }}/uv --version"

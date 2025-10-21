@@ -2,7 +2,7 @@
 # ZSH Installation and Configuration Tasks
 
 - name: Check if Zsh is installed
-  shell: command -v zsh
+  command: command -v zsh
   register: zsh_exists
   failed_when: false
   changed_when: false

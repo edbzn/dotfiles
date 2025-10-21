@@ -1,5 +1,5 @@
 - name: Check if Docker is installed
-  shell: command -v docker
+  command: command -v docker
   register: docker_exists
   failed_when: false
   changed_when: false
@@ -72,7 +72,9 @@
   when: force_install | default(false) or docker_exists.rc != 0
 
 - name: Check if user is in docker group
-  shell: groups {{ ansible_user_id }} | grep -q docker
+  shell: set -o pipefail && groups {{ ansible_user_id }} | grep -q docker
+  args:
+    executable: /bin/bash
   register: user_in_docker_group
   failed_when: false
   changed_when: false

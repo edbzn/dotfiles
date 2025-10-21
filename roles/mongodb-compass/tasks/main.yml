@@ -2,13 +2,15 @@
 # MongoDB Compass Installation Tasks
 
 - name: Check if MongoDB Compass is installed
-  shell: command -v mongodb-compass
+  command: command -v mongodb-compass
   register: mongodb_compass_exists
   failed_when: false
   changed_when: false
 
 - name: Check if MongoDB Compass package is installed
-  shell: dpkg -l | grep -q mongodb-compass
+  shell: set -o pipefail && dpkg -l | grep -q mongodb-compass
+  args:
+    executable: /bin/bash
   register: mongodb_compass_package_exists
   failed_when: false
   changed_when: false
@@ -55,7 +57,7 @@
 
 # Verify installation
 - name: Verify MongoDB Compass installation
-  shell: command -v mongodb-compass
+  command: command -v mongodb-compass
   register: mongodb_compass_final_check
   failed_when: false
   changed_when: false

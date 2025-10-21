@@ -2,7 +2,7 @@
 # Terraform Installation Tasks - Using HashiCorp's current recommended method
 
 - name: Check if Terraform is installed
-  shell: command -v terraform
+  command: command -v terraform
   register: terraform_exists
   failed_when: false
   changed_when: false

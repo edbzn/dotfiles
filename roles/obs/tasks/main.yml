@@ -2,14 +2,14 @@
 # OBS Studio Installation Tasks - Multi-method approach
 
 - name: Check if OBS Studio is already installed
-  shell: command -v obs
+  command: command -v obs
   register: obs_exists
   failed_when: false
   changed_when: false
 
 # Method 1: Try snap installation first (most reliable)
 - name: Check if snap is available
-  shell: command -v snap
+  command: command -v snap
   register: snap_available
   failed_when: false
   changed_when: false
@@ -87,7 +87,7 @@
 
 # Verify installation
 - name: Verify OBS Studio installation
-  shell: command -v obs
+  command: command -v obs
   register: obs_final_check
   failed_when: false
   changed_when: false

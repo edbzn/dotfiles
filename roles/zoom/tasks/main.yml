@@ -2,13 +2,15 @@
 # Zoom Installation Tasks
 
 - name: Check if Zoom is installed
-  shell: command -v zoom
+  command: command -v zoom
   register: zoom_exists
   failed_when: false
   changed_when: false
 
 - name: Check if Zoom package is installed
-  shell: dpkg -l | grep -q zoom
+  shell: set -o pipefail && dpkg -l | grep -q zoom
+  args:
+    executable: /bin/bash
   register: zoom_package_exists
   failed_when: false
   changed_when: false

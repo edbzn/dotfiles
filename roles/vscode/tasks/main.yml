@@ -1,5 +1,5 @@
 - name: Check if VSCode is installed
-  shell: command -v code
+  command: command -v code
   register: vscode_exists
   failed_when: false
   changed_when: false

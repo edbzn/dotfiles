@@ -2,14 +2,14 @@
 # Steam Installation Tasks
 
 - name: Check if Steam is installed
-  shell: command -v steam
+  command: command -v steam
   register: steam_exists
   failed_when: false
   changed_when: false
 
 # Check for both steam binary and steam-launcher
 - name: Check if Steam launcher is installed
-  shell: command -v steam-launcher
+  command: command -v steam-launcher
   register: steam_launcher_exists
   failed_when: false
   changed_when: false
@@ -110,7 +110,7 @@
 
 # Verify installation
 - name: Verify Steam installation
-  shell: command -v steam || command -v steam-launcher
+  command: command -v steam || command -v steam-launcher
   register: steam_final_check
   failed_when: false
   changed_when: false
