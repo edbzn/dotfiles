@@ -41,14 +41,21 @@
   uri:
     url: https://api.github.com/repos/dandavison/delta/releases/latest
     return_content: yes
+    body_format: json
   register: delta_release
+  tags:
+    - delta
+
+- name: Parse Delta release JSON
+  set_fact:
+    delta_release_data: "{{ delta_release.content | from_json }}"
   tags:
     - delta
 
 - name: Set Delta download URL for amd64 Debian package
   set_fact:
-    delta_deb_url: "{{ delta_release.json.assets | selectattr('name', 'match', '.*amd64.deb$') | map(attribute='browser_download_url') | first }}"
-    delta_version: "{{ delta_release.json.tag_name }}"
+    delta_deb_url: "{{ delta_release_data.assets | selectattr('name', 'match', '.*amd64.deb$') | map(attribute='browser_download_url') | first }}"
+    delta_version: "{{ delta_release_data.tag_name }}"
   tags:
     - delta
 
