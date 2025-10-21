@@ -100,6 +100,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ansible
 
+      - name: Create dummy vault password for CI
+        run: |
+          echo "ci-dummy-password" > .vault_password
+
       - name: Test bootstrap role
         run: |
           ansible-playbook playbook.yml \
