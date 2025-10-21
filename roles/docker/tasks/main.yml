@@ -9,7 +9,7 @@
     name: "{{ docker_packages + docker_required_packages }}"
     state: absent
   become: true
-  when: force_install | default(false) and docker_exists.rc == 0
+  when: force_install | default(false) | bool and docker_exists.rc == 0
   ignore_errors: true
 
 - name: Remove Docker repository for force install
@@ -17,7 +17,7 @@
     repo: "{{ docker_repository.repo_url }}"
     state: absent
   become: true
-  when: force_install | default(false)
+  when: force_install | default(false) | bool
   ignore_errors: true
 
 - name: Remove Docker GPG key for force install
@@ -25,7 +25,7 @@
     path: "{{ docker_repository.gpg_dest }}"
     state: absent
   become: true
-  when: force_install | default(false)
+  when: force_install | default(false) | bool
   ignore_errors: true
 
 - name: Install Docker required packages
@@ -34,7 +34,7 @@
     state: "{{ package_state }}"
     update_cache: "{{ update_cache }}"
   become: true
-  when: force_install | default(false) or docker_exists.rc != 0
+  when: force_install | default(false) | bool or docker_exists.rc != 0
 
 - name: Check if Docker GPG key exists
   stat:
@@ -48,7 +48,7 @@
     mode: "{{ docker_repository.gpg_mode }}"
     force: true
   become: true
-  when: force_install | default(false) or not docker_key_exists.stat.exists
+  when: force_install | default(false) | bool or not docker_key_exists.stat.exists
 
 - name: Check if Docker repository exists
   shell: grep -q "download.docker.com/linux/ubuntu" /etc/apt/sources.list.d/*.list || true
@@ -61,7 +61,7 @@
     repo: "{{ docker_repository.repo_url }}"
     state: present
   become: true
-  when: force_install | default(false) or docker_repo_exists.rc != 0
+  when: force_install | default(false) | bool or docker_repo_exists.rc != 0
 
 - name: Install docker-ce and docker-compose-plugin
   apt:
@@ -69,7 +69,7 @@
     state: "{{ package_state }}"
     update_cache: "{{ update_cache }}"
   become: true
-  when: force_install | default(false) or docker_exists.rc != 0
+  when: force_install | default(false) | bool or docker_exists.rc != 0
 
 - name: Check if user is in docker group
   shell: set -o pipefail && groups {{ ansible_user_id }} | grep -q docker
@@ -85,4 +85,4 @@
     groups: "{{ docker_group }}"
     append: true
   become: true
-  when: force_install | default(false) or user_in_docker_group.rc != 0
+  when: force_install | default(false) | bool or user_in_docker_group.rc != 0

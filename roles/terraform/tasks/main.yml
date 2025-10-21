@@ -13,7 +13,7 @@
     name: terraform
     state: absent
   become: true
-  when: (force_install | default(false)) and terraform_exists.rc == 0
+  when: (force_install | default(false) | bool) and terraform_exists.rc == 0
   ignore_errors: true
 
 # Clean up old files
@@ -26,7 +26,7 @@
     - "hashicorp-ubuntu-stable-*.list"
     - "terraform.list"
   become: true
-  when: (force_install | default(false)) or terraform_exists.rc != 0
+  when: (force_install | default(false) | bool) or terraform_exists.rc != 0
 
 - name: Remove old GPG keys
   file:
@@ -37,7 +37,7 @@
     - "/etc/apt/trusted.gpg.d/hashicorp.gpg"
     - "/usr/share/keyrings/hashicorp-archive-keyring.gpg"
   become: true
-  when: (force_install | default(false)) or terraform_exists.rc != 0
+  when: (force_install | default(false) | bool) or terraform_exists.rc != 0
 
 # Install required packages
 - name: Install required packages
@@ -48,7 +48,7 @@
     state: present
     update_cache: true
   become: true
-  when: (force_install | default(false)) or terraform_exists.rc != 0
+  when: (force_install | default(false) | bool) or terraform_exists.rc != 0
 
 # Step 1: Download HashiCorp GPG key
 - name: Download HashiCorp GPG key
@@ -56,13 +56,13 @@
     url: https://apt.releases.hashicorp.com/gpg
     dest: /tmp/hashicorp.asc
     mode: '0644'
-  when: (force_install | default(false)) or terraform_exists.rc != 0
+  when: (force_install | default(false) | bool) or terraform_exists.rc != 0
 
 # Step 2: Convert and install GPG key
 - name: Convert and install HashiCorp GPG key
   shell: gpg --dearmor < /tmp/hashicorp.asc > /usr/share/keyrings/hashicorp-archive-keyring.gpg
   become: true
-  when: (force_install | default(false)) or terraform_exists.rc != 0
+  when: (force_install | default(false) | bool) or terraform_exists.rc != 0
 
 # Step 3: Set proper permissions on GPG key
 - name: Set permissions on HashiCorp GPG key
@@ -70,7 +70,7 @@
     path: /usr/share/keyrings/hashicorp-archive-keyring.gpg
     mode: '0644'
   become: true
-  when: (force_install | default(false)) or terraform_exists.rc != 0
+  when: (force_install | default(false) | bool) or terraform_exists.rc != 0
 
 # Step 4: Get system architecture and codename
 - name: Get system architecture
@@ -98,21 +98,21 @@
     create: true
     mode: '0644'
   become: true
-  when: (force_install | default(false)) or terraform_exists.rc != 0
+  when: (force_install | default(false) | bool) or terraform_exists.rc != 0
 
 # Step 4: Update apt package lists
 - name: Update apt package lists
   apt:
     update_cache: yes
   become: true
-  when: (force_install | default(false)) or terraform_exists.rc != 0
+  when: (force_install | default(false) | bool) or terraform_exists.rc != 0
 
 # Step 5: Clean up temporary GPG file
 - name: Remove temporary GPG file
   file:
     path: /tmp/hashicorp.asc
     state: absent
-  when: (force_install | default(false)) or terraform_exists.rc != 0
+  when: (force_install | default(false) | bool) or terraform_exists.rc != 0
 
 # Step 6: Install Terraform
 - name: Install Terraform
@@ -120,7 +120,7 @@
     name: terraform
     state: present
   become: true
-  when: (force_install | default(false)) or terraform_exists.rc != 0
+  when: (force_install | default(false) | bool) or terraform_exists.rc != 0
 
 # Verify installation
 - name: Verify Terraform installation

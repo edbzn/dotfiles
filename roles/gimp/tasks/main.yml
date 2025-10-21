@@ -12,7 +12,7 @@
     name: "{{ gimp.package_name }}"
     state: absent
   become: true
-  when: (force_install | default(false)) and gimp_exists.rc == 0
+  when: (force_install | default(false) | bool) and gimp_exists.rc == 0
   ignore_errors: true
 
 - name: Remove GIMP plugins for force install
@@ -20,7 +20,7 @@
     name: "{{ gimp.plugins_packages }}"
     state: absent
   become: true
-  when: (force_install | default(false)) and gimp_exists.rc == 0
+  when: (force_install | default(false) | bool) and gimp_exists.rc == 0
   ignore_errors: true
 
 - name: Install GIMP
@@ -29,7 +29,7 @@
     state: "{{ package_state }}"
     update_cache: "{{ update_cache }}"
   become: true
-  when: (force_install | default(false)) or gimp_exists.rc != 0
+  when: (force_install | default(false) | bool) or gimp_exists.rc != 0
 
 - name: Install GIMP plugins and extras
   apt:
@@ -38,4 +38,4 @@
     update_cache: "{{ update_cache }}"
   become: true
   ignore_errors: true  # Some plugins might not be available in all Ubuntu versions
-  when: (force_install | default(false)) or gimp_exists.rc != 0
+  when: (force_install | default(false) | bool) or gimp_exists.rc != 0

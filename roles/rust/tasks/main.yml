@@ -4,7 +4,7 @@
   ignore_errors: true
 
 - name: Download Rustup Installer
-  when: force_install | default(false) or cargo_exists is failed
+  when: force_install | default(false) | bool or cargo_exists is failed
   get_url:
     url: "{{ rust.installer_url }}"
     dest: "{{ rust.installer_dest }}"
@@ -12,5 +12,5 @@
     force: "{{ force_download }}"
 
 - name: Install Rust & Cargo
-  when: force_install | default(false) or cargo_exists is failed
+  when: force_install | default(false) | bool or cargo_exists is failed
   shell: "{{ rust.installer_dest }} {{ rust.installer_args }}"

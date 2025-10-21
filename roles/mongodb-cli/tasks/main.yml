@@ -20,7 +20,7 @@
     name: "{{ mongodb_cli.package_name }}"
     state: absent
   become: true
-  when: force_install | default(false) and mongodb_cli_package_installed.rc == 0
+  when: force_install | default(false) | bool and mongodb_cli_package_installed.rc == 0
   ignore_errors: true
 
 - name: Install MongoDB CLI required packages
@@ -29,7 +29,7 @@
     state: present
     update_cache: true
   become: true
-  when: force_install | default(false) or mongodb_cli_installed.rc != 0
+  when: force_install | default(false) | bool or mongodb_cli_installed.rc != 0
 
 - name: Check if MongoDB GPG key exists
   stat:
@@ -43,7 +43,7 @@
   args:
     executable: /bin/bash
   become: true
-  when: (force_install | default(false) or mongodb_cli_installed.rc != 0) and not mongodb_gpg_key_exists.stat.exists
+  when: (force_install | default(false) | bool or mongodb_cli_installed.rc != 0) and not mongodb_gpg_key_exists.stat.exists
 
 - name: Check if MongoDB repository exists
   shell: grep -q "repo.mongodb.org" /etc/apt/sources.list.d/mongodb-org-7.0.list
@@ -60,13 +60,13 @@
   args:
     executable: /bin/bash
   become: true
-  when: (force_install | default(false) or mongodb_cli_installed.rc != 0) and mongodb_repo_exists.rc != 0
+  when: (force_install | default(false) | bool or mongodb_cli_installed.rc != 0) and mongodb_repo_exists.rc != 0
 
 - name: Update apt cache after adding MongoDB repository
   apt:
     update_cache: true
   become: true
-  when: (force_install | default(false) or mongodb_cli_installed.rc != 0) and mongodb_repo_exists.rc != 0
+  when: (force_install | default(false) | bool or mongodb_cli_installed.rc != 0) and mongodb_repo_exists.rc != 0
 
 - name: Install MongoDB CLI from repository
   apt:
@@ -75,7 +75,7 @@
   become: true
   register: mongodb_cli_repo_install
   failed_when: false
-  when: force_install | default(false) or mongodb_cli_installed.rc != 0
+  when: force_install | default(false) | bool or mongodb_cli_installed.rc != 0
 
 - name: Download MongoDB CLI .deb package (fallback)
   get_url:

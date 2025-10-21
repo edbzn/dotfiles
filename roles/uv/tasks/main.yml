@@ -20,14 +20,14 @@
     state: present
     update_cache: true
   become: true
-  when: force_install | default(false) or uv_installed.rc != 0
+  when: force_install | default(false) | bool or uv_installed.rc != 0
 
 - name: Create install directory if it doesn't exist
   file:
     path: "{{ uv.install_dir }}"
     state: directory
     mode: '0755'
-  when: force_install | default(false) or uv_installed.rc != 0
+  when: force_install | default(false) | bool or uv_installed.rc != 0
 
 - name: Download and install UV using official installer
   shell: |
@@ -38,7 +38,7 @@
   environment:
     CARGO_HOME: "{{ ansible_env.HOME }}/.cargo"
   register: uv_install_result
-  when: force_install | default(false) or uv_installed.rc != 0
+  when: force_install | default(false) | bool or uv_installed.rc != 0
   timeout: "{{ uv.timeout }}"
 
 - name: Add UV to PATH in bashrc if not present
@@ -47,7 +47,7 @@
     line: 'export PATH="$HOME/.cargo/bin:$PATH"'
     state: present
     create: yes
-  when: force_install | default(false) or uv_installed.rc != 0
+  when: force_install | default(false) | bool or uv_installed.rc != 0
 
 - name: Add UV to PATH in zshrc if zsh is installed and zshrc exists
   lineinfile:
@@ -55,7 +55,7 @@
     line: 'export PATH="$HOME/.cargo/bin:$PATH"'
     state: present
   when:
-    - force_install | default(false) or uv_installed.rc != 0
+    - force_install | default(false) | bool or uv_installed.rc != 0
     - ansible_env.SHELL is defined and 'zsh' in ansible_env.SHELL
   ignore_errors: true
 
@@ -63,7 +63,7 @@
   shell: source {{ ansible_env.HOME }}/.bashrc
   args:
     executable: /bin/bash
-  when: force_install | default(false) or uv_installed.rc != 0
+  when: force_install | default(false) | bool or uv_installed.rc != 0
   ignore_errors: true
 
 - name: Verify UV installation

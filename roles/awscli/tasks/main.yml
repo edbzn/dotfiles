@@ -12,7 +12,7 @@
     path: "{{ awscli.install_dir }}"
     state: absent
   become: true
-  when: (force_install | default(false)) and awscli_exists.rc == 0
+  when: (force_install | default(false) | bool) and awscli_exists.rc == 0
   ignore_errors: true
 
 - name: Remove AWS CLI binary symlinks for force install
@@ -23,7 +23,7 @@
   loop:
     - aws
     - aws_completer
-  when: (force_install | default(false)) and awscli_exists.rc == 0
+  when: (force_install | default(false) | bool) and awscli_exists.rc == 0
   ignore_errors: true
 
 - name: Install AWS CLI required packages
@@ -32,7 +32,7 @@
     state: "{{ package_state }}"
     update_cache: "{{ update_cache }}"
   become: true
-  when: (force_install | default(false)) or awscli_exists.rc != 0
+  when: (force_install | default(false) | bool) or awscli_exists.rc != 0
 
 - name: Download AWS CLI installer
   get_url:
@@ -40,7 +40,7 @@
     dest: "{{ awscli.installer_dest }}"
     mode: '0644'
     force: true
-  when: (force_install | default(false)) or awscli_exists.rc != 0
+  when: (force_install | default(false) | bool) or awscli_exists.rc != 0
 
 - name: Extract AWS CLI installer
   unarchive:
@@ -48,12 +48,12 @@
     dest: "/tmp"
     remote_src: true
     creates: "{{ awscli.extract_dir }}"
-  when: (force_install | default(false)) or awscli_exists.rc != 0
+  when: (force_install | default(false) | bool) or awscli_exists.rc != 0
 
 - name: Install AWS CLI
   shell: "{{ awscli.extract_dir }}/install --install-dir {{ awscli.install_dir }} --bin-dir {{ awscli.bin_dir }}"
   become: true
-  when: (force_install | default(false)) or awscli_exists.rc != 0
+  when: (force_install | default(false) | bool) or awscli_exists.rc != 0
 
 - name: Clean up AWS CLI installer files
   file:
@@ -62,4 +62,4 @@
   loop:
     - "{{ awscli.installer_dest }}"
     - "{{ awscli.extract_dir }}"
-  when: (force_install | default(false)) or awscli_exists.rc != 0
+  when: (force_install | default(false) | bool) or awscli_exists.rc != 0
