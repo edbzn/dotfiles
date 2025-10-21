@@ -94,7 +94,7 @@
       file:
         path: "{{ delta_temp_dir.path }}"
         state: absent
-  when: 
+  when:
     - not ansible_check_mode
     - delta_deb_url is defined
     - delta_version is defined

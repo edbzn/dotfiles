@@ -69,4 +69,3 @@
     {{ default_editor.command }}
   changed_when: false
   become: false
-

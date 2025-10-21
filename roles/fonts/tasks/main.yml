@@ -40,4 +40,3 @@
   shell: |
     {{ font_cache.command }}
   when: fonts_installed is changed
-
