@@ -125,13 +125,12 @@
 	pager = delta
 
 [pager]
-  # Insanely beautiful diffs ==> npm install -g diff-so-fancy
-  diff = diff-so-fancy | less --tabs=2 -RF
-  show = diff-so-fancy | less --tabs=2 -RF
+  # Insanely beautiful diffs with delta
+  diff = delta
+  show = delta
 
 [interactive]
 	diffFilter = delta --color-only
-#	diffFilter = diff-so-fancy --patch
 
 [diff "bin"]
   # Use `hexdump` to diff binary files
