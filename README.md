@@ -47,8 +47,6 @@ The update script provides **complete reinstallation** of all tools regardless o
 ~/dotfiles/update.sh --verbose --tags slack
 ```
 
-> 📖 **Comprehensive Documentation**: For detailed update features and advanced usage, see [UPDATE_FEATURES.md](./UPDATE_FEATURES.md).
-
 ## Tools
 
 The following tools are automatically installed and configured:
@@ -95,16 +93,3 @@ The following tools are automatically installed and configured:
 | **Database**        | [MongoDB CLI (mongosh)](https://www.mongodb.com/docs/mongodb-shell/) | <img src="https://www.mongodb.com/assets/images/global/favicon.ico" width="24" alt="MongoDB">                                                                  | MongoDB command line interface                   | [mongodb.com](https://www.mongodb.com/docs/mongodb-shell/) |
 | **Python**          | [UV](https://github.com/astral-sh/uv)                                | <img src="https://miro.medium.com/v2/resize:fit:1400/1*eSnM1h_RX2tgE10fyE3w4Q.png" width="24" alt="UV">                                                        | Ultra-fast Python package and project manager    | [github.com](https://github.com/astral-sh/uv)              |
 | **Video**           | [Zoom](https://zoom.us/)                                             | <img src="https://zoom.us/favicon.ico" width="24" alt="Zoom">                                                                                                  | Video conferencing platform                      | [zoom.us](https://zoom.us/)                                |
-
-> 🎯 **Smart Installation**: Each tool is configured with sensible defaults and optimizations for development productivity. The installation is completely automated and idempotent.
-
-## Key Features
-
-- 🔧 **Idempotent Setup** - Safe to run multiple times without side effects
-- 🚀 **Zero-Config** - Everything works out of the box with sensible defaults
-- 🎨 **Beautiful UI** - Modern themes and fonts for enhanced productivity
-- 🔄 **Smart Updates** - Intelligent updates with dry-run and selective installation
-- 🐳 **Container Ready** - Full Docker environment for modern development
-- ⚡ **Performance Optimized** - Fast shell, modern tools, and optimized configurations
-- 🛠️ **Developer Focused** - Curated selection of essential development tools
-- 📦 **Modular Design** - Install only what you need with tag-based selection
