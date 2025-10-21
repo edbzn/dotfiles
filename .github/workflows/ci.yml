@@ -78,8 +78,8 @@ jobs:
             role_name=$(basename $(dirname $(dirname $role)))
             echo "Checking syntax for role: $role_name"
             
-            # Create a temporary playbook for this role
-            cat > /tmp/test_role.yml <<EOF
+            # Create a temporary playbook for this role in the current directory
+            cat > test_role_${role_name}.yml <<EOF
           ---
           - hosts: localhost
             roles:
@@ -87,7 +87,10 @@ jobs:
           EOF
             
             # Run syntax check
-            ansible-playbook --syntax-check -i ci_hosts /tmp/test_role.yml || exit 1
+            ansible-playbook --syntax-check -i ci_hosts test_role_${role_name}.yml || exit 1
+            
+            # Clean up
+            rm -f test_role_${role_name}.yml
           done
 
   test-installation:
