@@ -28,14 +28,23 @@ git clone git@github.com:edbzn/dotfiles.git ~/dotfiles
 
 ### Update Tools
 
-The update script provides **complete reinstallation** of all tools regardless of current state, ensuring a clean and consistent environment. Like the installation, updates are also **idempotent** and safe to run multiple times.
+The update script provides **idempotent updates** - it only installs missing tools and updates outdated ones. For a complete reinstallation, use the `--force-install` flag.
 
 ```sh
-# Update everything
+# Update everything (idempotent - only installs what's missing)
 ~/dotfiles/update.sh
 
 # Update specific roles
-~/dotfiles/update.sh --tags docker,node,dotfiles,chrome
+~/dotfiles/update.sh docker,node,dotfiles
+
+# Or use --tags explicitly
+~/dotfiles/update.sh --tags zsh,chrome
+
+# Force reinstall everything regardless of current state
+~/dotfiles/update.sh --force-install
+
+# Force reinstall specific roles
+~/dotfiles/update.sh --force-install --tags docker,node
 
 # Test what would be changed (dry-run)
 ~/dotfiles/update.sh --check
@@ -46,6 +55,13 @@ The update script provides **complete reinstallation** of all tools regardless o
 # Verbose output for debugging
 ~/dotfiles/update.sh --verbose --tags slack
 ```
+
+**Options:**
+- `--force-install` - Force reinstall everything regardless of current state
+- `--check` - Run in dry-run mode without making changes
+- `--diff` - Show differences when making changes
+- `--verbose` - Enable verbose output
+- `--tags <tags>` - Update only specific roles (comma-separated)
 
 ## Tools
 

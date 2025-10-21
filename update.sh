@@ -1,9 +1,15 @@
 #!/bin/bash
 
-# Update all dotfiles roles - reinstalls everything regardless of current state
-# Usage: ./update.sh [role_tags]
+# Update dotfiles roles
+# Usage: ./update.sh [options] [role_tags]
+# Options:
+#   --force-install     Force reinstall everything regardless of current state
+#   --check            Run in dry-run mode without making changes
+#   --diff             Show differences when making changes
+#   --verbose          Enable verbose output
 # Example: ./update.sh zsh,docker
-# Example: ./update.sh bootstrap (update only bootstrap role)
+# Example: ./update.sh --force-install --tags bootstrap
+# Example: ./update.sh --check --diff --tags docker
 
 set -e
 
@@ -19,8 +25,6 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}🔄 Updating Dotfiles Environment${NC}"
-echo -e "${YELLOW}⚠️  This will reinstall everything regardless of current state${NC}"
-echo ""
 
 # Check if ansible is installed
 if ! command -v ansible-playbook &> /dev/null; then
@@ -42,17 +46,29 @@ if [[ ! -f "$PLAYBOOK" ]]; then
 fi
 
 # Build the ansible command
-ANSIBLE_CMD="ansible-playbook -i $INVENTORY $PLAYBOOK --ask-become-pass -e force_install=true"
+ANSIBLE_CMD="ansible-playbook -i $INVENTORY $PLAYBOOK --ask-become-pass"
 
 # Parse arguments - separate tags from ansible options
 TAGS=""
 ANSIBLE_OPTIONS=""
+FORCE_INSTALL=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --check|--diff|--list-tasks|--list-tags|--syntax-check)
+        --force-install)
+            FORCE_INSTALL=true
+            shift
+            ;;
+        --check|--diff|--list-tasks|--list-tags|--syntax-check|--verbose)
             ANSIBLE_OPTIONS="$ANSIBLE_OPTIONS $1"
             shift
+            ;;
+        --tags)
+            shift
+            if [[ $# -gt 0 ]]; then
+                TAGS="$1"
+                shift
+            fi
             ;;
         -*)
             ANSIBLE_OPTIONS="$ANSIBLE_OPTIONS $1"
@@ -72,6 +88,13 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
+
+# Add force_install extra var if flag is set
+if [[ "$FORCE_INSTALL" == true ]]; then
+    echo -e "${YELLOW}⚠️  Force install enabled: Will reinstall everything regardless of current state${NC}"
+    echo ""
+    ANSIBLE_CMD="$ANSIBLE_CMD -e force_install=true"
+fi
 
 # Add tags if specified
 if [[ -n "$TAGS" ]]; then
