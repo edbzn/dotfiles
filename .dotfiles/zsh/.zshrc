@@ -36,16 +36,18 @@ source $ZSH/oh-my-zsh.sh
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Load Rust environment.
+# Rust
 [ -f ~/.cargo/env ] && source ~/.cargo/env
+. "$HOME/.local/bin/env"
+export PATH="$HOME/.cargo/bin:$PATH"
 
 # Load Angular CLI autocompletion.
 source <(ng completion script)
 
-# bun completions
-[ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
+
 
 # bun
+[ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
