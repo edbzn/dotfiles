@@ -59,7 +59,7 @@ jobs:
             --check \
             --diff \
             -e "force_install=false" \
-            -e "ansible_become_pass=dummy"
+            --vault-password-file=.vault_password
 
       - name: Check for deprecated Ansible features
         run: |

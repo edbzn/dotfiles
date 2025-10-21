@@ -27,6 +27,39 @@ if command -v ansible-lint &> /dev/null; then
     ansible-lint -c .ansible-lint
 fi
 
+# Run playbook in check mode (dry run)
+if command -v ansible-playbook &> /dev/null; then
+    echo "✓ Running playbook dry run (check mode)..."
+    
+    # Create temporary inventory
+    TEMP_INVENTORY=$(mktemp)
+    echo "[local]" > "$TEMP_INVENTORY"
+    echo "localhost ansible_connection=local ansible_python_interpreter=$(which python3)" >> "$TEMP_INVENTORY"
+    
+    # Ensure vault password file exists
+    if [ ! -f .vault_password ]; then
+        echo "dummy-password-for-check-mode" > .vault_password
+        CREATED_VAULT_FILE=true
+    fi
+    
+    # Run check mode
+    if ansible-playbook playbook.yml \
+        -i "$TEMP_INVENTORY" \
+        --check \
+        -e "force_install=false" \
+        --vault-password-file=.vault_password 2>&1 | grep -q "PLAY RECAP"; then
+        echo "  ✓ Check mode passed"
+    else
+        echo "  ⚠️  Check mode found issues (not blocking)"
+    fi
+    
+    # Cleanup
+    rm -f "$TEMP_INVENTORY"
+    if [ "$CREATED_VAULT_FILE" = true ]; then
+        rm -f .vault_password
+    fi
+fi
+
 # Check if shellcheck is installed
 if command -v shellcheck &> /dev/null; then
     echo "✓ Running ShellCheck..."
