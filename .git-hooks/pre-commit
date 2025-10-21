@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Pre-commit hook to validate Ansible playbooks
+# Install: cp .git-hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+
+set -e
+
+echo "🔍 Running pre-commit checks..."
+
+# Check if ansible-playbook is installed
+if ! command -v ansible-playbook &> /dev/null; then
+    echo "⚠️  ansible-playbook not found. Skipping syntax check."
+else
+    echo "✓ Checking Ansible syntax..."
+    ansible-playbook playbook.yml --syntax-check
+fi
+
+# Check if yamllint is installed
+if command -v yamllint &> /dev/null; then
+    echo "✓ Running YAML lint..."
+    yamllint -c .yamllint.yml . || echo "⚠️  YAML lint found issues (not blocking)"
+fi
+
+# Check if shellcheck is installed
+if command -v shellcheck &> /dev/null; then
+    echo "✓ Running ShellCheck..."
+    find . -name "*.sh" -type f -exec shellcheck {} \; || echo "⚠️  ShellCheck found issues (not blocking)"
+fi
+
+# Check for potential secrets in staged files
+echo "✓ Checking for potential secrets..."
+if git diff --cached --name-only | grep -q ".zsh_history.backup"; then
+    if git diff --cached .dotfiles/zsh/.zsh_history.backup | grep -iE "^\+.*(api[_-]?key|token|password|secret)"; then
+        echo "❌ ERROR: Potential secrets detected in history backup!"
+        echo "Run ./backup-history.sh to create a filtered backup."
+        exit 1
+    fi
+fi
+
+echo "✅ All pre-commit checks passed!"

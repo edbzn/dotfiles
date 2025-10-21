@@ -1,5 +1,9 @@
 <img src="./.assets/dotfiles-logo.png" width="300" alt="dotfiles">
 
+# Dotfiles
+
+[![CI](https://github.com/edbzn/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/edbzn/dotfiles/actions/workflows/ci.yml)
+
 This repository provides my ready-to-use dev environment in seconds using [Ansible](https://www.ansible.com) and [GNU Stow](https://www.gnu.org/software/stow/).
 
 ## Setup

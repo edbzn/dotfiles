@@ -1,0 +1,46 @@
+---
+# Ansible-lint configuration
+
+profile: moderate
+
+# Exclude specific paths
+exclude_paths:
+  - .github/
+  - .git/
+  - venv/
+  - .venv/
+  - '*.md'
+
+# Skip specific rules
+skip_list:
+  - yaml[line-length]  # Allow longer lines in YAML
+  - name[casing]       # Allow flexible naming
+  - risky-file-permissions  # We handle permissions explicitly
+  - no-changed-when    # Allow tasks without changed_when for simplicity
+  - command-instead-of-module  # Sometimes command/shell is needed
+  - package-latest     # We use state: present intentionally
+
+# Enable specific rules
+enable_list:
+  - args
+  - empty-string-compare
+  - no-log-password
+  - no-same-owner
+
+# Warn instead of error for these
+warn_list:
+  - experimental
+  - ignore-errors
+  - no-handler
+  - deprecated-module
+
+# Use offline mode (no external checks)
+offline: false
+
+# Write output to file
+# write_list:
+#   - all
+
+# Exclude specific tags
+# tags:
+#   - skip_ansible_lint
