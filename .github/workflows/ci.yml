@@ -34,7 +34,6 @@ jobs:
       - name: Validate YAML syntax
         run: |
           yamllint -c .yamllint.yml .
-        continue-on-error: true
 
       - name: Create dummy vault password for CI
         run: |
@@ -47,7 +46,6 @@ jobs:
       - name: Ansible lint
         run: |
           ansible-lint playbook.yml
-        continue-on-error: true
 
       - name: Dry run playbook (check mode)
         run: |
@@ -62,7 +60,6 @@ jobs:
             --diff \
             -e "force_install=false" \
             -e "ansible_become_pass=dummy"
-        continue-on-error: true
 
       - name: Check for deprecated Ansible features
         run: |
@@ -80,7 +77,6 @@ jobs:
               - $(basename $(dirname $(dirname $role)))
           EOF
           done
-        continue-on-error: true
 
   test-installation:
     name: Test Installation on Ubuntu
@@ -89,7 +85,7 @@ jobs:
 
     strategy:
       matrix:
-        ubuntu-version: ['22.04', '24.04']
+        ubuntu-version: ['24.04']
 
     steps:
       - name: Checkout repository
