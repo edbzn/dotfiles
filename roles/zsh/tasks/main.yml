@@ -12,7 +12,7 @@
     name: "{{ zsh_packages }}"
     update_cache: true
   become: true
-  when: force_install | default(false) or zsh_exists.rc != 0
+  when: (force_install | default(false) | bool | bool) or zsh_exists.rc != 0
 
 - name: Create ~/.zsh directory
   file:
@@ -30,7 +30,7 @@
   file:
     path: "{{ oh_my_zsh_directory }}"
     state: absent
-  when: force_install | default(false) and ohmyzsh_stat.stat.exists
+  when: force_install | default(false) | bool and ohmyzsh_stat.stat.exists
   become: false
 
 - name: Install oh-my-zsh
@@ -38,7 +38,7 @@
     export RUNZSH="{{ oh_my_zsh.install_options.RUNZSH }}"
     export CHSH="{{ oh_my_zsh.install_options.CHSH }}"
     sh -c "$(curl -fsSL {{ oh_my_zsh.install_url }})"
-  when: force_install | default(false) or not ohmyzsh_stat.stat.exists
+  when: force_install | default(false) | bool or not ohmyzsh_stat.stat.exists
   register: ohmyzsh_install
   become: false
 
@@ -50,7 +50,7 @@
   loop:
     - "{{ oh_my_zsh.custom_dir }}/plugins"
     - "{{ oh_my_zsh.custom_dir }}/themes"
-  when: force_install | default(false) or (ohmyzsh_install is defined and ohmyzsh_install is changed)
+  when: force_install | default(false) | bool or (ohmyzsh_install is defined and ohmyzsh_install is changed)
   become: false
 
 - name: Check if zsh-syntax-highlighting exists
@@ -65,7 +65,7 @@
     dest: "{{ plugins.zsh_syntax_highlighting.dest }}"
     force: "{{ git_force }}"
     version: "{{ plugins.zsh_syntax_highlighting.version }}"
-  when: force_install | default(false) or (not zsh_highlighting_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
+  when: force_install | default(false) | bool or (not zsh_highlighting_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
   become: false
   tags: [zsh-plugins]
 
@@ -81,7 +81,7 @@
     dest: "{{ plugins.zsh_autosuggestions.dest }}"
     force: "{{ git_force }}"
     version: "{{ plugins.zsh_autosuggestions.version }}"
-  when: force_install | default(false) or (not zsh_autosuggestions_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
+  when: force_install | default(false) | bool or (not zsh_autosuggestions_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
   become: false
   tags: [zsh-plugins]
 
@@ -97,7 +97,7 @@
     dest: "{{ themes.powerlevel10k.dest }}"
     force: "{{ git_force }}"
     version: "{{ themes.powerlevel10k.version }}"
-  when: force_install | default(false) or (not powerlevel10k_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
+  when: force_install | default(false) | bool or (not powerlevel10k_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
   become: false
   tags: [zsh-plugins]
 
@@ -113,7 +113,7 @@
     dest: "{{ plugins.nx_completion.dest }}"
     force: "{{ git_force }}"
     version: "{{ plugins.nx_completion.version }}"
-  when: force_install | default(false) or (not nx_completion_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
+  when: force_install | default(false) | bool or (not nx_completion_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
   become: false
   tags: [nx-completion, zsh-plugins]
   register: nx_completion_install
@@ -123,7 +123,7 @@
   args:
     chdir: "{{ plugins.nx_completion.dest }}"
   when:
-    - force_install | default(false)
+    - force_install | default(false) | bool
     - nx_completion_install is changed
   become: false
   tags: [nx-completion, zsh-plugins]
@@ -140,7 +140,7 @@
     dest: "{{ plugins.you_should_use.dest }}"
     force: "{{ git_force }}"
     version: "{{ plugins.you_should_use.version }}"
-  when: force_install | default(false) or (not you_should_use_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
+  when: force_install | default(false) | bool or (not you_should_use_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
   become: false
   tags: [zsh-plugins]
 
@@ -156,7 +156,7 @@
     dest: "{{ plugins.zsh_completions.dest }}"
     force: "{{ git_force }}"
     version: "{{ plugins.zsh_completions.version }}"
-  when: force_install | default(false) or (not zsh_completions_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
+  when: force_install | default(false) | bool or (not zsh_completions_exists.stat.exists and (ohmyzsh_install is defined and ohmyzsh_install is changed))
   become: false
   tags: [zsh-plugins]
 
