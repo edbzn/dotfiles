@@ -35,19 +35,23 @@
   register: gpg_key_generation
 
 - name: Get GPG key ID
-  shell: "gpg --list-secret-keys --with-colons \"{{ gpg_email }}\" | awk -F: '/^sec:/ {print $5}'"
+  shell: "gpg --list-secret-keys --with-colons \"{{ gpg_email }}\" | awk -F: '/^sec:/ {print $5}' | head -n 1"
   register: gpg_key_id
   changed_when: false
+
+- name: Set GPG key ID fact (strip whitespace)
+  set_fact:
+    gpg_key_id_clean: "{{ gpg_key_id.stdout | trim }}"
 
 - name: Display GPG key information
   debug:
     msg: |
       GPG Key generated successfully!
-      Key ID: {{ gpg_key_id.stdout }}
+      Key ID: {{ gpg_key_id_clean }}
       Email: {{ gpg_email }}
 
       To export your public key for sharing:
-      gpg --armor --export {{ gpg_key_id.stdout }}
+      gpg --armor --export {{ gpg_key_id_clean }}
 
 - name: Configure Git with GPG signing in .gitconfig.local
   copy:
@@ -55,7 +59,7 @@
     content: |
       # Machine-specific Git configuration
       [user]
-        signingkey = {{ gpg_key_id.stdout }}
+        signingkey = {{ gpg_key_id_clean }}
 
       [commit]
         gpgsign = true
