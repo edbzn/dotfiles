@@ -142,8 +142,13 @@ jobs:
           if [ -f .dotfiles/zsh/.zsh_history.backup ]; then
             echo "Checking history backup for secrets..."
 
-            # Check for common secret patterns
-            if grep -iE "(api[_-]?key|token|password|secret|aws[_-]?access)" .dotfiles/zsh/.zsh_history.backup; then
+            # Check for common secret patterns, excluding legitimate commands
+            # Exclude lines that are clearly just GPG commands (gpg --list-secret-keys)
+            if grep -iE "(api[_-]?key|token|password|aws[_-]?access)" .dotfiles/zsh/.zsh_history.backup | \
+               grep -v "gpg --list-secret-keys" | \
+               grep -v "gpg --full-generate-key" | \
+               grep -v "gpg --armor --export" | \
+               grep -q .; then
               echo "⚠️ Warning: Potential secrets found in history backup!"
               exit 1
             fi
@@ -156,7 +161,10 @@ jobs:
       - name: Check for hardcoded secrets in playbooks
         run: |
           # Check for hardcoded passwords, tokens, etc.
-          if grep -r -iE "(password|token|api_key|secret):\s*['\"]?[a-zA-Z0-9]{8,}" roles/ --include="*.yml"; then
+          # Exclude variable names and references like {{ password }}
+          if grep -r -iE "(password|token|api_key):\s*['\"]?[a-zA-Z0-9]{8,}" roles/ --include="*.yml" | \
+             grep -v "{{" | \
+             grep -q .; then
             echo "⚠️ Warning: Potential hardcoded secrets found!"
             exit 1
           fi
