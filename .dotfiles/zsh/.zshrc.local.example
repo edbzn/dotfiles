@@ -1,0 +1,11 @@
+# Machine-specific Zsh configuration
+# Copy this file to ~/.zshrc.local and customize for your machine
+
+# GPG Configuration
+export GPG_TTY=$(tty)
+if [ -f ~/.gnupg/gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
+    source ~/.gnupg/gpg-agent-info
+    export GPG_AGENT_INFO
+fi
+
+# Add any other machine-specific exports, aliases, or configurations here

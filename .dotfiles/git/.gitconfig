@@ -1,10 +1,6 @@
 [user]
   name = Edouard Bozon
   email = bozonedouard@gmail.com
-  #signingkey =
-
-[commit]
-  # gpgsign = true
 
 [push]
   # No more git push --set-upstream origin test && git push
@@ -156,10 +152,15 @@
 [tag]
 	gpgsign = true
 [credential "https://github.com"]
-	helper = 
+	helper =
 	helper = !/usr/bin/gh auth git-credential
 [credential "https://gist.github.com"]
-	helper = 
+	helper =
 	helper = !/usr/bin/gh auth git-credential
 [delta]
 	navigate = true
+
+# Include machine-specific configuration (GPG keys, credentials, etc.)
+# This file is not tracked in git
+[include]
+  path = ~/.gitconfig.local

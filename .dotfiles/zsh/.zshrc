@@ -44,8 +44,6 @@ export PATH="$HOME/.cargo/bin:$PATH"
 # Load Angular CLI autocompletion.
 source <(ng completion script)
 
-
-
 # bun
 [ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
 export BUN_INSTALL="$HOME/.bun"
@@ -60,4 +58,8 @@ alias nx-check="nx affected --target=lint,test,build --parallel=8"
 # Rosa
 export AWS_REGION=eu-central-1
 export AWS_PROFILE=rosa-dev
+
+# Source machine-specific configuration (GPG, secrets, etc.)
+# This file is not tracked in git
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 

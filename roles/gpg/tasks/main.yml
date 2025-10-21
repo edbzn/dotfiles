@@ -49,17 +49,21 @@
       To export your public key for sharing:
       gpg --armor --export {{ gpg_key_id.stdout }}
 
-- name: Configure Git with GPG signing
-  git_config:
-    name: "{{ item.name }}"
-    value: "{{ item.value }}"
-    scope: global
-  loop:
-    - { name: "user.name", value: "{{ git_user_name }}" }
-    - { name: "user.email", value: "{{ git_user_email }}" }
-    - { name: "user.signingkey", value: "{{ gpg_key_id.stdout }}" }
-    - { name: "commit.gpgsign", value: "true" }
-    - { name: "tag.gpgsign", value: "true" }
+- name: Configure Git with GPG signing in .gitconfig.local
+  copy:
+    dest: "{{ ansible_env.HOME }}/.gitconfig.local"
+    content: |
+      # Machine-specific Git configuration
+      [user]
+        signingkey = {{ gpg_key_id.stdout }}
+
+      [commit]
+        gpgsign = true
+
+      [tag]
+        gpgsign = true
+    mode: '0644'
+    force: no  # Don't overwrite if already exists
 
 - name: Configure GPG agent
   blockinfile:
@@ -79,29 +83,19 @@
   changed_when: false
   failed_when: false
 
-- name: Add GPG environment to shell
-  blockinfile:
-    path: "{{ ansible_env.HOME }}/.bashrc"
-    create: yes
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - GPG"
-    block: |
+- name: Add GPG environment to .zshrc.local
+  copy:
+    dest: "{{ ansible_env.HOME }}/.zshrc.local"
+    content: |
+      # Machine-specific Zsh configuration
+      # GPG Configuration
       export GPG_TTY=$(tty)
       if [ -f ~/.gnupg/gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
           source ~/.gnupg/gpg-agent-info
           export GPG_AGENT_INFO
       fi
-
-- name: Add GPG environment to zsh
-  blockinfile:
-    path: "{{ ansible_env.HOME }}/.zshrc"
-    create: yes
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - GPG"
-    block: |
-      export GPG_TTY=$(tty)
-      if [ -f ~/.gnupg/gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
-          source ~/.gnupg/gpg-agent-info
-          export GPG_AGENT_INFO
-      fi
+    mode: '0644'
+    force: no  # Don't overwrite if already exists
 
 - name: Clean up temporary files
   file:

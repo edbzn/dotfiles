@@ -1,0 +1,6 @@
+# Ignore machine-specific configuration files
+.dotfiles/**/*.local
+*.local
+
+# Ansible retry files
+*.retry
