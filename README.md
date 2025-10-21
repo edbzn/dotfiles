@@ -63,6 +63,30 @@ The update script provides **idempotent updates** - it only installs missing too
 - `--verbose` - Enable verbose output
 - `--tags <tags>` - Update only specific roles (comma-separated)
 
+## Shell History Backup
+
+Preserve your command history across machines! Your shell history is automatically backed up and restored.
+
+### Backup Your History
+
+```sh
+~/dotfiles/backup-history.sh
+```
+
+This will:
+- Copy your `~/.zsh_history` to `.dotfiles/zsh/.zsh_history.backup`
+- Show you how many commands are in your current and backup history
+- Provide instructions to commit and push the backup
+
+### Automatic Restore
+
+When you run the install script on a new machine, your shell history will be automatically restored if a backup exists in the repository.
+
+**Privacy Note:** The history backup file is commented out in `.gitignore`. To track your history in git:
+1. Edit `.gitignore` and remove the comment from `.dotfiles/zsh/.zsh_history.backup`
+2. Commit and push your history backup
+3. Be aware that command history may contain sensitive information
+
 ## Tools
 
 The following tools are automatically installed and configured:

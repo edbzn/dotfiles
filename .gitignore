@@ -4,3 +4,6 @@
 
 # Ansible retry files
 *.retry
+
+# Shell history backup (optional - remove this line to track history in git)
+# .dotfiles/zsh/.zsh_history.backup

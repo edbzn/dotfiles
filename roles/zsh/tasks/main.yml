@@ -189,3 +189,23 @@
       - Oh-My-ZSH installed: {{ 'Yes' if ohmyzsh_stat.stat.exists else 'No' }}
       - Default shell: {{ current_shell.stdout }}
       - ZSH path: {{ zsh_path.stdout if zsh_path.stdout is defined else 'Not found' }}
+
+- name: Check if backup history exists in dotfiles
+  stat:
+    path: "{{ ansible_env.HOME }}/dotfiles/.dotfiles/zsh/.zsh_history.backup"
+  register: backup_history_stat
+  become: false
+
+- name: Restore shell history from backup
+  copy:
+    src: "{{ ansible_env.HOME }}/dotfiles/.dotfiles/zsh/.zsh_history.backup"
+    dest: "{{ ansible_env.HOME }}/.zsh_history"
+    mode: '0600'
+    force: no  # Don't overwrite if already exists
+  when: backup_history_stat.stat.exists
+  become: false
+
+- name: Display history restore status
+  debug:
+    msg: "Shell history restored from backup"
+  when: backup_history_stat.stat.exists
