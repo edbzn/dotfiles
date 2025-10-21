@@ -38,6 +38,12 @@ jobs:
       - name: Create dummy vault password for CI
         run: |
           echo "ci-dummy-password" > .vault_password
+      
+      - name: Configure passwordless sudo for CI
+        run: |
+          # GitHub Actions runners have passwordless sudo by default
+          # But we need to ensure it works in check mode
+          sudo -n true || echo "Sudo requires password"
 
       - name: Ansible syntax check
         run: |
@@ -54,11 +60,11 @@ jobs:
           echo "localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python3" >> ci_hosts
 
           # Run in check mode (no actual changes)
+          # GitHub Actions runners have passwordless sudo
+          # Don't pass force_install as it causes string boolean issues
           ansible-playbook playbook.yml \
             -i ci_hosts \
             --check \
-            --diff \
-            -e "force_install=false" \
             --vault-password-file=.vault_password
 
       - name: Check for deprecated Ansible features
@@ -69,13 +75,19 @@ jobs:
       - name: Validate all role task files
         run: |
           for role in roles/*/tasks/main.yml; do
-            echo "Checking syntax for: $role"
-            ansible-playbook --syntax-check -i ci_hosts - <<EOF
+            role_name=$(basename $(dirname $(dirname $role)))
+            echo "Checking syntax for role: $role_name"
+            
+            # Create a temporary playbook for this role
+            cat > /tmp/test_role.yml <<EOF
           ---
           - hosts: localhost
             roles:
-              - $(basename $(dirname $(dirname $role)))
+              - $role_name
           EOF
+            
+            # Run syntax check
+            ansible-playbook --syntax-check -i ci_hosts /tmp/test_role.yml || exit 1
           done
 
   test-installation:
