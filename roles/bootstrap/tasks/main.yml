@@ -43,12 +43,14 @@
     return_content: yes
     body_format: json
   register: delta_release
+  check_mode: no
   tags:
     - delta
 
 - name: Parse Delta release JSON
   set_fact:
     delta_release_data: "{{ delta_release.content | from_json }}"
+  when: delta_release is not skipped and delta_release.content is defined
   tags:
     - delta
 
@@ -56,6 +58,7 @@
   set_fact:
     delta_deb_url: "{{ delta_release_data.assets | selectattr('name', 'match', '.*amd64.deb$') | map(attribute='browser_download_url') | first }}"
     delta_version: "{{ delta_release_data.tag_name }}"
+  when: delta_release_data is defined
   tags:
     - delta
 
@@ -91,6 +94,10 @@
       file:
         path: "{{ delta_temp_dir.path }}"
         state: absent
-  when: delta_installed.rc != 0 or (delta_installed.stdout is defined and delta_version not in delta_installed.stdout)
+  when: 
+    - not ansible_check_mode
+    - delta_deb_url is defined
+    - delta_version is defined
+    - delta_installed.rc != 0 or (delta_installed.stdout is defined and delta_version not in delta_installed.stdout)
   tags:
     - delta
