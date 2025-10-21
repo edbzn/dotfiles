@@ -65,7 +65,7 @@ The update script provides **idempotent updates** - it only installs missing too
 
 ## Shell History Backup
 
-Preserve your command history across machines! Your shell history is automatically backed up and restored.
+Preserve your command history across machines! Your shell history is automatically backed up and restored, **with automatic filtering of sensitive information**.
 
 ### Backup Your History
 
