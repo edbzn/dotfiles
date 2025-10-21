@@ -7,3 +7,7 @@
 
 # Shell history backup (optional - remove this line to track history in git)
 # .dotfiles/zsh/.zsh_history.backup
+
+# Vault password file (NEVER commit this!)
+.vault_password
+.vault_pass

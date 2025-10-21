@@ -1,7 +1,5 @@
 <img src="./.assets/dotfiles-logo.png" width="300" alt="dotfiles">
 
-# Dotfiles
-
 [![CI](https://github.com/edbzn/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/edbzn/dotfiles/actions/workflows/ci.yml)
 
 This repository provides my ready-to-use dev environment in seconds using [Ansible](https://www.ansible.com) and [GNU Stow](https://www.gnu.org/software/stow/).
@@ -90,6 +88,44 @@ When you run the install script on a new machine, your shell history will be aut
 1. Edit `.gitignore` and remove the comment from `.dotfiles/zsh/.zsh_history.backup`
 2. Commit and push your history backup
 3. Be aware that command history may contain sensitive information
+
+## 🔐 Secrets Management
+
+Securely sync your SSH and GPG keys across machines using **Ansible Vault** encryption!
+
+### Initial Setup
+
+```sh
+# 1. Create vault password (one-time setup)
+echo "your-secure-password" > ~/dotfiles/.vault_password
+chmod 600 ~/dotfiles/.vault_password
+
+# 2. Backup and encrypt your keys
+~/dotfiles/backup-secrets.sh
+
+# 3. Commit encrypted keys
+git add secrets/
+git commit -m "Add encrypted SSH and GPG keys"
+git push
+```
+
+### On New Machines
+
+```sh
+# 1. Create the same vault password
+echo "your-secure-password" > ~/dotfiles/.vault_password
+chmod 600 ~/dotfiles/.vault_password
+
+# 2. Run install - keys are automatically restored!
+~/dotfiles/install.sh
+```
+
+📖 **Full Documentation**: See [docs/SECRETS.md](docs/SECRETS.md) for complete guide, manual operations, and troubleshooting.
+
+**What's Encrypted:**
+- SSH private and public keys
+- GPG private keys
+- Safe to commit - only you have the password! 🔒
 
 ## Tools
 

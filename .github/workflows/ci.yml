@@ -51,6 +51,9 @@ jobs:
           echo "[local]" > ci_hosts
           echo "localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python3" >> ci_hosts
 
+          # Create dummy vault password for CI (secrets won't be decrypted but syntax will be checked)
+          echo "ci-dummy-password" > .vault_password
+
           # Run in check mode (no actual changes)
           ansible-playbook playbook.yml \
             -i ci_hosts \

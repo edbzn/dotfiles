@@ -6,6 +6,9 @@
     - role: bootstrap
       tags: [bootstrap]
 
+    - role: secrets
+      tags: [secrets, security]
+
     - role: zsh
       tags: [zsh, bootstrap]
 
