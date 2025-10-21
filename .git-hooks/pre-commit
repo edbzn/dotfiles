@@ -24,7 +24,7 @@ fi
 # Check if ansible-lint is installed
 if command -v ansible-lint &> /dev/null; then
     echo "✓ Running Ansible lint..."
-    ansible-lint || echo "⚠️  Ansible lint found issues (not blocking)"
+    ansible-lint -c .ansible-lint
 fi
 
 # Check if shellcheck is installed

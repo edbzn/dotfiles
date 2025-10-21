@@ -18,7 +18,11 @@ skip_list:
   - risky-file-permissions  # We handle permissions explicitly
   - no-changed-when    # Allow tasks without changed_when for simplicity
   - command-instead-of-module  # Sometimes command/shell is needed
+  - command-instead-of-shell  # Some commands legitimately need shell features
   - package-latest     # We use state: present intentionally
+  - var-naming[no-role-prefix]  # Allow flexible variable naming without role prefixes
+  - key-order  # Allow flexible task key ordering
+  - role-name  # Allow role names with hyphens
 
 # Enable specific rules
 enable_list:

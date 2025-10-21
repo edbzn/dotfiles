@@ -45,7 +45,7 @@ jobs:
 
       - name: Ansible lint
         run: |
-          ansible-lint playbook.yml
+          ansible-lint -c .ansible-lint playbook.yml
 
       - name: Dry run playbook (check mode)
         run: |
