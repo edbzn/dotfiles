@@ -124,9 +124,23 @@
   # Insanely beautiful diffs with delta
   diff = delta
   show = delta
+  log = delta
 
 [interactive]
 	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	light = false
+	line-numbers = true
+	side-by-side = true
+	syntax-theme = Dracula
+	plus-style = syntax "#003800"
+	minus-style = syntax "#3f0001"
+	commit-decoration-style = bold yellow box ul
+	file-style = bold yellow ul
+	file-decoration-style = none
+	hunk-header-decoration-style = cyan box ul
 
 [diff "bin"]
   # Use `hexdump` to diff binary files
@@ -157,8 +171,6 @@
 [credential "https://gist.github.com"]
 	helper =
 	helper = !/usr/bin/gh auth git-credential
-[delta]
-	navigate = true
 
 # Include machine-specific configuration (GPG keys, credentials, etc.)
 # This file is not tracked in git
