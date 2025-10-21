@@ -16,7 +16,7 @@
 - name: Remove existing Slack snap installation for force install
   shell: snap remove {{ slack.package_name }}
   become: true
-  when: force_install | default(false) and slack_snap_installed.rc == 0
+  when: force_install | default(false) | bool and slack_snap_installed.rc == 0
   ignore_errors: true
 
 - name: Remove existing Slack deb installation for force install
@@ -24,7 +24,7 @@
     name: slack-desktop
     state: absent
   become: true
-  when: force_install | default(false) and slack_deb_installed.rc == 0
+  when: force_install | default(false) | bool and slack_deb_installed.rc == 0
   ignore_errors: true
 
 - name: Install Slack via snap with timeout
@@ -32,12 +32,12 @@
   become: true
   register: snap_install_result
   failed_when: false
-  when: force_install | default(false) or (slack_snap_installed.rc != 0 and slack_deb_installed.rc != 0)
+  when: force_install | default(false) | bool or (slack_snap_installed.rc != 0 and slack_deb_installed.rc != 0)
 
 - name: Check snap installation success
   debug:
     msg: "Snap installation {{ 'succeeded' if snap_install_result.rc == 0 else 'failed or timed out' }}"
-  when: force_install | default(false) or (slack_snap_installed.rc != 0 and slack_deb_installed.rc != 0)
+  when: force_install | default(false) | bool or (slack_snap_installed.rc != 0 and slack_deb_installed.rc != 0)
 
 - name: Check if .deb file exists
   stat:
@@ -51,18 +51,18 @@
     mode: '0644'
   register: slack_download_result
   when:
-    - (force_install | default(false)) or slack_snap_installed.rc != 0
-    - (force_install | default(false)) or slack_deb_installed.rc != 0
-    - (force_install | default(false)) or snap_install_result.rc != 0
+    - (force_install | default(false) | bool) or slack_snap_installed.rc != 0
+    - (force_install | default(false) | bool) or slack_deb_installed.rc != 0
+    - (force_install | default(false) | bool) or snap_install_result.rc != 0
 
 - name: Install Slack via .deb package (fallback)
   apt:
     deb: "{{ slack_deb.dest }}"
   become: true
   when:
-    - (force_install | default(false)) or slack_snap_installed.rc != 0
-    - (force_install | default(false)) or slack_deb_installed.rc != 0
-    - (force_install | default(false)) or snap_install_result.rc != 0
+    - (force_install | default(false) | bool) or slack_snap_installed.rc != 0
+    - (force_install | default(false) | bool) or slack_deb_installed.rc != 0
+    - (force_install | default(false) | bool) or snap_install_result.rc != 0
     - slack_deb_file_exists.stat.exists or not ansible_check_mode
 
 - name: Clean up downloaded .deb file
@@ -70,6 +70,6 @@
     path: "{{ slack_deb.dest }}"
     state: absent
   when:
-    - (force_install | default(false)) or slack_snap_installed.rc != 0
-    - (force_install | default(false)) or slack_deb_installed.rc != 0
-    - (force_install | default(false)) or snap_install_result.rc != 0
+    - (force_install | default(false) | bool) or slack_snap_installed.rc != 0
+    - (force_install | default(false) | bool) or slack_deb_installed.rc != 0
+    - (force_install | default(false) | bool) or snap_install_result.rc != 0

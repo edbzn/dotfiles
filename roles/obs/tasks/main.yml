@@ -21,7 +21,7 @@
   become: true
   when:
     - snap_available.rc == 0
-    - (force_install | default(false)) or obs_exists.rc != 0
+    - (force_install | default(false) | bool) or obs_exists.rc != 0
   register: snap_install_result
   ignore_errors: true
 
@@ -34,7 +34,7 @@
   become: true
   when:
     - (snap_available.rc != 0 or snap_install_result is failed)
-    - ((force_install | default(false)) or obs_exists.rc != 0)
+    - ((force_install | default(false) | bool) or obs_exists.rc != 0)
   register: ubuntu_install_result
   ignore_errors: true
 
@@ -47,7 +47,7 @@
   become: true
   when:
     - ubuntu_install_result is failed
-    - ((force_install | default(false)) or obs_exists.rc != 0)
+    - ((force_install | default(false) | bool) or obs_exists.rc != 0)
   register: ppa_add_result
   ignore_errors: true
 
@@ -60,7 +60,7 @@
   when:
     - ubuntu_install_result is failed
     - ppa_add_result is not failed
-    - ((force_install | default(false)) or obs_exists.rc != 0)
+    - ((force_install | default(false) | bool) or obs_exists.rc != 0)
   ignore_errors: true
 
 - name: Install OBS Studio via apt (PPA method)
@@ -71,7 +71,7 @@
   when:
     - ubuntu_install_result is failed
     - ppa_add_result is not failed
-    - ((force_install | default(false)) or obs_exists.rc != 0)
+    - ((force_install | default(false) | bool) or obs_exists.rc != 0)
   register: ppa_install_result
   ignore_errors: true
 

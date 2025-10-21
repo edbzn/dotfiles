@@ -18,7 +18,7 @@
     name: "{{ mongodb_compass.package_name }}"
     state: absent
   become: true
-  when: (force_install | default(false)) and mongodb_compass_package_exists.rc == 0
+  when: (force_install | default(false) | bool) and mongodb_compass_package_exists.rc == 0
   ignore_errors: true
 
 - name: Install MongoDB Compass required packages
@@ -27,7 +27,7 @@
     state: "{{ package_state }}"
     update_cache: "{{ update_cache }}"
   become: true
-  when: (force_install | default(false)) or mongodb_compass_exists.rc != 0
+  when: (force_install | default(false) | bool) or mongodb_compass_exists.rc != 0
 
 # Primary method: Direct .deb download
 - name: Download MongoDB Compass .deb package
@@ -36,7 +36,7 @@
     dest: "{{ mongodb_compass.dest }}"
     mode: '0644'
     force: true
-  when: (force_install | default(false)) or mongodb_compass_exists.rc != 0
+  when: (force_install | default(false) | bool) or mongodb_compass_exists.rc != 0
   register: mongodb_compass_download
 
 - name: Install MongoDB Compass via .deb package
@@ -44,14 +44,14 @@
     deb: "{{ mongodb_compass.dest }}"
   become: true
   when:
-    - (force_install | default(false)) or mongodb_compass_exists.rc != 0
+    - (force_install | default(false) | bool) or mongodb_compass_exists.rc != 0
     - mongodb_compass_download is succeeded
 
 - name: Clean up downloaded .deb file
   file:
     path: "{{ mongodb_compass.dest }}"
     state: absent
-  when: (force_install | default(false)) or mongodb_compass_exists.rc != 0
+  when: (force_install | default(false) | bool) or mongodb_compass_exists.rc != 0
 
 # Verify installation
 - name: Verify MongoDB Compass installation

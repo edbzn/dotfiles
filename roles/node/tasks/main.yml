@@ -15,7 +15,7 @@
     name: "{{ nodejs_packages }}"
     state: absent
   become: true
-  when: force_install | default(false) and (node_exists.rc == 0 or npm_exists.rc == 0)
+  when: force_install | default(false) | bool and (node_exists.rc == 0 or npm_exists.rc == 0)
   ignore_errors: true
 
 - name: Install Node.js
@@ -23,7 +23,7 @@
     name: "{{ nodejs_packages }}"
     state: "{{ package_state }}"
   become: true
-  when: force_install | default(false) or node_exists.rc != 0 or npm_exists.rc != 0
+  when: force_install | default(false) | bool or node_exists.rc != 0 or npm_exists.rc != 0
 
 - name: Check if npm global packages are installed
   shell: npm list -g {{ item.name | default(item) }} --depth=0
@@ -31,18 +31,18 @@
   failed_when: false
   changed_when: false
   with_items: "{{ npm_global_packages }}"
-  when: not (force_install | default(false))
+  when: not (force_install | default(false) | bool)
 
 - name: Install npm global packages (force install or missing packages)
   npm:
     name: "{{ item.item.name | default(item.item) }}"
     version: "{{ item.item.version | default(npm_package_version) }}"
     global: true
-    state: "{{ 'latest' if (force_install | default(false)) else 'present' }}"
+    state: "{{ 'latest' if (force_install | default(false) | bool) else 'present' }}"
   become: true
   with_items: "{{ npm_package_check.results | default([]) }}"
   when: >
-    (force_install | default(false)) or
+    (force_install | default(false) | bool) or
     (item.rc is defined and item.rc != 0)
   tags: [npm-global]
 
@@ -54,7 +54,7 @@
     state: latest
   become: true
   with_items: "{{ npm_global_packages }}"
-  when: force_install | default(false)
+  when: force_install | default(false) | bool
   tags: [npm-global]
 
 - name: Switch to latest Node.js LTS version
@@ -76,7 +76,7 @@
   file:
     path: "{{ ansible_env.HOME }}/.bun"
     state: absent
-  when: force_install | default(false) and bun_exists.rc == 0
+  when: force_install | default(false) | bool and bun_exists.rc == 0
   tags: [bun]
 
 - name: Download Bun installer
@@ -85,12 +85,12 @@
     dest: "{{ bun.install_script }}"
     mode: "{{ bun.script_mode }}"
     force: 'yes'
-  when: force_install | default(false) or bun_exists.rc != 0
+  when: force_install | default(false) | bool or bun_exists.rc != 0
   tags: [bun]
 
 - name: Install Bun
   shell: "{{ bun.install_script }}"
-  when: force_install | default(false) or bun_exists.rc != 0
+  when: force_install | default(false) | bool or bun_exists.rc != 0
   tags: [bun]
 
 # Verify Bun installation

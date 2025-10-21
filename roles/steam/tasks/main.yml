@@ -22,7 +22,7 @@
       - steam-launcher
     state: absent
   become: true
-  when: (force_install | default(false)) and (steam_exists.rc == 0 or steam_launcher_exists.rc == 0)
+  when: (force_install | default(false) | bool) and (steam_exists.rc == 0 or steam_launcher_exists.rc == 0)
   ignore_errors: true
 
 - name: Ensure software-properties-common is installed
@@ -31,30 +31,30 @@
     state: present
     update_cache: yes
   become: true
-  when: (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
+  when: (force_install | default(false) | bool) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
 
 - name: Enable multiverse repository
   shell: add-apt-repository multiverse -y
   become: true
-  when: (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
+  when: (force_install | default(false) | bool) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
 
 - name: Enable i386 architecture (required for Steam)
   shell: dpkg --add-architecture i386
   become: true
-  when: (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
+  when: (force_install | default(false) | bool) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
 
 - name: Update package cache after enabling multiverse and i386
   apt:
     update_cache: yes
   become: true
-  when: (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
+  when: (force_install | default(false) | bool) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
 
 - name: Install Steam required packages
   apt:
     name: "{{ steam.required_packages }}"
     state: "{{ package_state }}"
   become: true
-  when: (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
+  when: (force_install | default(false) | bool) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
 
 - name: Install Steam from repository
   apt:
@@ -63,7 +63,7 @@
   become: true
   register: steam_apt_install
   failed_when: false
-  when: (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
+  when: (force_install | default(false) | bool) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
 
 - name: Download Steam .deb package (fallback)
   get_url:
@@ -71,7 +71,7 @@
     dest: "{{ steam_deb.dest }}"
     mode: '0644'
   when:
-    - (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
+    - (force_install | default(false) | bool) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
     - steam_apt_install.failed | default(false)
 
 - name: Install Steam dependencies for .deb package
@@ -86,7 +86,7 @@
     state: present
   become: true
   when:
-    - (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
+    - (force_install | default(false) | bool) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
     - steam_apt_install.failed | default(false)
   ignore_errors: true
 
@@ -95,7 +95,7 @@
     deb: "{{ steam_deb.dest }}"
   become: true
   when:
-    - (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
+    - (force_install | default(false) | bool) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
     - steam_apt_install.failed | default(false)
   register: steam_deb_install
   ignore_errors: true
@@ -105,7 +105,7 @@
     path: "{{ steam_deb.dest }}"
     state: absent
   when:
-    - (force_install | default(false)) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
+    - (force_install | default(false) | bool) or (steam_exists.rc != 0 and steam_launcher_exists.rc != 0)
     - steam_apt_install.failed | default(false)
 
 # Verify installation

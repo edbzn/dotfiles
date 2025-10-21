@@ -27,11 +27,11 @@
     src: gpg-key-config.j2
     dest: "{{ gpg_home }}/gpg-key-config"
     mode: '0600'
-  when: gpg_key_exists.rc != 0 or force_install | default(false)
+  when: gpg_key_exists.rc != 0 or force_install | default(false) | bool
 
 - name: Generate GPG key pair
   shell: gpg --batch --generate-key "{{ gpg_home }}/gpg-key-config"
-  when: gpg_key_exists.rc != 0 or force_install | default(false)
+  when: gpg_key_exists.rc != 0 or force_install | default(false) | bool
   register: gpg_key_generation
 
 - name: Get GPG key ID

@@ -13,6 +13,7 @@
     recurse: no
     file_type: directory
   register: files
+  failed_when: false
   become: false
 
 - name: Deploy .dotfiles
@@ -20,7 +21,7 @@
   vars:
     user_home: "{{ lookup('env', 'HOME') }}"
     package_name: "{{ item.path | basename }}"
-    is_force: "{{ force_install | default(false) }}"
+    is_force: "{{ force_install | default(false) | bool }}"
   environment:
     STOW_DIR: "{{ user_home }}/{{ dotfiles.base_path }}/{{ dotfiles.source_dir }}"
   shell: >
@@ -28,5 +29,9 @@
     {% if is_force %}--restow{% endif %}
     {{ stow_command.stow_option }} {{ package_name }}
     || true
+  when:
+    - files is not skipped
+    - files.files is defined
+    - files.files | length > 0
   changed_when: false
   become: false

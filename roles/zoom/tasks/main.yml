@@ -18,7 +18,7 @@
     name: "{{ zoom.package_name }}"
     state: absent
   become: true
-  when: (force_install | default(false)) and zoom_package_exists.rc == 0
+  when: (force_install | default(false) | bool) and zoom_package_exists.rc == 0
   ignore_errors: true
 
 - name: Install Zoom required packages
@@ -27,7 +27,7 @@
     state: "{{ package_state }}"
     update_cache: "{{ update_cache }}"
   become: true
-  when: (force_install | default(false)) or zoom_exists.rc != 0
+  when: (force_install | default(false) | bool) or zoom_exists.rc != 0
 
 - name: Download Zoom .deb package
   get_url:
@@ -35,16 +35,16 @@
     dest: "{{ zoom.dest }}"
     mode: '0644'
     force: true
-  when: (force_install | default(false)) or zoom_exists.rc != 0
+  when: (force_install | default(false) | bool) or zoom_exists.rc != 0
 
 - name: Install Zoom via .deb package
   apt:
     deb: "{{ zoom.dest }}"
   become: true
-  when: (force_install | default(false)) or zoom_exists.rc != 0
+  when: (force_install | default(false) | bool) or zoom_exists.rc != 0
 
 - name: Clean up downloaded .deb file
   file:
     path: "{{ zoom.dest }}"
     state: absent
-  when: (force_install | default(false)) or zoom_exists.rc != 0
+  when: (force_install | default(false) | bool) or zoom_exists.rc != 0
