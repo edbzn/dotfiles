@@ -45,6 +45,15 @@
   become: true
   when: (force_install | default(false) | bool or mongodb_cli_installed.rc != 0) and not mongodb_gpg_key_exists.stat.exists
 
+- name: Detect Ubuntu codename
+  shell: lsb_release -cs
+  register: ubuntu_codename
+  changed_when: false
+
+- name: Set MongoDB repository codename (use jammy for unsupported versions)
+  set_fact:
+    mongodb_repo_codename: "{{ 'jammy' if ubuntu_codename.stdout in ['noble', 'oracular'] else ubuntu_codename.stdout }}"
+
 - name: Check if MongoDB repository exists
   shell: grep -q "repo.mongodb.org" /etc/apt/sources.list.d/mongodb-org-7.0.list
   register: mongodb_repo_exists
@@ -55,7 +64,7 @@
   shell: |
     set -o pipefail
     echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg] \
-    https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/7.0 multiverse" | \
+    https://repo.mongodb.org/apt/ubuntu {{ mongodb_repo_codename }}/mongodb-org/7.0 multiverse" | \
     sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
   args:
     executable: /bin/bash
@@ -66,6 +75,8 @@
   apt:
     update_cache: true
   become: true
+  register: mongodb_apt_update
+  failed_when: false
   when: (force_install | default(false) | bool or mongodb_cli_installed.rc != 0) and mongodb_repo_exists.rc != 0
 
 - name: Install MongoDB CLI from repository
@@ -75,7 +86,9 @@
   become: true
   register: mongodb_cli_repo_install
   failed_when: false
-  when: force_install | default(false) | bool or mongodb_cli_installed.rc != 0
+  when:
+    - (force_install | default(false) | bool or mongodb_cli_installed.rc != 0)
+    - mongodb_apt_update is succeeded or mongodb_apt_update is skipped
 
 - name: Download MongoDB CLI .deb package (fallback)
   get_url:
@@ -84,7 +97,7 @@
     mode: '0644'
   when:
     - (force_install | default(false) | bool) or mongodb_cli_installed.rc != 0
-    - mongodb_cli_repo_install.failed | default(false)
+    - mongodb_cli_repo_install.failed | default(false) or mongodb_cli_repo_install is skipped
   register: mongodb_cli_download_result
 
 - name: Install MongoDB CLI via .deb package (fallback)
@@ -93,7 +106,7 @@
   become: true
   when:
     - (force_install | default(false) | bool) or mongodb_cli_installed.rc != 0
-    - mongodb_cli_repo_install.failed | default(false)
+    - mongodb_cli_repo_install.failed | default(false) or mongodb_cli_repo_install is skipped
     - mongodb_cli_download_result is succeeded
 
 - name: Clean up downloaded .deb file
@@ -102,7 +115,7 @@
     state: absent
   when:
     - (force_install | default(false) | bool) or mongodb_cli_installed.rc != 0
-    - mongodb_cli_repo_install.failed | default(false)
+    - mongodb_cli_repo_install.failed | default(false) or mongodb_cli_repo_install is skipped
     - mongodb_cli_download_result is succeeded
 
 - name: Verify MongoDB CLI installation
