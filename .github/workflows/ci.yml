@@ -126,7 +126,7 @@ jobs:
         run: |
           # Test roles that don't require GUI or external services
           ansible-playbook playbook.yml \
-            --tags "zsh,git,dotfiles" \
+            --tags "zsh,git,dotfiles,node,fonts,secrets" \
             --check \
             --diff
         continue-on-error: true
