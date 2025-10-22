@@ -2,9 +2,9 @@
 
 [![CI](https://github.com/edbzn/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/edbzn/dotfiles/actions/workflows/ci.yml)
 
-This repository provides my ready-to-use dev environment in seconds using [Ansible](https://www.ansible.com) and [GNU Stow](https://www.gnu.org/software/stow/).
+This repository provides a ready-to-use dev environment using [Ansible](https://www.ansible.com) and [GNU Stow](https://www.gnu.org/software/stow/). It installs, configures, and synchronizes all your essential developer tools, dotfiles, and secrets — enabling you to spin up a complete, personalized workspace on any machine in seconds.
 
-## Setup
+## 🚀 Setup
 
 1. Clone the repository in the home directory.
 
@@ -12,15 +12,15 @@ This repository provides my ready-to-use dev environment in seconds using [Ansib
 git clone git@github.com:edbzn/dotfiles.git ~/dotfiles
 ```
 
-2. Install and configure the tools. The installation is **idempotent** - you can run it multiple times safely without any side effects. It will only install missing tools and skip existing ones.
+2. Install and configure the tools. (idempotent — safe to re-run anytime):
 
 ```sh
 ~/dotfiles/install.sh
 ```
 
-> 💡 **Idempotent Installation**: The setup process is designed to be completely safe to run multiple times. Whether you're setting up a fresh system or updating an existing one, the scripts will intelligently detect what's already installed and only make necessary changes.
+> 💡 **Idempotent Installation**: The setup process is designed to be completely safe to run multiple times. Whether you are setting up a fresh system or updating an existing one, the scripts will intelligently detect what's already installed and only make necessary changes.
 
-## Update
+## 🔄 Update
 
 ### List Available Components
 
@@ -65,11 +65,9 @@ The update script provides **idempotent updates** - it only installs missing too
 - `--verbose` - Enable verbose output
 - `--tags <tags>` - Update only specific roles (comma-separated)
 
-## Shell History Backup
+## 🧠 Shell History Backup
 
-Preserve your command history across machines with **automatic secret filtering and encryption**!
-
-Your shell history is automatically backed up using the secrets management system:
+Easily preserve your command history across machines — **encrypted** and **secret-filtered**.
 
 ```sh
 # Run the backup script and choose option 3 or 4
@@ -80,17 +78,9 @@ git add secrets/
 git commit -m "Add encrypted shell history"
 ```
 
-**Features:**
-- 🔒 Encrypted with ansible-vault
-- 🧹 Automatically filters out secrets and tokens (20+ patterns)
-- 🔄 Auto-restores on new machines
-- ✅ Safe to commit to public repos
-
-See [Secrets Management](#-secrets-management) section below for full details.
-
 ## 🔐 Secrets Management
 
-Securely sync your SSH and GPG keys across machines using **Ansible Vault** encryption!
+Securely sync your SSH and GPG keys across machines using **Ansible Vault** encryption.
 
 ### Initial Setup
 
@@ -115,7 +105,7 @@ git push
 echo "your-secure-password" > ~/dotfiles/.vault_password
 chmod 600 ~/dotfiles/.vault_password
 
-# 2. Run install - keys are automatically restored!
+# 2. Run install - your keys are automatically restored!
 ~/dotfiles/install.sh
 ```
 
@@ -127,7 +117,7 @@ chmod 600 ~/dotfiles/.vault_password
 - Shell history (with automatic secret filtering)
 - Safe to commit - only you have the password! 🔒
 
-## Tools
+## ⚙️ Tools Overview
 
 The following tools are automatically installed and configured:
 
