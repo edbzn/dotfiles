@@ -7,6 +7,11 @@
   failed_when: false
   changed_when: false
 
+- name: Check if AWS CLI installation directory exists
+  stat:
+    path: "{{ awscli.install_dir }}"
+  register: awscli_dir_exists
+
 - name: Remove existing AWS CLI installation for force install
   file:
     path: "{{ awscli.install_dir }}"
@@ -50,10 +55,15 @@
     creates: "{{ awscli.extract_dir }}"
   when: (force_install | default(false) | bool) or awscli_exists.rc != 0
 
-- name: Install AWS CLI
+- name: Install AWS CLI (fresh installation)
   shell: "{{ awscli.extract_dir }}/install --install-dir {{ awscli.install_dir }} --bin-dir {{ awscli.bin_dir }}"
   become: true
-  when: (force_install | default(false) | bool) or awscli_exists.rc != 0
+  when: (force_install | default(false) | bool) or (awscli_exists.rc != 0 and not awscli_dir_exists.stat.exists)
+
+- name: Install AWS CLI (update existing installation)
+  shell: "{{ awscli.extract_dir }}/install --install-dir {{ awscli.install_dir }} --bin-dir {{ awscli.bin_dir }} --update"
+  become: true
+  when: (awscli_exists.rc != 0 and awscli_dir_exists.stat.exists)
 
 - name: Clean up AWS CLI installer files
   file:
