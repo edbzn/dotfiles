@@ -227,7 +227,7 @@ jobs:
         run: |
           # Run the complete playbook without any tag restrictions
           ansible-playbook -i ci_hosts playbook.yml \
-            --skip-tags "obs,zoom,slack,gimp,discord,spotify" \
+            --skip-tags "obs,zoom,slack,gimp,discord,spotify,steam" \
             --vault-password-file=.vault_password \
             -v
         continue-on-error: false
