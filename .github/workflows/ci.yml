@@ -249,11 +249,10 @@ jobs:
           localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python3
           EOF
 
-      - name: Run full playbook installation (no sudo required roles)
+      - name: Run full playbook installation (all tasks)
         run: |
-          # Run playbook with selected roles that don't require GUI or sudo
+          # Run the complete playbook without any tag restrictions
           ansible-playbook -i ci_hosts playbook.yml \
-            --tags "bootstrap,zsh,dotfiles,node,rust,uv,awscli,terraform,docker" \
             --vault-password-file=.vault_password \
             -v
         continue-on-error: false
