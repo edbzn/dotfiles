@@ -63,9 +63,17 @@
     update_cache: "{{ update_cache }}"
   become: true
   when: force_install | default(false) | bool or vscode_exists.rc != 0
+  register: vscode_install
+  ignore_errors: true
+
+- name: Display VSCode installation warning
+  debug:
+    msg: "Warning: VSCode package not available in repository. Skipping installation."
+  when: vscode_install is failed
 
 - name: Set default editor
   shell: |
     {{ default_editor.command }}
   changed_when: false
   become: false
+  when: vscode_install is succeeded
