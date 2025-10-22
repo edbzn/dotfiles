@@ -70,6 +70,18 @@
     update_cache: "{{ update_cache }}"
   become: true
   when: force_install | default(false) | bool or docker_exists.rc != 0
+  register: docker_install
+  ignore_errors: true
+
+- name: Install docker-ce without docker-compose-plugin (fallback)
+  apt:
+    name: docker-ce
+    state: "{{ package_state }}"
+    update_cache: "{{ update_cache }}"
+  become: true
+  when:
+    - docker_install is failed
+    - force_install | default(false) | bool or docker_exists.rc != 0
 
 - name: Check if user is in docker group
   shell: set -o pipefail && groups {{ ansible_user_id }} | grep -q docker
