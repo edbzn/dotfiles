@@ -11,6 +11,17 @@
     state: directory
     mode: "{{ work_directory.mode }}"
 
+- name: Clone development repositories into work directory
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ work_directory.path }}/{{ item.name }}"
+    update: yes
+    accept_hostkey: yes
+  loop: "{{ bootstrap_repos }}"
+  tags:
+    - bootstrap
+    - git
+
 - name: Check if running on Wayland
   shell: echo $XDG_SESSION_TYPE
   register: session_type

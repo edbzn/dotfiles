@@ -36,3 +36,15 @@ flameshot:
     - name: "Flameshot Full Screen"
       command: "env QT_QPA_PLATFORM=wayland flameshot full"
       key: "<Shift>Print"
+
+# Repositories to clone into the work directory. Each item should contain
+# a `name` (directory name) and `repo` (git clone URL).
+bootstrap_repos:
+  - name: 'semver'
+    repo: 'https://github.com/jscutlery/semver.git'
+  - name: 'devkit'
+    repo: 'https://github.com/jscutlery/devkit.git'
+  - name: 'nx-completion'
+    repo: 'https://github.com/jscutlery/nx-completion.git'
+  - name: 'rosa'
+    repo: 'https://github.com/rosahealth/rosa.git'
