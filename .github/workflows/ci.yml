@@ -56,6 +56,9 @@ jobs:
           chmod 600 ~/.ssh/id_rsa_ci
           # Start ssh-agent
           eval "$(ssh-agent -s)"
+          # Persist ssh-agent environment for subsequent steps in this job
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
+          echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> $GITHUB_ENV
 
           # Use the vault password as the SSH key passphrase (if present) to remove the passphrase non-interactively
           if [ -f "$HOME/dotfiles/.vault_password" ]; then
