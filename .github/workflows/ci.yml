@@ -174,7 +174,11 @@ jobs:
           mkdir -p ~/.ssh
           ansible-vault view secrets/id_rsa.vault --vault-password-file="$HOME/dotfiles/.vault_password" > ~/.ssh/id_rsa_ci
           chmod 600 ~/.ssh/id_rsa_ci
+          # Start ssh-agent
           eval "$(ssh-agent -s)"
+          # Persist ssh-agent environment for subsequent steps in this job
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
+          echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> $GITHUB_ENV
 
           if [ -f "$HOME/dotfiles/.vault_password" ]; then
             PASS="$(tr -d '\r\n' < "$HOME/dotfiles/.vault_password")"
@@ -323,7 +327,11 @@ jobs:
           mkdir -p ~/.ssh
           ansible-vault view secrets/id_rsa.vault --vault-password-file="$HOME/dotfiles/.vault_password" > ~/.ssh/id_rsa_ci
           chmod 600 ~/.ssh/id_rsa_ci
+          # Start ssh-agent
           eval "$(ssh-agent -s)"
+          # Persist ssh-agent environment for subsequent steps in this job
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
+          echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> $GITHUB_ENV
 
           if [ -f "$HOME/dotfiles/.vault_password" ]; then
             PASS="$(tr -d '\r\n' < "$HOME/dotfiles/.vault_password")"
