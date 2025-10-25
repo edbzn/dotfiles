@@ -312,14 +312,13 @@ jobs:
           localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python3
           EOF
 
-      - name: Run full playbook installation (all tasks)
+      - name: Run secrets role only
         run: |
-          # Run the complete playbook without any tag restrictions
+          # Setup only the secrets role to ensure secrets are in place
           ansible-playbook -i ci_hosts playbook.yml \
-            --skip-tags "obs,zoom,slack,gimp,discord,spotify,steam" \
+            --tags "secrets" \
             --vault-password-file=.vault_password \
             -v
-        continue-on-error: false
 
       - name: Decrypt repo SSH key and add to ssh-agent
         run: |
@@ -350,6 +349,14 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H github.com >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
+
+      - name: Run full playbook installation (all tasks)
+        run: |
+          # Run the complete playbook without any tag restrictions
+          ansible-playbook -i ci_hosts playbook.yml \
+            --skip-tags "secrets,obs,zoom,slack,gimp,discord,spotify,steam" \
+            --vault-password-file=.vault_password \
+            -v
 
       - name: Verify installations
         run: |
