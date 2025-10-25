@@ -35,9 +35,17 @@ jobs:
         run: |
           yamllint -c .yamllint.yml .
 
-      - name: Create dummy vault password for CI
+      - name: Create vault password file for CI from secret
+        env:
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
         run: |
-          echo "ci-dummy-password" > .vault_password
+          # Ensure the home-dotfiles directory exists and write the vault password there
+          mkdir -p "$HOME/dotfiles"
+          printf '%s' "$VAULT_PASSWORD" > "$HOME/dotfiles/.vault_password"
+          chmod 600 "$HOME/dotfiles/.vault_password"
+          # Also write a repo-root .vault_password so other steps can use --vault-password-file=.vault_password
+          printf '%s' "$VAULT_PASSWORD" > .vault_password
+          chmod 600 .vault_password
 
       - name: Configure passwordless sudo for CI
         run: |
@@ -111,9 +119,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ansible
 
-      - name: Create dummy vault password for CI
+      - name: Create vault password file for CI from secret
+        env:
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
         run: |
-          echo "ci-dummy-password" > .vault_password
+          mkdir -p "$HOME/dotfiles"
+          printf '%s' "$VAULT_PASSWORD" > "$HOME/dotfiles/.vault_password"
+          chmod 600 "$HOME/dotfiles/.vault_password"
+          printf '%s' "$VAULT_PASSWORD" > .vault_password
+          chmod 600 .vault_password
 
       - name: Test bootstrap role
         run: |
@@ -208,9 +222,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible
 
-      - name: Create dummy vault password
+      - name: Create vault password file for CI from secret
+        env:
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
         run: |
-          echo "ci-dummy-password" > .vault_password
+          mkdir -p "$HOME/dotfiles"
+          printf '%s' "$VAULT_PASSWORD" > "$HOME/dotfiles/.vault_password"
+          chmod 600 "$HOME/dotfiles/.vault_password"
+          printf '%s' "$VAULT_PASSWORD" > .vault_password
+          chmod 600 .vault_password
 
       - name: Install Ansible Galaxy requirements
         run: |
