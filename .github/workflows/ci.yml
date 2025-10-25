@@ -75,16 +75,6 @@ jobs:
           # Add the (now passphrase-less) key to the agent
           ssh-add ~/.ssh/id_rsa_ci
 
-          # Debug: list agent keys and test SSH connectivity (non-fatal, prints verbose output)
-          echo "--- ssh-add -l ---"
-          ssh-add -l || true
-          echo "--- decrypted key fingerprint ---"
-          ssh-keygen -lf ~/.ssh/id_rsa_ci || true
-          echo "--- ssh -vT git@github.com (may fail) ---"
-          ssh -o BatchMode=yes -vT git@github.com 2>&1 || true
-          echo "--- git ls-remote (verbose ssh) ---"
-          GIT_SSH_COMMAND="ssh -o BatchMode=yes -v" git ls-remote git@github.com:jscutlery/semver.git HEAD 2>&1 || true
-
       - name: Add GitHub to known_hosts
         run: |
           mkdir -p ~/.ssh
