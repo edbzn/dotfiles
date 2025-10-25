@@ -3,11 +3,11 @@
   # Set force_install=true to reinstall everything regardless of current state
   # Usage: ansible-playbook -i hosts playbook.yml -e force_install=true
   roles:
-    - role: bootstrap
-      tags: [bootstrap]
-
     - role: secrets
       tags: [secrets, security]
+
+    - role: bootstrap
+      tags: [bootstrap]
 
     - role: zsh
       tags: [zsh, bootstrap]
