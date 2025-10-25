@@ -87,7 +87,7 @@
   set_fact:
     ubuntu_codename: >-
       {% if ubuntu_codename_raw.stdout in ['plucky', 'oracular'] %}noble{%
-      elif ubuntu_codename_raw.stdout == 'mantic' %}jammy{%
+      elif ubuntu_codename_raw.stdout in ['mantic', 'questing'] %}jammy{%
       else %}{{ ubuntu_codename_raw.stdout }}{% endif %}
 
 # Step 5: Add HashiCorp repository
