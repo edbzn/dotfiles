@@ -36,19 +36,6 @@ source $ZSH/oh-my-zsh.sh
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Rust
-[ -f ~/.cargo/env ] && source ~/.cargo/env
-. "$HOME/.local/bin/env"
-export PATH="$HOME/.cargo/bin:$PATH"
-
-# Load Angular CLI autocompletion.
-source <(ng completion script)
-
-# bun
-[ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
 alias ls="lsd"
 alias zshrc="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
@@ -62,4 +49,3 @@ export AWS_PROFILE=rosa-dev
 # Source machine-specific configuration (GPG, secrets, etc.)
 # This file is not tracked in git
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
-
