@@ -14,14 +14,19 @@ docker_required_packages:
 # Docker packages to install
 docker_packages:
   - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
   - docker-compose-plugin
 
 # Docker repository configuration
 docker_repository:
   gpg_url: "https://download.docker.com/linux/ubuntu/gpg"
-  gpg_dest: "/etc/apt/trusted.gpg.d/docker.asc"
+  # Use the apt keyrings directory and keep the key as .asc (readable by apt)
+  gpg_dest: "/etc/apt/keyrings/docker.asc"
   gpg_mode: "0644"
-  repo_url: "deb https://download.docker.com/linux/ubuntu focal stable"
+  # repo_url is the base URL; tasks will construct the full deb line with arch and codename
+  repo_url: "https://download.docker.com/linux/ubuntu"
 
 # Package state configuration
 package_state: "latest"

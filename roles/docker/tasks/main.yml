@@ -41,12 +41,31 @@
     path: "{{ docker_repository.gpg_dest }}"
   register: docker_key_exists
 
-- name: Add Docker GPG apt Key
+- name: Ensure /etc/apt/keyrings directory exists
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+  become: true
+  when: force_install | default(false) | bool or not docker_key_exists.stat.exists
+
+- name: Download Docker GPG key to keyrings
   get_url:
     url: "{{ docker_repository.gpg_url }}"
     dest: "{{ docker_repository.gpg_dest }}"
     mode: "{{ docker_repository.gpg_mode }}"
     force: true
+  become: true
+  when: force_install | default(false) | bool or not docker_key_exists.stat.exists
+
+- name: Ensure Docker keyring is world-readable
+  file:
+    path: "{{ docker_repository.gpg_dest }}"
+    mode: "{{ docker_repository.gpg_mode }}"
+    owner: root
+    group: root
   become: true
   when: force_install | default(false) | bool or not docker_key_exists.stat.exists
 
@@ -56,14 +75,31 @@
   failed_when: false
   changed_when: false
 
-- name: Add Docker Repository
-  apt_repository:
-    repo: "{{ docker_repository.repo_url }}"
-    state: present
+- name: Determine system architecture for Docker repo
+  command: dpkg --print-architecture
+  register: dpkg_arch
+  changed_when: false
+  failed_when: false
+  become: true
+
+- name: Write Docker apt source list with signed-by
+  copy:
+    dest: /etc/apt/sources.list.d/docker.list
+    content: |
+      deb [arch={{ dpkg_arch.stdout | default('amd64') }} signed-by=/etc/apt/keyrings/docker.asc] {{ docker_repository.repo_url }} {{ ansible_distribution_release }} stable
+    owner: root
+    group: root
+    mode: '0644'
   become: true
   when: force_install | default(false) | bool or docker_repo_exists.rc != 0
 
-- name: Install docker-ce and docker-compose-plugin
+- name: Update apt cache after adding Docker repo
+  apt:
+    update_cache: yes
+  become: true
+  when: force_install | default(false) | bool or docker_repo_exists.rc != 0
+
+- name: Install Docker packages
   apt:
     name: "{{ docker_packages }}"
     state: "{{ package_state }}"
@@ -73,7 +109,7 @@
   register: docker_install
   ignore_errors: true
 
-- name: Install docker-ce without docker-compose-plugin (fallback)
+- name: Install Docker without docker-compose-plugin (fallback)
   apt:
     name: docker-ce
     state: "{{ package_state }}"
