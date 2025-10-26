@@ -33,17 +33,57 @@
     path: "{{ vscode.gpg_dest }}"
   register: vscode_key_exists
 
-- name: Add VSCode GPG apt key
+- name: Ensure /etc/apt/keyrings directory exists
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+  become: true
+  when: force_install | default(false) | bool or not vscode_key_exists.stat.exists
+
+- name: Ensure gnupg is installed (needed to dearmor keys)
+  apt:
+    name: gnupg
+    state: present
+  become: true
+  when: force_install | default(false) | bool or not vscode_key_exists.stat.exists
+
+- name: Download VSCode GPG key (ASCII) to temporary file
   get_url:
     url: "{{ vscode.gpg_url }}"
-    dest: "{{ vscode.gpg_dest }}"
-    mode: "{{ vscode.gpg_mode }}"
+    dest: /tmp/packages.microsoft.asc
+    mode: '0644'
     force: true
   become: true
   when: force_install | default(false) | bool or not vscode_key_exists.stat.exists
 
+- name: Convert VSCode GPG key to binary and move to keyrings
+  command: gpg --dearmor --yes --output {{ vscode.gpg_dest }} /tmp/packages.microsoft.asc
+  args:
+    creates: "{{ vscode.gpg_dest }}"
+  become: true
+  when: force_install | default(false) | bool or not vscode_key_exists.stat.exists
+
+- name: Set permissions on VSCode keyring
+  file:
+    path: "{{ vscode.gpg_dest }}"
+    mode: "{{ vscode.gpg_mode }}"
+    owner: root
+    group: root
+  become: true
+  when: force_install | default(false) | bool or not vscode_key_exists.stat.exists
+
+- name: Remove temporary VSCode key file
+  file:
+    path: /tmp/packages.microsoft.asc
+    state: absent
+  become: true
+  when: force_install | default(false) | bool or not vscode_key_exists.stat.exists
+
 - name: Check if VSCode repository exists
-  shell: grep -q "packages.microsoft.com/repos/vscode" /etc/apt/sources.list.d/*.list || true
+  shell: grep -q "packages.microsoft.com/repos/code" /etc/apt/sources.list.d/*.list || true
   register: vscode_repo_exists
   failed_when: false
   changed_when: false
@@ -52,6 +92,12 @@
   apt_repository:
     repo: "{{ vscode.repo_url }}"
     state: present
+  become: true
+  when: force_install | default(false) | bool or vscode_repo_exists.rc != 0
+
+- name: Update apt cache after adding VSCode repo
+  apt:
+    update_cache: yes
   become: true
   when: force_install | default(false) | bool or vscode_repo_exists.rc != 0
 
