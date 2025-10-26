@@ -66,6 +66,14 @@
   become: true
   when: force_install | default(false) | bool or not chrome_key_exists.stat.exists
 
+- name: Re-check Google key exists
+  stat:
+    path: "{{ chrome.gpg_dest }}"
+  register: chrome_key_exists
+  become: true
+  changed_when: false
+  failed_when: false
+
 - name: Set permissions on Google keyring
   file:
     path: "{{ chrome.gpg_dest }}"
@@ -73,7 +81,7 @@
     owner: root
     group: root
   become: true
-  when: force_install | default(false) | bool or not chrome_key_exists.stat.exists
+  when: chrome_key_exists.stat.exists
 
 - name: Remove temporary Google key file
   file:
