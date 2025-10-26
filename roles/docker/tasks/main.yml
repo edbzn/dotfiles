@@ -60,6 +60,14 @@
   become: true
   when: force_install | default(false) | bool or not docker_key_exists.stat.exists
 
+- name: Re-check Docker GPG key exists
+  stat:
+    path: "{{ docker_repository.gpg_dest }}"
+  register: docker_key_exists
+  become: true
+  changed_when: false
+  failed_when: false
+
 - name: Ensure Docker keyring is world-readable
   file:
     path: "{{ docker_repository.gpg_dest }}"
@@ -67,7 +75,7 @@
     owner: root
     group: root
   become: true
-  when: force_install | default(false) | bool or not docker_key_exists.stat.exists
+  when: docker_key_exists.stat.exists
 
 - name: Check if Docker repository exists
   shell: grep -q "download.docker.com/linux/ubuntu" /etc/apt/sources.list.d/*.list || true
