@@ -4,9 +4,11 @@
 # Chrome repository configuration
 chrome:
   gpg_url: "https://dl-ssl.google.com/linux/linux_signing_key.pub"
-  gpg_dest: "/etc/apt/trusted.gpg.d/chrome.asc"
+  # Use the apt keyrings directory and a binary key (dearmored)
+  gpg_dest: "/etc/apt/keyrings/google.gpg"
   gpg_mode: "0644"
-  repo_url: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
+  # Use signed-by to reference the key in /etc/apt/keyrings
+  repo_url: "deb [arch=amd64 signed-by=/etc/apt/keyrings/google.gpg] http://dl.google.com/linux/chrome/deb/ stable main"
   package_name: "google-chrome-stable"
 
 # Package configuration

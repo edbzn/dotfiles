@@ -33,14 +33,69 @@
     path: "{{ chrome.gpg_dest }}"
   register: chrome_key_exists
 
-- name: Add repository key
+- name: Ensure /etc/apt/keyrings directory exists
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+  become: true
+  when: force_install | default(false) | bool or not chrome_key_exists.stat.exists
+
+- name: Ensure gnupg is installed (needed to dearmor keys)
+  apt:
+    name: gnupg
+    state: present
+  become: true
+  when: force_install | default(false) | bool or not chrome_key_exists.stat.exists
+
+- name: Download Google signing key (ASCII) to temporary file
   get_url:
     url: "{{ chrome.gpg_url }}"
-    dest: "{{ chrome.gpg_dest }}"
-    mode: "{{ chrome.gpg_mode }}"
+    dest: /tmp/google-linux-signing-key.pub
+    mode: '0644'
     force: true
   become: true
   when: force_install | default(false) | bool or not chrome_key_exists.stat.exists
+
+- name: Convert Google signing key to binary and move to keyrings
+  command: gpg --dearmor --yes --output {{ chrome.gpg_dest }} /tmp/google-linux-signing-key.pub
+  args:
+    creates: "{{ chrome.gpg_dest }}"
+  become: true
+  when: force_install | default(false) | bool or not chrome_key_exists.stat.exists
+
+- name: Set permissions on Google keyring
+  file:
+    path: "{{ chrome.gpg_dest }}"
+    mode: "{{ chrome.gpg_mode }}"
+    owner: root
+    group: root
+  become: true
+  when: force_install | default(false) | bool or not chrome_key_exists.stat.exists
+
+- name: Remove temporary Google key file
+  file:
+    path: /tmp/google-linux-signing-key.pub
+    state: absent
+  become: true
+  when: force_install | default(false) | bool or not chrome_key_exists.stat.exists
+
+- name: Find existing Google repo files (if any)
+  shell: grep -l "dl.google.com" /etc/apt/sources.list.d/*.list 2>/dev/null || true
+  register: google_repo_files
+  failed_when: false
+  changed_when: false
+
+- name: Normalize Signed-By path in existing Google repo files
+  replace:
+    path: "{{ item }}"
+    regexp: 'signed-by=[^\]]+'
+    replace: 'signed-by=/etc/apt/keyrings/google.gpg'
+  loop: "{{ google_repo_files.stdout_lines }}"
+  when: google_repo_files.stdout_lines | length > 0
+  become: true
 
 - name: Check if Chrome repository exists
   shell: grep -q "dl.google.com/linux/chrome/deb" /etc/apt/sources.list.d/*.list || true
