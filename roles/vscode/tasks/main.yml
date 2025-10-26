@@ -66,6 +66,14 @@
   become: true
   when: force_install | default(false) | bool or not vscode_key_exists.stat.exists
 
+- name: Re-check VSCode key exists
+  stat:
+    path: "{{ vscode.gpg_dest }}"
+  register: vscode_key_exists
+  become: true
+  changed_when: false
+  failed_when: false
+
 - name: Set permissions on VSCode keyring
   file:
     path: "{{ vscode.gpg_dest }}"
@@ -73,7 +81,7 @@
     owner: root
     group: root
   become: true
-  when: force_install | default(false) | bool or not vscode_key_exists.stat.exists
+  when: vscode_key_exists.stat.exists
 
 - name: Remove temporary VSCode key file
   file:
