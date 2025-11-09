@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/edbzn/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/edbzn/dotfiles/actions/workflows/ci.yml)
 
-This repository provides a ready-to-use dev environment using [Ansible](https://www.ansible.com) and [GNU Stow](https://www.gnu.org/software/stow/). It installs, configures, and synchronizes all your essential developer tools, dotfiles, and secrets — enabling you to spin up a complete, personalized workspace on any machine in seconds.
+This repository provides my personal ready-to-use dev environment using [Ansible](https://www.ansible.com) and [GNU Stow](https://www.gnu.org/software/stow/). It installs, configures, and synchronizes all my essential developer tools, dotfiles, and secrets — enabling me to spin up a complete, personalized workspace on any machine in seconds.
 
 ## 🚀 Setup
 
