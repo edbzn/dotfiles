@@ -160,6 +160,19 @@
   become: false
   tags: [zsh-plugins]
 
+- name: Check if zoxide is installed
+  command: command -v zoxide
+  register: zoxide_exists
+  failed_when: false
+  changed_when: false
+  tags: [zoxide]
+
+- name: Install zoxide
+  shell: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+  when: force_install | default(false) | bool or zoxide_exists.rc != 0
+  become: false
+  tags: [zoxide]
+
 - name: Get ZSH path
   shell: which zsh
   register: zsh_path

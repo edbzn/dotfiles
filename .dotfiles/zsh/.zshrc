@@ -5,6 +5,9 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# Add local bin to PATH for zoxide and other local binaries
+export PATH="$HOME/.local/bin:$PATH"
+
 export ZSH=/home/edouard/.oh-my-zsh
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
@@ -41,6 +44,12 @@ alias zshrc="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias work="cd ~/work"
 alias nx-check="nx affected --target=lint,test,build --parallel=8"
+
+# Initialize zoxide and alias cd to it
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init zsh)"
+  alias cd="z"
+fi
 
 # Rosa
 export AWS_REGION=eu-central-1
