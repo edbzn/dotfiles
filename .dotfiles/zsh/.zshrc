@@ -51,6 +51,11 @@ if command -v zoxide &> /dev/null; then
   alias cd="z"
 fi
 
+# Initialize fzf
+if command -v fzf &> /dev/null; then
+  source <(fzf --zsh)
+fi
+
 # Rosa
 export AWS_REGION=eu-central-1
 export AWS_PROFILE=rosa-dev

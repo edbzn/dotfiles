@@ -4,6 +4,7 @@
 # Package configuration
 zsh_packages:
   - zsh
+  - fzf
 
 # Directory configuration
 zsh_directory: "~/.zsh"
