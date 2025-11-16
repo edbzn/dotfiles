@@ -39,7 +39,15 @@ source $ZSH/oh-my-zsh.sh
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+# Aliases with conditional checks
+if command -v lsd &> /dev/null; then
 alias ls="lsd"
+fi
+
+if command -v bat &> /dev/null; then
+  alias cat="bat"
+fi
+
 alias zshrc="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias work="cd ~/work"

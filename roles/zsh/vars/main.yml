@@ -5,6 +5,7 @@
 zsh_packages:
   - zsh
   - fzf
+  - bat
 
 # Directory configuration
 zsh_directory: "~/.zsh"
