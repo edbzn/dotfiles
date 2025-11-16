@@ -11,6 +11,7 @@
   apt:
     name: "{{ zsh_packages }}"
     update_cache: true
+    cache_valid_time: 3600
   become: true
   when: (force_install | default(false) | bool | bool) or zsh_exists.rc != 0
 
@@ -170,6 +171,8 @@
 - name: Install zoxide
   shell: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
   when: force_install | default(false) | bool or zoxide_exists.rc != 0
+  args:
+    creates: "{{ ansible_env.HOME }}/.local/bin/zoxide"
   become: false
   tags: [zoxide]
 
