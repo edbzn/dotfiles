@@ -15,15 +15,11 @@ UPDATE_ZSH_DAYS=7
 
 plugins=(
   git
-  docker-compose
   node
-  npm
   nx-completion
   zsh-autosuggestions
   zsh-syntax-highlighting
   zsh-completions
-  systemd
-  sudo
   ssh-agent
   you-should-use
 )
@@ -41,7 +37,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Aliases with conditional checks
 if command -v lsd &> /dev/null; then
-alias ls="lsd"
+  alias ls="lsd"
 fi
 
 if command -v bat &> /dev/null; then
