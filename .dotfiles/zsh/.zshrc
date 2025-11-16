@@ -46,6 +46,10 @@ elif command -v bat &> /dev/null; then
   alias cat="bat"
 fi
 
+if command -v fzf &> /dev/null; then
+  alias find="fzf"
+fi
+
 alias zshrc="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias work="cd ~/work"
