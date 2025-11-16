@@ -40,7 +40,9 @@ if command -v lsd &> /dev/null; then
   alias ls="lsd"
 fi
 
-if command -v bat &> /dev/null; then
+if command -v batcat &> /dev/null; then
+  alias cat="batcat"
+elif command -v bat &> /dev/null; then
   alias cat="bat"
 fi
 
