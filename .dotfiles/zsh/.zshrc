@@ -54,6 +54,10 @@ if command -v rg &> /dev/null; then
   alias grep="rg"
 fi
 
+if command -v fdfind &> /dev/null; then
+  alias fd="fdfind"
+fi
+
 alias zshrc="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias work="cd ~/work"
