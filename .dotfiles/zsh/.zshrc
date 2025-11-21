@@ -50,6 +50,10 @@ if command -v fzf &> /dev/null; then
   alias find="fzf"
 fi
 
+if command -v rg &> /dev/null; then
+  alias grep="rg"
+fi
+
 alias zshrc="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias work="cd ~/work"

@@ -6,6 +6,7 @@ zsh_packages:
   - zsh
   - fzf
   - bat
+  - ripgrep
 
 # Directory configuration
 zsh_directory: "~/.zsh"
