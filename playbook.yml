@@ -25,6 +25,9 @@
     - role: chrome
       tags: [chrome, bootstrap]
 
+    - role: gnome
+      tags: [gnome, desktop, bootstrap]
+
     - role: vscode
       tags: [vscode, bootstrap]
 

@@ -1,0 +1,105 @@
+---
+- name: Install GNOME prerequisites
+  apt:
+    name: "{{ gnome_packages }}"
+    update_cache: "{{ update_cache | default(true) }}"
+    state: "{{ package_state | default('present') }}"
+  become: true
+
+- name: Detect whether current desktop is GNOME-based
+  set_fact:
+    gnome_desktop_detected: "{{ 'gnome' in (ansible_env.XDG_CURRENT_DESKTOP | default('') | lower) or 'ubuntu' in (ansible_env.XDG_CURRENT_DESKTOP | default('') | lower) }}"
+
+- name: Skip GNOME customization when not in a GNOME desktop session
+  debug:
+    msg: "Skipping GNOME role because XDG_CURRENT_DESKTOP is not GNOME/Ubuntu."
+  when: not gnome_desktop_detected | bool
+
+- name: Check whether gnome-extensions CLI is available
+  command: which gnome-extensions
+  register: gnome_extensions_cli
+  failed_when: false
+  changed_when: false
+  when: gnome_desktop_detected | bool
+
+- name: Get currently enabled GNOME extensions
+  command: gnome-extensions list --enabled
+  register: enabled_extensions_current
+  failed_when: false
+  changed_when: false
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_extensions_cli.rc == 0
+
+- name: Check which target GNOME extensions are already installed
+  command: "gnome-extensions info {{ item }}"
+  register: installed_extension_checks
+  failed_when: false
+  changed_when: false
+  loop: "{{ gnome_extensions }}"
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_extensions_cli.rc == 0
+
+- name: Install missing GNOME extensions from extensions.gnome.org
+  shell: |
+    set -euo pipefail
+    UUID="{{ item.item }}"
+    SHELL_MAJOR="$(gnome-shell --version | awk '{print $3}' | cut -d. -f1)"
+    INFO_URL="https://extensions.gnome.org/extension-info/?uuid=${UUID}&shell_version=${SHELL_MAJOR}"
+    DOWNLOAD_PATH="$(curl -fsSL "${INFO_URL}" | jq -r '.download_url')"
+
+    if [ -z "${DOWNLOAD_PATH}" ] || [ "${DOWNLOAD_PATH}" = "null" ]; then
+      echo "No download URL found for ${UUID}" >&2
+      exit 1
+    fi
+
+    TMP_ZIP="$(mktemp --suffix=.zip)"
+    curl -fsSL "https://extensions.gnome.org${DOWNLOAD_PATH}" -o "${TMP_ZIP}"
+    gnome-extensions install --force "${TMP_ZIP}"
+    rm -f "${TMP_ZIP}"
+  args:
+    executable: /bin/bash
+  register: extension_install_results
+  loop: "{{ installed_extension_checks.results | default([]) }}"
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_extensions_cli.rc == 0
+    - item.rc != 0
+  changed_when: true
+
+- name: Enable target GNOME extensions
+  command: "gnome-extensions enable {{ item }}"
+  loop: "{{ gnome_extensions }}"
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_extensions_cli.rc == 0
+    - item not in (enabled_extensions_current.stdout_lines | default([]))
+  changed_when: true
+
+- name: Copy desired GNOME dconf state to temporary path
+  copy:
+    src: gnome.dconf
+    dest: /tmp/gnome-ansible-state.dconf
+    mode: '0644'
+  when: gnome_desktop_detected | bool
+
+- name: Export current GNOME dconf state
+  command: dconf dump /org/gnome/
+  register: dconf_current_dump
+  changed_when: false
+  when: gnome_desktop_detected | bool
+
+- name: Check whether GNOME dconf state differs
+  set_fact:
+    gnome_dconf_needs_update: "{{ dconf_current_dump.stdout != lookup('file', role_path + '/files/gnome.dconf') }}"
+  when: gnome_desktop_detected | bool
+
+- name: Apply GNOME dconf state when different
+  shell: dconf load /org/gnome/ < /tmp/gnome-ansible-state.dconf
+  args:
+    executable: /bin/bash
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_dconf_needs_update | bool
+  changed_when: true

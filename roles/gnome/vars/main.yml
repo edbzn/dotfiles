@@ -1,0 +1,20 @@
+---
+# GNOME extensions currently enabled on the source machine.
+gnome_extensions:
+  - user-theme@gnome-shell-extensions.gcampax.github.com
+  - extension-list@tu.berry
+  - weekstartmodifier@saccuzm.gmail.com
+  - ding@rastersoft.com
+  - snapd-prompting@canonical.com
+  - tiling-assistant@ubuntu.com
+  - ubuntu-appindicators@ubuntu.com
+  - ubuntu-dock@ubuntu.com
+  - IP-Finder@linxgem33.com
+  - tilingshell@ferrarodomenico.com
+
+# Core packages needed to manage GNOME extension state.
+gnome_packages:
+  - gnome-shell
+  - gnome-shell-extensions
+  - jq
+  - curl

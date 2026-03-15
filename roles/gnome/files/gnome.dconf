@@ -1,0 +1,405 @@
+[Characters]
+recent-characters=['🌶️']
+
+[Ptyxis]
+default-profile-uuid='b219305d33d5e9a56a79a20868fc8029'
+profile-uuids=['b219305d33d5e9a56a79a20868fc8029']
+window-size=(uint32 80, uint32 24)
+
+[baobab/ui]
+is-maximized=true
+
+[control-center]
+last-panel='bluetooth'
+window-state=(980, 640, true)
+
+[desktop/app-folders]
+folder-children=['System', 'Utilities', 'YaST', 'Pardus']
+
+[desktop/app-folders/folders/Pardus]
+categories=['X-Pardus-Apps']
+name='X-Pardus-Apps.directory'
+translate=true
+
+[desktop/app-folders/folders/System]
+apps=['nm-connection-editor.desktop', 'org.gnome.baobab.desktop', 'org.gnome.DiskUtility.desktop', 'im-config.desktop', 'org.gnome.Logs.desktop', 'org.gnome.Sysprof.desktop', 'org.gnome.SystemMonitor.desktop']
+name='X-GNOME-Shell-System.directory'
+translate=true
+
+[desktop/app-folders/folders/Utilities]
+apps=['org.gnome.Papers.desktop', 'org.gnome.font-viewer.desktop', 'org.gnome.Loupe.desktop']
+name='X-GNOME-Shell-Utilities.directory'
+translate=true
+
+[desktop/app-folders/folders/YaST]
+categories=['X-SuSE-YaST']
+name='suse-yast.directory'
+translate=true
+
+[desktop/break-reminders/eyesight]
+play-sound=true
+
+[desktop/break-reminders/movement]
+duration-seconds=uint32 300
+interval-seconds=uint32 1800
+play-sound=true
+
+[desktop/input-sources]
+sources=[('xkb', 'fr')]
+
+[desktop/interface]
+color-scheme='prefer-dark'
+gtk-theme='Yaru-dark'
+icon-theme='Yaru-dark'
+text-scaling-factor=1.2000000000000002
+
+[desktop/notifications]
+application-children=['update-manager', 'org-gnome-ptyxis', 'google-chrome', 'spotify-spotify', 'code', 'slack-slack', 'org-gnome-evolution-alarm-notify', 'zoom', 'org-gnome-nautilus', 'com-obsproject-studio', 'vlc', 'org-kde-kdenlive', 'install4j-1k4rwse-burpsuitecommunity', 'discord-discord', 'steam', 'org-gnome-settings', 'firefox-firefox', 'android-studio-android-studio', 'org-gnome-baobab']
+
+[desktop/notifications/application/android-studio-android-studio]
+application-id='android-studio_android-studio.desktop'
+
+[desktop/notifications/application/code]
+application-id='code.desktop'
+
+[desktop/notifications/application/com-obsproject-studio]
+application-id='com.obsproject.Studio.desktop'
+
+[desktop/notifications/application/discord-discord]
+application-id='discord_discord.desktop'
+
+[desktop/notifications/application/firefox-firefox]
+application-id='firefox_firefox.desktop'
+
+[desktop/notifications/application/google-chrome]
+application-id='google-chrome.desktop'
+
+[desktop/notifications/application/install4j-1k4rwse-burpsuitecommunity]
+application-id='install4j_1k4rwse-BurpSuiteCommunity.desktop'
+
+[desktop/notifications/application/org-gnome-baobab]
+application-id='org.gnome.baobab.desktop'
+
+[desktop/notifications/application/org-gnome-evolution-alarm-notify]
+application-id='org.gnome.Evolution-alarm-notify.desktop'
+
+[desktop/notifications/application/org-gnome-nautilus]
+application-id='org.gnome.Nautilus.desktop'
+
+[desktop/notifications/application/org-gnome-ptyxis]
+application-id='org.gnome.Ptyxis.desktop'
+
+[desktop/notifications/application/org-gnome-settings]
+application-id='org.gnome.Settings.desktop'
+
+[desktop/notifications/application/org-kde-kdenlive]
+application-id='org.kde.kdenlive.desktop'
+
+[desktop/notifications/application/slack-slack]
+application-id='slack_slack.desktop'
+
+[desktop/notifications/application/spotify-spotify]
+application-id='spotify_spotify.desktop'
+
+[desktop/notifications/application/steam]
+application-id='steam.desktop'
+
+[desktop/notifications/application/update-manager]
+application-id='update-manager.desktop'
+
+[desktop/notifications/application/vlc]
+application-id='vlc.desktop'
+
+[desktop/notifications/application/zoom]
+application-id='Zoom.desktop'
+
+[desktop/peripherals/touchpad]
+two-finger-scrolling-enabled=true
+
+[desktop/search-providers]
+sort-order=['org.gnome.Settings.desktop', 'org.gnome.Contacts.desktop', 'org.gnome.Nautilus.desktop']
+
+[desktop/session]
+idle-delay=uint32 900
+
+[desktop/wm/keybindings]
+maximize=@as []
+unmaximize=@as []
+
+[evolution-data-server]
+migrated=true
+
+[evolution-data-server/calendar]
+reminders-past=@as []
+
+[mutter]
+edge-tiling=false
+experimental-features=@as []
+overlay-key='Super'
+
+[mutter/keybindings]
+toggle-tiled-left=@as []
+toggle-tiled-right=@as []
+
+[nautilus/preferences]
+default-folder-viewer='icon-view'
+migrated-gtk-settings=true
+
+[nautilus/window-state]
+initial-size=(890, 550)
+initial-size-file-chooser=(1394, 636)
+maximized=true
+
+[papers]
+night-mode=false
+
+[papers/default]
+annot-color='yellow'
+continuous=true
+dual-page=false
+dual-page-odd-left=false
+enable-spellchecking=true
+show-sidebar=true
+sizing-mode='automatic'
+window-maximized=true
+
+[portal/filechooser/bruno]
+last-folder-path='/home/edouard/work/rosa-bruno'
+
+[portal/filechooser/code]
+last-folder-path='/home/edouard/work'
+
+[portal/filechooser/com.google.Chrome]
+last-folder-path='/home/edouard/Documents'
+
+[portal/filechooser/org.chromium.Chromium]
+last-folder-path='/home/edouard/dotfiles'
+
+[portal/filechooser/org.gnome.Settings]
+last-folder-path='/home/edouard/Documents'
+
+[portal/filechooser/snap.chatgpt-desktop-client]
+last-folder-path='/home/edouard/Downloads'
+
+[portal/filechooser/snap.discord]
+last-folder-path='/home/edouard/Documents'
+
+[portal/filechooser/snap.slack]
+last-folder-path='/tmp'
+
+[settings-daemon/plugins/color]
+night-light-schedule-automatic=false
+
+[settings-daemon/plugins/media-keys]
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']
+
+[settings-daemon/plugins/media-keys/custom-keybindings/custom0]
+binding='<Shift><Super>S'
+command='script --command "flameshot gui" /dev/null'
+name='Flameshot'
+
+[settings-daemon/plugins/power]
+sleep-inactive-ac-timeout=3600
+sleep-inactive-ac-type='nothing'
+
+[shell]
+disabled-extensions=['weekly-commits@funinkina.is-a.dev']
+enabled-extensions=['ubuntu-dock@ubuntu.com', 'tiling-assistant@ubuntu.com', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'extension-list@tu.berry', 'windows-search-provider@G-dH.github.com', 'weekstartmodifier@saccuzm.gmail.com', 'arcmenu@arcmenu.com', 'system-monitor@gnome-shell-extensions.gcampax.github.com', 'IP-Finder@linxgem33.com', 'blur-my-shell@aunetx', 'system-monitor-next@paradoxxx.zero.gmail.com', 'forge@jmmaranan.com', 'dev-container-manager@devopsnextgenx', 'tilingshell@ferrarodomenico.com']
+favorite-apps=['org.gnome.Nautilus.desktop', 'google-chrome.desktop', 'terminator.desktop', 'code.desktop', 'android-studio_android-studio.desktop', 'chatgpt-desktop-client_chatgpt-desktop-client.desktop', 'bruno.desktop', 'spotify_spotify.desktop', 'com.obsproject.Studio.desktop', 'org.kde.kdenlive.desktop', 'mongodb-compass.desktop', 'Zoom.desktop', 'discord_discord.desktop', 'steam.desktop', 'slack_slack.desktop']
+welcome-dialog-last-shown-version='49.0'
+
+[shell/extensions/arcmenu]
+menu-layout='Default'
+prefs-visible-page=0
+search-entry-border-radius=(true, 25)
+update-notifier-project-version=70
+
+[shell/extensions/blur-my-shell]
+settings-version=2
+
+[shell/extensions/blur-my-shell/appfolder]
+brightness=0.59999999999999998
+sigma=30
+
+[shell/extensions/blur-my-shell/coverflow-alt-tab]
+pipeline='pipeline_default'
+
+[shell/extensions/blur-my-shell/dash-to-dock]
+blur=true
+brightness=0.59999999999999998
+pipeline='pipeline_default_rounded'
+sigma=30
+static-blur=true
+style-dash-to-dock=0
+
+[shell/extensions/blur-my-shell/hidetopbar]
+compatibility=false
+
+[shell/extensions/blur-my-shell/lockscreen]
+pipeline='pipeline_default'
+
+[shell/extensions/blur-my-shell/overview]
+blur=true
+pipeline='pipeline_default'
+style-components=2
+
+[shell/extensions/blur-my-shell/panel]
+brightness=0.59999999999999998
+pipeline='pipeline_default'
+sigma=30
+static-blur=true
+
+[shell/extensions/blur-my-shell/screenshot]
+pipeline='pipeline_default'
+
+[shell/extensions/blur-my-shell/window-list]
+brightness=0.59999999999999998
+sigma=30
+
+[shell/extensions/dash-to-dock]
+always-center-icons=true
+apply-custom-theme=false
+background-opacity=0.80000000000000004
+dash-max-icon-size=42
+dock-fixed=false
+dock-position='BOTTOM'
+extend-height=false
+height-fraction=0.75
+intellihide=true
+intellihide-mode='ALL_WINDOWS'
+preferred-monitor=-2
+preferred-monitor-by-connector='DP-2'
+show-favorites=true
+show-mounts-only-mounted=true
+show-show-apps-button=false
+
+[shell/extensions/dash-to-panel]
+extension-version=72
+panel-anchors='{}'
+panel-element-positions='{}'
+panel-lengths='{}'
+panel-positions='{}'
+panel-sizes='{}'
+prefs-opened=false
+
+[shell/extensions/ding]
+check-x11wayland=true
+
+[shell/extensions/extension-list]
+enable-filter=true
+
+[shell/extensions/forge]
+css-last-update=uint32 37
+
+[shell/extensions/forge/keybindings]
+con-split-horizontal=['<Super>z']
+con-split-layout-toggle=['<Super>g']
+con-split-vertical=['<Super>v']
+con-stacked-layout-toggle=['<Shift><Super>s']
+con-tabbed-layout-toggle=['<Shift><Super>t']
+con-tabbed-showtab-decoration-toggle=['<Control><Alt>y']
+focus-border-toggle=['<Super>x']
+prefs-tiling-toggle=['<Super>w']
+window-focus-down=['<Super>j']
+window-focus-left=['<Super>h']
+window-focus-right=['<Super>l']
+window-focus-up=['<Super>k']
+window-gap-size-decrease=['<Control><Super>minus']
+window-gap-size-increase=['<Control><Super>plus']
+window-move-down=['<Shift><Super>j']
+window-move-left=['<Shift><Super>h']
+window-move-right=['<Shift><Super>l']
+window-move-up=['<Shift><Super>k']
+window-resize-bottom-decrease=['<Shift><Control><Super>i']
+window-resize-bottom-increase=['<Control><Super>u']
+window-resize-left-decrease=['<Shift><Control><Super>o']
+window-resize-left-increase=['<Control><Super>y']
+window-resize-right-decrease=['<Shift><Control><Super>y']
+window-resize-right-increase=['<Control><Super>o']
+window-resize-top-decrease=['<Shift><Control><Super>u']
+window-resize-top-increase=['<Control><Super>i']
+window-snap-center=['<Control><Alt>c']
+window-snap-one-third-left=['<Control><Alt>d']
+window-snap-one-third-right=['<Control><Alt>g']
+window-snap-two-third-left=['<Control><Alt>e']
+window-snap-two-third-right=['<Control><Alt>t']
+window-swap-down=['<Control><Super>j']
+window-swap-last-active=['<Super>Return']
+window-swap-left=['<Control><Super>h']
+window-swap-right=['<Control><Super>l']
+window-swap-up=['<Control><Super>k']
+window-toggle-always-float=['<Shift><Super>c']
+window-toggle-float=['<Super>c']
+workspace-active-tile-toggle=['<Shift><Super>w']
+
+[shell/extensions/ip-finder]
+current-connection-ids=['docker0', 'br-3c338326f589', 'br-1b9ece300aa9', 'netplan-enp14s0', 'lo']
+enabled-on-vpn-only=false
+map-tile-coords='529,363'
+panel-button-elements=[{'id': <'VPN_STATUS_ICON'>, 'enabled': <false>, 'colorize': <true>, 'always_show': <true>}, {'id': <'IP_ADDRESS'>, 'enabled': <true>, 'colorize': <false>, 'mask_ip': <false>}, {'id': <'COUNTRY_FLAG'>, 'enabled': <true>}, {'id': <'LOCATION'>, 'enabled': <false>, 'colorize': <false>, 'show_city': <true>, 'show_region': <false>, 'show_country': <true>}]
+prefs-visible-page=''
+update-notifier-project-version=26
+
+[shell/extensions/tiling-assistant]
+activate-layout0=@as []
+activate-layout1=@as []
+activate-layout2=@as []
+activate-layout3=@as []
+auto-tile=@as []
+center-window=@as []
+debugging-free-rects=@as []
+debugging-show-tiled-rects=@as []
+default-move-mode=0
+dynamic-keybinding-behavior=0
+focus-hint=0
+focus-hint-color='rgb(203,67,20)'
+import-layout-examples=false
+last-version-installed=53
+overridden-settings={'org.gnome.mutter.edge-tiling': <@mb nothing>, 'org.gnome.mutter.keybindings.toggle-tiled-left': <@mb nothing>, 'org.gnome.mutter.keybindings.toggle-tiled-right': <@mb nothing>}
+restore-window=['<Super>Down']
+search-popup-layout=@as []
+tile-bottom-half=['<Super>KP_2']
+tile-bottom-half-ignore-ta=@as []
+tile-bottomleft-quarter=['<Super>KP_1']
+tile-bottomleft-quarter-ignore-ta=@as []
+tile-bottomright-quarter=['<Super>KP_3']
+tile-bottomright-quarter-ignore-ta=@as []
+tile-edit-mode=@as []
+tile-left-half=['<Super>Left', '<Super>KP_4']
+tile-left-half-ignore-ta=@as []
+tile-maximize=['<Super>Up', '<Super>KP_5']
+tile-maximize-horizontally=@as []
+tile-maximize-vertically=@as []
+tile-right-half=['<Super>Right', '<Super>KP_6']
+tile-right-half-ignore-ta=@as []
+tile-top-half=['<Super>KP_8']
+tile-top-half-ignore-ta=@as []
+tile-topleft-quarter=['<Super>KP_7']
+tile-topleft-quarter-ignore-ta=@as []
+tile-topright-quarter=['<Super>KP_9']
+tile-topright-quarter-ignore-ta=@as []
+tiling-popup-all-workspace=true
+toggle-always-on-top=@as []
+toggle-tiling-popup=@as []
+
+[shell/extensions/tilingshell]
+edge-tiling-mode='default'
+enable-blur-selected-tilepreview=true
+enable-blur-snap-assistant=true
+inner-gaps=uint32 14
+last-version-name-installed='17.3'
+layouts-json='[{"id":"Layout 1","tiles":[{"x":0,"y":0,"width":0.22,"height":0.5,"groups":[1,2]},{"x":0,"y":0.5,"width":0.22,"height":0.5,"groups":[1,2]},{"x":0.22,"y":0,"width":0.56,"height":1,"groups":[2,3]},{"x":0.78,"y":0,"width":0.22,"height":0.5,"groups":[3,4]},{"x":0.78,"y":0.5,"width":0.22,"height":0.5,"groups":[3,4]}]},{"id":"Layout 2","tiles":[{"x":0,"y":0,"width":0.22,"height":1,"groups":[1]},{"x":0.22,"y":0,"width":0.56,"height":1,"groups":[1,2]},{"x":0.78,"y":0,"width":0.22,"height":1,"groups":[2]}]},{"id":"Layout 3","tiles":[{"x":0,"y":0,"width":0.33,"height":1,"groups":[1]},{"x":0.33,"y":0,"width":0.67,"height":1,"groups":[1]}]},{"id":"Layout 4","tiles":[{"x":0,"y":0,"width":0.67,"height":1,"groups":[1]},{"x":0.67,"y":0,"width":0.33,"height":1,"groups":[1]}]}]'
+overridden-settings='{"org.gnome.mutter.keybindings":{"toggle-tiled-right":"@as []","toggle-tiled-left":"@as []"},"org.gnome.desktop.wm.keybindings":{"maximize":"@as []","unmaximize":"@as []"},"org.gnome.mutter":{"edge-tiling":"false"}}'
+selected-layouts=[['Layout 2'], ['Layout 2']]
+window-use-custom-border-color=false
+
+[shell/extensions/user-theme]
+name='Yaru-dark'
+
+[shell/keybindings]
+screenshot=@as []
+screenshot-window=@as []
+show-screenshot-ui=@as []
+
+[shell/world-clocks]
+locations=@av []
