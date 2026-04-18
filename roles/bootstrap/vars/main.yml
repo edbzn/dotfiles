@@ -16,6 +16,10 @@ bootstrap_packages:
   - lsd
   - software-properties-common
   - stow
+  - cloc
+  - inotify-tools
+  - adb
+  - fastboot
 
 # Package configuration
 package_state: "present"

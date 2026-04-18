@@ -13,6 +13,8 @@ npm_global_packages:
   - http-server
   - n
   - '@anthropic-ai/claude-code'
+  - autocannon
+  - localtunnel
 
 # Package version configuration
 npm_package_version: "latest"

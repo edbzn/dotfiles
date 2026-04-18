@@ -75,3 +75,45 @@
 
     - role: uv
       tags: [uv, python, development, version-management]
+
+    - role: warp
+      tags: [warp, terminal, bootstrap]
+
+    - role: bruno
+      tags: [bruno, api, development]
+
+    - role: flameshot
+      tags: [flameshot, screenshot, utilities]
+
+    - role: kdenlive
+      tags: [kdenlive, video, media]
+
+    - role: vlc
+      tags: [vlc, media, video]
+
+    - role: android-studio
+      tags: [android-studio, android, development]
+
+    - role: ngrok
+      tags: [ngrok, networking, development]
+
+    - role: newrelic-cli
+      tags: [newrelic-cli, monitoring, devops, cli]
+
+    - role: zoxide
+      tags: [zoxide, shell, utilities]
+
+    - role: chatgpt-desktop
+      tags: [chatgpt-desktop, ai, utilities]
+
+    - role: k6
+      tags: [k6, testing, performance, devops]
+
+    - role: claude-desktop
+      tags: [claude-desktop, ai, utilities]
+
+    - role: httptoolkit
+      tags: [httptoolkit, networking, debugging, development]
+
+    - role: virtualbox
+      tags: [virtualbox, virtualization, standalone]
