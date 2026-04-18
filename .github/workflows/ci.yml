@@ -96,14 +96,6 @@ jobs:
           # Verify the SSH key works by attempting to list refs on one repository
           git ls-remote git@github.com:jscutlery/semver.git HEAD
 
-      - name: Clean up secrets
-        if: always()
-        run: |
-          rm -f "$HOME/dotfiles/.vault_password" .vault_password ~/.ssh/id_rsa_ci
-          if [ -n "${SSH_AGENT_PID:-}" ]; then
-            ssh-agent -k 2>/dev/null || true
-          fi
-
       - name: Configure passwordless sudo for CI
         run: |
           # GitHub Actions runners have passwordless sudo by default
@@ -157,6 +149,14 @@ jobs:
             # Clean up
             rm -f test_role_${role_name}.yml
           done
+
+      - name: Clean up secrets
+        if: always()
+        run: |
+          rm -f "$HOME/dotfiles/.vault_password" .vault_password ~/.ssh/id_rsa_ci
+          if [ -n "${SSH_AGENT_PID:-}" ]; then
+            ssh-agent -k 2>/dev/null || true
+          fi
 
   test-installation:
     name: Test Installation on Ubuntu
