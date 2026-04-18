@@ -67,9 +67,15 @@ jobs:
             PASS=""
           fi
 
+          # Mask the vault password so GitHub Actions redacts it from logs
           if [ -n "${PASS}" ]; then
-            # Try to remove the passphrase from the key using ssh-keygen (non-interactive)
-            ssh-keygen -p -P "$PASS" -N "" -f ~/.ssh/id_rsa_ci || { echo "Failed to remove passphrase from SSH key using vault password"; exit 1; }
+            echo "::add-mask::${PASS}"
+          fi
+
+          if [ -n "${PASS}" ]; then
+            # Remove the passphrase from the key using expect-style input via ssh-keygen
+            # Avoid passing the passphrase as a CLI argument (visible in /proc)
+            ssh-keygen -p -N "" -f ~/.ssh/id_rsa_ci <<< "$PASS" 2>/dev/null || { echo "Failed to remove passphrase from SSH key"; exit 1; }
           fi
 
           # Add the (now passphrase-less) key to the agent
@@ -186,8 +192,13 @@ jobs:
             PASS=""
           fi
 
+          # Mask the vault password so GitHub Actions redacts it from logs
           if [ -n "${PASS}" ]; then
-            ssh-keygen -p -P "$PASS" -N "" -f ~/.ssh/id_rsa_ci || { echo "Failed to remove passphrase from SSH key using vault password"; exit 1; }
+            echo "::add-mask::${PASS}"
+          fi
+
+          if [ -n "${PASS}" ]; then
+            ssh-keygen -p -N "" -f ~/.ssh/id_rsa_ci <<< "$PASS" 2>/dev/null || { echo "Failed to remove passphrase from SSH key"; exit 1; }
           fi
 
           ssh-add ~/.ssh/id_rsa_ci
@@ -202,16 +213,15 @@ jobs:
         run: |
           ansible-playbook playbook.yml \
             --tags bootstrap \
-            --check \
-            --diff
+            --check
 
       - name: Test selected safe roles
         run: |
           # Test roles that don't require GUI or external services
+          # Do NOT use --diff here as secrets tag is included and could leak file contents
           ansible-playbook playbook.yml \
             --tags "zsh,git,dotfiles,node,fonts,secrets" \
-            --check \
-            --diff
+            --check
         continue-on-error: true
 
   shellcheck:
@@ -315,10 +325,10 @@ jobs:
       - name: Run secrets role only
         run: |
           # Setup only the secrets role to ensure secrets are in place
+          # Do NOT use -v/--diff here to avoid leaking decrypted secrets in CI logs
           ansible-playbook -i ci_hosts playbook.yml \
             --tags "secrets" \
-            --vault-password-file=.vault_password \
-            -v
+            --vault-password-file=.vault_password
 
       - name: Decrypt repo SSH key and add to ssh-agent
         run: |
@@ -338,8 +348,13 @@ jobs:
             PASS=""
           fi
 
+          # Mask the vault password so GitHub Actions redacts it from logs
           if [ -n "${PASS}" ]; then
-            ssh-keygen -p -P "$PASS" -N "" -f ~/.ssh/id_rsa_ci || { echo "Failed to remove passphrase from SSH key using vault password"; exit 1; }
+            echo "::add-mask::${PASS}"
+          fi
+
+          if [ -n "${PASS}" ]; then
+            ssh-keygen -p -N "" -f ~/.ssh/id_rsa_ci <<< "$PASS" 2>/dev/null || { echo "Failed to remove passphrase from SSH key"; exit 1; }
           fi
 
           ssh-add ~/.ssh/id_rsa_ci
@@ -353,10 +368,10 @@ jobs:
       - name: Run full playbook installation (all tasks)
         run: |
           # Run the complete playbook without any tag restrictions
+          # Do NOT use -v/--diff here to avoid leaking decrypted secrets in CI logs
           ansible-playbook -i ci_hosts playbook.yml \
             --skip-tags "secrets,obs,zoom,slack,gimp,discord,spotify,steam,warp,bruno,k6,claude-desktop,httptoolkit,virtualbox,android-studio,ngrok,chatgpt-desktop,flameshot,kdenlive,vlc,newrelic-cli,zoxide,mongodb-compass" \
-            --vault-password-file=.vault_password \
-            -v
+            --vault-password-file=.vault_password
 
       - name: Verify installations
         run: |
