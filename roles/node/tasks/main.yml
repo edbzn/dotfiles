@@ -34,7 +34,7 @@
   when: not (force_install | default(false) | bool)
 
 - name: Install npm global packages (force install or missing packages)
-  npm:
+  community.general.npm:
     name: "{{ item.item.name | default(item.item) }}"
     version: "{{ item.item.version | default(npm_package_version) }}"
     global: true
@@ -47,7 +47,7 @@
   tags: [npm-global]
 
 - name: Install npm global packages (when force_install is true)
-  npm:
+  community.general.npm:
     name: "{{ item.name | default(item) }}"
     version: "{{ item.version | default(npm_package_version) }}"
     global: true

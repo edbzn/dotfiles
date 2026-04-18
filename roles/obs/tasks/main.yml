@@ -15,7 +15,7 @@
   changed_when: false
 
 - name: Install OBS Studio via snap
-  snap:
+  community.general.snap:
     name: "{{ obs.snap_package }}"
     state: present
   become: true
