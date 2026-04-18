@@ -1,0 +1,4 @@
+---
+# Kdenlive video editor configuration
+kdenlive:
+  package_name: "kdenlive"

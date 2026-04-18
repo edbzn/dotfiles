@@ -1,0 +1,4 @@
+---
+# Warp terminal configuration
+warp:
+  package_name: "warp-terminal"

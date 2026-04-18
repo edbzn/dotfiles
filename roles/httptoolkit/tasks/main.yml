@@ -1,0 +1,31 @@
+---
+- name: Check if HTTP Toolkit is installed
+  command: command -v httptoolkit
+  register: httptoolkit_exists
+  failed_when: false
+  changed_when: false
+
+- name: Add HTTP Toolkit GPG key
+  shell: |
+    set -euo pipefail
+    curl -fsSL https://httptoolkit.com/httptoolkit.gpg.key | gpg --dearmor -o /usr/share/keyrings/httptoolkit-keyring.gpg
+  args:
+    executable: /bin/bash
+  become: true
+  when: force_install | default(false) | bool or httptoolkit_exists.rc != 0
+
+- name: Add HTTP Toolkit repository
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/httptoolkit-keyring.gpg] https://dl.httptoolkit.tech/deb/ httptoolkit main"
+    filename: httptoolkit
+    state: present
+  become: true
+  when: force_install | default(false) | bool or httptoolkit_exists.rc != 0
+
+- name: Install HTTP Toolkit
+  apt:
+    name: httptoolkit
+    state: "{{ package_state | default('present') }}"
+    update_cache: true
+  become: true
+  when: force_install | default(false) | bool or httptoolkit_exists.rc != 0

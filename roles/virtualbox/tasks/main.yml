@@ -1,0 +1,31 @@
+---
+- name: Check if VirtualBox is installed
+  command: command -v virtualbox
+  register: virtualbox_exists
+  failed_when: false
+  changed_when: false
+
+- name: Add Oracle VirtualBox GPG key
+  shell: |
+    set -euo pipefail
+    curl -fsSL https://www.virtualbox.org/download/oracle_vbox_2016.asc | gpg --dearmor -o /usr/share/keyrings/oracle-virtualbox-keyring.gpg
+  args:
+    executable: /bin/bash
+  become: true
+  when: force_install | default(false) | bool or virtualbox_exists.rc != 0
+
+- name: Add VirtualBox repository
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle-virtualbox-keyring.gpg] https://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
+    filename: virtualbox
+    state: present
+  become: true
+  when: force_install | default(false) | bool or virtualbox_exists.rc != 0
+
+- name: Install VirtualBox
+  apt:
+    name: "{{ virtualbox.package_name }}"
+    state: "{{ package_state | default('present') }}"
+    update_cache: true
+  become: true
+  when: force_install | default(false) | bool or virtualbox_exists.rc != 0

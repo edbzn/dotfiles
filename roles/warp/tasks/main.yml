@@ -1,0 +1,31 @@
+---
+- name: Check if Warp terminal is installed
+  command: command -v warp-terminal
+  register: warp_exists
+  failed_when: false
+  changed_when: false
+
+- name: Add Warp GPG key
+  shell: |
+    set -euo pipefail
+    curl -fsSL https://releases.warp.dev/linux/keys/warp.asc | gpg --dearmor -o /usr/share/keyrings/warp-keyring.gpg
+  args:
+    executable: /bin/bash
+  become: true
+  when: force_install | default(false) | bool or warp_exists.rc != 0
+
+- name: Add Warp repository
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/warp-keyring.gpg] https://releases.warp.dev/linux/deb stable main"
+    filename: warp
+    state: present
+  become: true
+  when: force_install | default(false) | bool or warp_exists.rc != 0
+
+- name: Install Warp terminal
+  apt:
+    name: warp-terminal
+    state: "{{ package_state | default('present') }}"
+    update_cache: true
+  become: true
+  when: force_install | default(false) | bool or warp_exists.rc != 0

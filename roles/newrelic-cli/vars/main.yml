@@ -1,0 +1,4 @@
+---
+# New Relic CLI configuration
+newrelic_cli:
+  binary_path: "/usr/local/bin/newrelic"

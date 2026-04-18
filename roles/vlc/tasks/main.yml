@@ -1,0 +1,14 @@
+---
+- name: Check if VLC is installed
+  command: command -v vlc
+  register: vlc_exists
+  failed_when: false
+  changed_when: false
+
+- name: Install VLC
+  apt:
+    name: vlc
+    state: "{{ package_state | default('present') }}"
+    update_cache: true
+  become: true
+  when: force_install | default(false) | bool or vlc_exists.rc != 0

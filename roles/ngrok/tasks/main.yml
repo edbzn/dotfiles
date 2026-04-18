@@ -1,0 +1,13 @@
+---
+- name: Check if ngrok is installed
+  command: command -v ngrok
+  register: ngrok_exists
+  failed_when: false
+  changed_when: false
+
+- name: Install ngrok via snap
+  community.general.snap:
+    name: ngrok
+    state: present
+  become: true
+  when: force_install | default(false) | bool or ngrok_exists.rc != 0

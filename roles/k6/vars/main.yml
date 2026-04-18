@@ -1,0 +1,4 @@
+---
+# k6 load testing tool configuration
+k6:
+  package_name: "k6"

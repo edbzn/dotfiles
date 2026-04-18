@@ -1,0 +1,14 @@
+---
+- name: Check if Flameshot is installed
+  command: command -v flameshot
+  register: flameshot_exists
+  failed_when: false
+  changed_when: false
+
+- name: Install Flameshot
+  apt:
+    name: flameshot
+    state: "{{ package_state | default('present') }}"
+    update_cache: true
+  become: true
+  when: force_install | default(false) | bool or flameshot_exists.rc != 0

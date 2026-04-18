@@ -1,0 +1,4 @@
+---
+# Flameshot screenshot tool configuration
+flameshot:
+  package_name: "flameshot"

@@ -1,0 +1,29 @@
+---
+- name: Check if New Relic CLI is installed
+  command: command -v newrelic
+  register: newrelic_exists
+  failed_when: false
+  changed_when: false
+
+- name: Get latest New Relic CLI release version
+  shell: |
+    set -euo pipefail
+    curl -fsSL https://api.github.com/repos/newrelic/newrelic-cli/releases/latest | grep -oP '"tag_name":\s*"\K[^"]+'
+  args:
+    executable: /bin/bash
+  register: newrelic_latest_version
+  changed_when: false
+  when: force_install | default(false) | bool or newrelic_exists.rc != 0
+
+- name: Download and install New Relic CLI
+  shell: |
+    set -euo pipefail
+    VERSION="{{ newrelic_latest_version.stdout | regex_replace('^v', '') }}"
+    curl -fsSL "https://github.com/newrelic/newrelic-cli/releases/download/v${VERSION}/newrelic-cli_${VERSION}_Linux_x86_64.tar.gz" -o /tmp/newrelic-cli.tar.gz
+    tar -xzf /tmp/newrelic-cli.tar.gz -C /tmp newrelic
+    install -m 0755 /tmp/newrelic /usr/local/bin/newrelic
+    rm -f /tmp/newrelic-cli.tar.gz /tmp/newrelic
+  args:
+    executable: /bin/bash
+  become: true
+  when: force_install | default(false) | bool or newrelic_exists.rc != 0

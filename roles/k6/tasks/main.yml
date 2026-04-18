@@ -1,0 +1,31 @@
+---
+- name: Check if k6 is installed
+  command: command -v k6
+  register: k6_exists
+  failed_when: false
+  changed_when: false
+
+- name: Add Grafana GPG key for k6
+  shell: |
+    set -euo pipefail
+    curl -fsSL https://dl.grafana.com/oss/gpg.key | gpg --dearmor -o /usr/share/keyrings/grafana-k6-keyring.gpg
+  args:
+    executable: /bin/bash
+  become: true
+  when: force_install | default(false) | bool or k6_exists.rc != 0
+
+- name: Add k6 repository
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/grafana-k6-keyring.gpg] https://dl.grafana.com/oss/deb stable main"
+    filename: grafana-k6
+    state: present
+  become: true
+  when: force_install | default(false) | bool or k6_exists.rc != 0
+
+- name: Install k6
+  apt:
+    name: k6
+    state: "{{ package_state | default('present') }}"
+    update_cache: true
+  become: true
+  when: force_install | default(false) | bool or k6_exists.rc != 0

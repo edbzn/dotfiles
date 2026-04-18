@@ -1,0 +1,4 @@
+---
+# HTTP Toolkit configuration
+httptoolkit:
+  package_name: "httptoolkit"

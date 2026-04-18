@@ -1,0 +1,31 @@
+---
+- name: Check if Bruno is installed
+  command: command -v bruno
+  register: bruno_exists
+  failed_when: false
+  changed_when: false
+
+- name: Add Bruno GPG key
+  shell: |
+    set -euo pipefail
+    curl -fsSL https://www.usebruno.com/signing-key.pub | gpg --dearmor -o /usr/share/keyrings/bruno-keyring.gpg
+  args:
+    executable: /bin/bash
+  become: true
+  when: force_install | default(false) | bool or bruno_exists.rc != 0
+
+- name: Add Bruno repository
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/bruno-keyring.gpg] https://debian.usebruno.com/ bruno stable"
+    filename: bruno
+    state: present
+  become: true
+  when: force_install | default(false) | bool or bruno_exists.rc != 0
+
+- name: Install Bruno
+  apt:
+    name: bruno
+    state: "{{ package_state | default('present') }}"
+    update_cache: true
+  become: true
+  when: force_install | default(false) | bool or bruno_exists.rc != 0

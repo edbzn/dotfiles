@@ -1,0 +1,4 @@
+---
+# VLC media player configuration
+vlc:
+  package_name: "vlc"

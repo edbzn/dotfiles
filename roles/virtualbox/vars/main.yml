@@ -1,0 +1,4 @@
+---
+# VirtualBox configuration
+virtualbox:
+  package_name: "virtualbox-7.2"

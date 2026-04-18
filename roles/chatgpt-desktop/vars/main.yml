@@ -1,0 +1,4 @@
+---
+# ChatGPT Desktop configuration
+chatgpt_desktop:
+  snap_package: "chatgpt-desktop-client"

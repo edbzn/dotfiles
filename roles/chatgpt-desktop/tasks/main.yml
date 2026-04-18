@@ -1,0 +1,13 @@
+---
+- name: Check if ChatGPT Desktop is installed
+  shell: snap list chatgpt-desktop-client
+  register: chatgpt_exists
+  failed_when: false
+  changed_when: false
+
+- name: Install ChatGPT Desktop via snap
+  community.general.snap:
+    name: chatgpt-desktop-client
+    state: present
+  become: true
+  when: force_install | default(false) | bool or chatgpt_exists.rc != 0

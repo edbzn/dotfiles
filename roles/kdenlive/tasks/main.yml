@@ -1,0 +1,14 @@
+---
+- name: Check if Kdenlive is installed
+  command: command -v kdenlive
+  register: kdenlive_exists
+  failed_when: false
+  changed_when: false
+
+- name: Install Kdenlive
+  apt:
+    name: kdenlive
+    state: "{{ package_state | default('present') }}"
+    update_cache: true
+  become: true
+  when: force_install | default(false) | bool or kdenlive_exists.rc != 0

@@ -1,0 +1,4 @@
+---
+# Bruno API client configuration
+bruno:
+  package_name: "bruno"

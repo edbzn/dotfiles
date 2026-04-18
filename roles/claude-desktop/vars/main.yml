@@ -1,0 +1,4 @@
+---
+# Claude Desktop configuration
+claude_desktop:
+  deb_url: "https://storage.googleapis.com/anthropic-desktop/claude-desktop_latest_amd64.deb"

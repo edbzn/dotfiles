@@ -1,0 +1,4 @@
+---
+# ngrok configuration
+ngrok:
+  snap_package: "ngrok"

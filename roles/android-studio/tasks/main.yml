@@ -1,0 +1,14 @@
+---
+- name: Check if Android Studio is installed
+  command: command -v android-studio
+  register: android_studio_exists
+  failed_when: false
+  changed_when: false
+
+- name: Install Android Studio via snap
+  community.general.snap:
+    name: android-studio
+    classic: true
+    state: present
+  become: true
+  when: force_install | default(false) | bool or android_studio_exists.rc != 0
