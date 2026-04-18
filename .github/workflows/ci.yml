@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [master, main]
 
+# Least-privilege: only grant what is needed
+permissions:
+  contents: read
+
 jobs:
   lint-and-validate:
     name: Lint and Validate Playbooks
@@ -13,10 +17,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.12"
 
@@ -92,6 +96,14 @@ jobs:
           # Verify the SSH key works by attempting to list refs on one repository
           git ls-remote git@github.com:jscutlery/semver.git HEAD
 
+      - name: Clean up secrets
+        if: always()
+        run: |
+          rm -f "$HOME/dotfiles/.vault_password" .vault_password ~/.ssh/id_rsa_ci
+          if [ -n "${SSH_AGENT_PID:-}" ]; then
+            ssh-agent -k 2>/dev/null || true
+          fi
+
       - name: Configure passwordless sudo for CI
         run: |
           # GitHub Actions runners have passwordless sudo by default
@@ -157,7 +169,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Install Ansible
         run: |
@@ -224,13 +236,21 @@ jobs:
             --check
         continue-on-error: true
 
+      - name: Clean up secrets
+        if: always()
+        run: |
+          rm -f "$HOME/dotfiles/.vault_password" .vault_password ~/.ssh/id_rsa_ci
+          if [ -n "${SSH_AGENT_PID:-}" ]; then
+            ssh-agent -k 2>/dev/null || true
+          fi
+
   shellcheck:
     name: ShellCheck Scripts
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Install ShellCheck
         run: |
@@ -247,7 +267,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Check for potential secrets in history backup
         run: |
@@ -289,10 +309,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.12"
 
@@ -427,6 +447,14 @@ jobs:
             echo "✅ Playbook is idempotent (no changes on second run)" >> $GITHUB_STEP_SUMMARY
           else
             echo "⚠️ Playbook made changes on second run" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Clean up secrets
+        if: always()
+        run: |
+          rm -f "$HOME/dotfiles/.vault_password" .vault_password ~/.ssh/id_rsa_ci
+          if [ -n "${SSH_AGENT_PID:-}" ]; then
+            ssh-agent -k 2>/dev/null || true
           fi
 
   summary:
