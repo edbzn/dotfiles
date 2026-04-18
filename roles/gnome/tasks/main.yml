@@ -6,6 +6,32 @@
     state: "{{ package_state | default('present') }}"
   become: true
 
+- name: Check availability of optional GNOME extension packages
+  command: "apt-cache show {{ item }}"
+  register: gnome_optional_pkg_checks
+  failed_when: false
+  changed_when: false
+  loop: "{{ gnome_optional_packages | default([]) }}"
+  when:
+    - (gnome_optional_packages | default([])) | length > 0
+
+- name: Install available optional GNOME extension packages from distro repos
+  apt:
+    name: "{{ item.item }}"
+    state: "{{ package_state | default('present') }}"
+  become: true
+  loop: "{{ gnome_optional_pkg_checks.results | default([]) }}"
+  when:
+    - item.rc == 0
+    - (item.stdout | default('') | trim | length) > 0
+
+- name: Warn about unavailable optional GNOME extension packages
+  debug:
+    msg: "Optional package {{ item.item }} is not available in apt repositories and will be skipped."
+  loop: "{{ gnome_optional_pkg_checks.results | default([]) }}"
+  when:
+    - item.rc != 0 or (item.stdout | default('') | trim | length) == 0
+
 - name: Detect whether current desktop is GNOME-based
   set_fact:
     gnome_desktop_detected: "{{ 'gnome' in (ansible_env.XDG_CURRENT_DESKTOP | default('') | lower) or 'ubuntu' in (ansible_env.XDG_CURRENT_DESKTOP | default('') | lower) }}"
@@ -31,12 +57,11 @@
     - gnome_desktop_detected | bool
     - gnome_extensions_cli.rc == 0
 
-- name: Check which target GNOME extensions are already installed
-  command: "gnome-extensions info {{ item }}"
-  register: installed_extension_checks
+- name: Get currently installed GNOME extensions
+  command: gnome-extensions list
+  register: installed_extensions_before_install
   failed_when: false
   changed_when: false
-  loop: "{{ gnome_extensions }}"
   when:
     - gnome_desktop_detected | bool
     - gnome_extensions_cli.rc == 0
@@ -44,7 +69,7 @@
 - name: Install missing GNOME extensions from extensions.gnome.org
   shell: |
     set -euo pipefail
-    UUID="{{ item.item }}"
+    UUID="{{ item }}"
     SHELL_MAJOR="$(gnome-shell --version | awk '{print $3}' | cut -d. -f1)"
     INFO_URL="https://extensions.gnome.org/extension-info/?uuid=${UUID}&shell_version=${SHELL_MAJOR}"
     DOWNLOAD_PATH="$(curl -fsSL "${INFO_URL}" | jq -r '.download_url')"
@@ -61,12 +86,30 @@
   args:
     executable: /bin/bash
   register: extension_install_results
-  loop: "{{ installed_extension_checks.results | default([]) }}"
+  loop: "{{ gnome_extensions }}"
   when:
     - gnome_desktop_detected | bool
     - gnome_extensions_cli.rc == 0
-    - item.rc != 0
+    - item not in (installed_extensions_before_install.stdout_lines | default([]))
   changed_when: true
+
+- name: Refresh list of installed GNOME extensions
+  command: gnome-extensions list
+  register: installed_extensions_current
+  failed_when: false
+  changed_when: false
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_extensions_cli.rc == 0
+
+- name: Refresh list of enabled GNOME extensions
+  command: gnome-extensions list --enabled
+  register: enabled_extensions_current
+  failed_when: false
+  changed_when: false
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_extensions_cli.rc == 0
 
 - name: Enable target GNOME extensions
   command: "gnome-extensions enable {{ item }}"
@@ -74,7 +117,27 @@
   when:
     - gnome_desktop_detected | bool
     - gnome_extensions_cli.rc == 0
+    - item in (installed_extensions_current.stdout_lines | default([]))
     - item not in (enabled_extensions_current.stdout_lines | default([]))
+  changed_when: true
+
+- name: Warn about missing desired GNOME extensions
+  debug:
+    msg: "Extension {{ item }} is not installed on this system; skipping enable step."
+  loop: "{{ gnome_extensions }}"
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_extensions_cli.rc == 0
+    - item not in (installed_extensions_current.stdout_lines | default([]))
+
+- name: Disable extensions that should not be active
+  command: "gnome-extensions disable {{ item }}"
+  loop: "{{ gnome_disabled_extensions | default([]) }}"
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_extensions_cli.rc == 0
+    - item in (installed_extensions_current.stdout_lines | default([]))
+    - item in (enabled_extensions_current.stdout_lines | default([]))
   changed_when: true
 
 - name: Copy desired GNOME dconf state to temporary path
@@ -103,3 +166,60 @@
     - gnome_desktop_detected | bool
     - gnome_dconf_needs_update | bool
   changed_when: true
+
+- name: Check whether Dash to Panel schema is available
+  command: gsettings list-schemas
+  register: gsettings_schemas
+  changed_when: false
+  failed_when: false
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_extensions_cli.rc == 0
+
+- name: Set Dash to Panel schema availability
+  set_fact:
+    dash_to_panel_schema_available: "{{ 'org.gnome.shell.extensions.dash-to-panel' in (gsettings_schemas.stdout_lines | default([])) }}"
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_extensions_cli.rc == 0
+
+- name: Build desired Dash to Panel position value
+  set_fact:
+    dash_to_panel_position_value: "{{ {'0': (gnome_dash_to_panel_position | default('TOP'))} | to_json }}"
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_extensions_cli.rc == 0
+    - dash_to_panel_schema_available | default(false) | bool
+
+- name: Read current Dash to Panel position
+  command: gsettings get org.gnome.shell.extensions.dash-to-panel panel-positions
+  register: dash_to_panel_position_current
+  changed_when: false
+  failed_when: false
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_extensions_cli.rc == 0
+    - dash_to_panel_schema_available | default(false) | bool
+
+- name: Force Dash to Panel to the top bar
+  command:
+    argv:
+      - gsettings
+      - set
+      - org.gnome.shell.extensions.dash-to-panel
+      - panel-positions
+      - "{{ dash_to_panel_position_value }}"
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_extensions_cli.rc == 0
+    - dash_to_panel_schema_available | default(false) | bool
+    - dash_to_panel_position_current.stdout is not search(gnome_dash_to_panel_position | default('TOP'))
+  changed_when: true
+
+- name: Warn when Dash to Panel schema is unavailable
+  debug:
+    msg: "Dash to Panel schema is unavailable, skipping panel position enforcement."
+  when:
+    - gnome_desktop_detected | bool
+    - gnome_extensions_cli.rc == 0
+    - not (dash_to_panel_schema_available | default(false) | bool)

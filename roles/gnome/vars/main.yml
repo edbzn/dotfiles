@@ -1,16 +1,32 @@
 ---
 # GNOME extensions currently enabled on the source machine.
 gnome_extensions:
-  - user-theme@gnome-shell-extensions.gcampax.github.com
-  - extension-list@tu.berry
+  - dash-to-panel@jderose9.github.com
+  - windows-search-provider@G-dH.github.com
   - weekstartmodifier@saccuzm.gmail.com
-  - ding@rastersoft.com
-  - snapd-prompting@canonical.com
-  - tiling-assistant@ubuntu.com
-  - ubuntu-appindicators@ubuntu.com
-  - ubuntu-dock@ubuntu.com
+  - arcmenu@arcmenu.com
+  - system-monitor@gnome-shell-extensions.gcampax.github.com
   - IP-Finder@linxgem33.com
+  - blur-my-shell@aunetx
+  - system-monitor-next@paradoxxx.zero.gmail.com
+  - forge@jmmaranan.com
+  - dev-container-manager@devopsnextgenx
+  - docker@stickman_0x00.com
+  - ding@rastersoft.com
+  - extension-list@tu.berry
   - tilingshell@ferrarodomenico.com
+  - ubuntu-appindicators@ubuntu.com
+  - file-watchers@edouard.bozon
+
+# Extensions that should remain disabled.
+gnome_disabled_extensions:
+  - weekly-commits@funinkina.is-a.dev
+  - ubuntu-dock@ubuntu.com
+  - user-theme@gnome-shell-extensions.gcampax.github.com
+  - tiling-assistant@ubuntu.com
+
+# Panel position used by Dash to Panel.
+gnome_dash_to_panel_position: BOTTOM
 
 # Core packages needed to manage GNOME extension state.
 gnome_packages:
@@ -18,3 +34,7 @@ gnome_packages:
   - gnome-shell-extensions
   - jq
   - curl
+
+# Optional distro packages for extensions that are commonly packaged.
+gnome_optional_packages:
+  - gnome-shell-extension-dash-to-panel
