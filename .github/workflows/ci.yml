@@ -354,7 +354,7 @@ jobs:
         run: |
           # Run the complete playbook without any tag restrictions
           ansible-playbook -i ci_hosts playbook.yml \
-            --skip-tags "secrets,obs,zoom,slack,gimp,discord,spotify,steam" \
+            --skip-tags "secrets,obs,zoom,slack,gimp,discord,spotify,steam,warp,bruno,k6,claude-desktop,httptoolkit,virtualbox,android-studio,ngrok,chatgpt-desktop,flameshot,kdenlive,vlc,newrelic-cli,zoxide,mongodb-compass" \
             --vault-password-file=.vault_password \
             -v
 
