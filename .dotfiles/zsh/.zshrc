@@ -51,12 +51,6 @@ alias ohmyzsh="vim ~/.oh-my-zsh"
 alias work="cd ~/work"
 alias nx-check="nx affected --target=lint,test,build --parallel=8"
 
-# Initialize zoxide and alias cd to it
-if command -v zoxide &> /dev/null; then
-  eval "$(zoxide init zsh)"
-  alias cd="z"
-fi
-
 # Initialize fzf
 if command -v fzf &> /dev/null; then
   source <(fzf --zsh)
@@ -69,3 +63,16 @@ export AWS_PROFILE=rosa-dev
 # Source machine-specific configuration (GPG, secrets, etc.)
 # This file is not tracked in git
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# bun completions
+[ -s "/home/edouard/.bun/_bun" ] && source "/home/edouard/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Initialize zoxide and alias cd to it (must be last — after all PATH changes)
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init zsh)"
+  alias cd="z"
+fi
